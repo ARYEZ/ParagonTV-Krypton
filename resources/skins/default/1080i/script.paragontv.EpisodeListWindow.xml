@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">8001</defaultcontrol>
+    <backgroundcolor>0xFF000000</backgroundcolor>
+    <controls>
+        <include>BackgroundItems37</include>
+        <!-- Show Title and Season Label -->
+        <control type="label">
+            <left>0</left>
+            <top>310</top>
+            <width>1000</width>
+            <height>70</height>
+            <label>$INFO[Window.Property(ShowTitle),, - ]$INFO[Window.Property(SeasonLabel)]</label>
+            <font>fontsize_50</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <align>center</align>
+        </control>
+        <!-- Episode List (Left Side) -->
+        <control type="list" id="8001">
+            <left>100</left>
+            <top>410</top>
+            <width>800</width>
+            <height>250</height>
+            <onleft>noop</onleft>
+            <onright>noop</onright>
+            <scrolltime>200</scrolltime>
+            <orientation>vertical</orientation>
+            <itemlayout height="80" width="800">
+                <control type="image">
+                    <left>0</left>
+                    <top>5</top>
+                    <width>800</width>
+                    <height>70</height>
+                    <texture border="10">buttons/MenuItemNF.png</texture>
+                    <colordiffuse>77FFFFFF</colordiffuse>
+                </control>
+                <control type="label">
+                    <left>40</left>
+                    <top>5</top>
+                    <width>350</width>
+                    <height>70</height>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <font>FontSize_36</font>
+                    <textcolor>AAFFFFFF</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                </control>
+                <control type="label">
+                    <left>150</left>
+                    <top>5</top>
+                    <width>600</width>
+                    <height>70</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>FontSize_36</font>
+                    <textcolor>CCFFFFFF</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                </control>
+                <control type="image">
+                    <right>30</right>
+                    <top>30</top>
+                    <width>70</width>
+                    <height>70</height>
+                    <texture>$INFO[ListItem.Property(quality_icon)]</texture>
+                    <aspectratio>keep</aspectratio>
+                </control>
+            </itemlayout>
+            <focusedlayout height="80" width="800">
+                <control type="image">
+                    <left>0</left>
+                    <top>5</top>
+                    <width>800</width>
+                    <height>70</height>
+                    <texture border="10">buttons/focus.png</texture>
+                </control>
+                <control type="label">
+                    <left>40</left>
+                    <top>5</top>
+                    <width>350</width>
+                    <height>70</height>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <font>FontSize_36</font>
+                    <textcolor>black</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                </control>
+                <control type="label">
+                    <left>150</left>
+                    <top>5</top>
+                    <width>600</width>
+                    <height>70</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>FontSize_36</font>
+                    <textcolor>black</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                </control>
+                <control type="image">
+                    <right>30</right>
+                    <top>30</top>
+                    <width>70</width>
+                    <height>70</height>
+                    <texture>$INFO[ListItem.Property(quality_icon)]</texture>
+                    <aspectratio>keep</aspectratio>
+                </control>
+            </focusedlayout>
+        </control>
+        <!-- Episode Thumbnail (Right Side) -->
+        <control type="image">
+            <left>1005</left>
+            <top>297</top>
+            <width>835</width>
+            <height>465</height>
+            <aspectratio align="center" aligny="center">scale</aspectratio>
+            <texture fallback="DefaultVideo.png">$INFO[Container(8001).ListItem.Thumb]</texture>
+        </control>
+        <control type="image">
+            <left>1005</left>
+            <top>297</top>
+            <width>835</width>
+            <height>465</height>
+            <aspectratio align="center" aligny="center">scale</aspectratio>
+            <texture>faded.png</texture>
+        </control>
+        <!-- Episode Plot (Below Thumbnail) -->
+        <control type="textbox">
+            <left>1015</left>
+            <top>307</top>
+            <width>825</width>
+            <height>435</height>
+            <label>$INFO[Container(8001).ListItem.Plot]</label>
+            <font>FontSize_22</font>
+            <textcolor>CCFFFFFF</textcolor>
+            <autoscroll delay="3000" time="2000" repeat="10000">true</autoscroll>
+        </control>
+    </controls>
+</window>

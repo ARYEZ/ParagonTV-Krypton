@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <category label="30000">
+        <setting id="ConfigDialog" type="action" label="30008" action="RunScript($CWD/resources/lib/Config.py)"/>
+        <setting id="ForceChannelReset" type="bool" label="30002" default="false"/>
+        <setting id="AutoOff" type="enum" label="30001" values="Disable|30 min|60 min|90 min|120 min|150 min|180 min|210 min|240 min" default="0"/>
+        <setting id="ChannelResetSetting" type="enum" label="30004" values="Automatic|Daily|Weekly|Monthly|Never|Every Time" default="0"/>
+        <setting id="StartMode" type="enum" label="30011" values="Resume|Real Time|Random" default="1"/>
+        <setting id="ThreadMode" type="enum" label="30012" values="On|Minimum Use|Off" default="1"/>
+        <setting id="ChannelSharing" type="bool" label="30015" default="false"/>
+        <setting id="SettingsFolder" subsetting="true" type="folder" source="auto" visible="eq(-1,true)" label="30013" default=""/>
+    </category>
+    <category label="30020">
+        <setting id="InfoOnChange" type="bool" label="30003" default="false"/>
+        <setting id="ShowChannelBug" type="bool" label="30006" default="false"/>
+        <setting id="ShowEpgLogo" type="bool" label="30007" default="true"/>
+        <setting id="ChannelLogoFolder" type="folder" source="auto" label="30010" default="special://home/addons/script.pseudotv/resources/logos/"/>
+        <setting id="ClockMode" type="enum" label="30014" default="0" values="12 Hour|24 Hour"/>
+        <setting id="EnableComingUp" type="bool" label="30016" default="true"/>
+        <setting id="HideClips" type="bool" label="30017" default="true"/>
+        <setting id="ClipLength" type="enum" subsetting="true" label="30018" visible="eq(-1,true)" values="15 sec|30 sec|60 sec|90 sec|120 sec|180 sec|240 sec|300 sec|360 sec" default="4"/>
+        <setting id="OnDemandReturnMode" type="enum" label="On Demand Return Mode" values="Ask Each Time|Return to Live|Resume Where Left Off|Start of Current Show" default="0"/>
+    </category>
+    <category label="30022">
+        <setting id="MediaLimit" type="enum" label="30044" values="10 items|25 items|50 items|100 items|250 items|500 items|1000 items|No limit" default="1"/>
+        <setting id="NumberColour" type="enum" label="30045" values="Red|Green|Blue|Yellow|Cyan|Orange|Magenta|Gray|White" default="1"/>
+        <setting id="SeekForward" type="enum" label="30046" values="10 sec|30 sec|60 sec|3 min|5 min|10 min|30 min" default="1"/>
+        <setting id="SeekBackward" type="enum" label="30047" values="-10 sec|-30 sec|-60 sec|-3 min|-5 min|-10 min|-30 min" default="1"/>
+        <setting id="ShowSeEp" type="bool" label="30021" default="false"/>
+    </category>
+    <category label="30026">
+        <setting id="enable" type="bool" label="30027" default="false"/>
+        <setting id="timer_amount" type="enum" values="None|5 sec|10 sec|15 sec|20 sec" label="30028" enable="eq(-1,true)" default="1"/>
+        <setting id="notify" type="bool" label="30029" enable="eq(-2,true)" default="true"/>
+    </category>
+    <category label="Global Rules">
+        <setting id="GlobalRules_Enabled" type="bool" label="Enable Global Rules" default="false"/>
+        <setting type="sep"/>
+        <setting id="GlobalRule_1_Enabled" type="bool" label="Set Channel Name" default="false" visible="eq(-2,true)"/>
+        <setting id="GlobalRule_1_opt_1" type="text" label="    Channel Name Prefix" default="My " visible="eq(-3,true) + eq(-1,true)"/>
+        <setting type="sep" visible="eq(-4,true)"/>
+        <setting id="GlobalRule_5_Enabled" type="bool" label="Don't Play This Channel" default="false" visible="eq(-5,true)"/>
+        <setting type="sep" visible="eq(-6,true)"/>
+        <setting id="GlobalRule_2_Enabled" type="bool" label="Don't Include Show/Artist" default="false" visible="eq(-7,true)"/>
+        <setting id="GlobalRule_2_opt_1" type="text" label="    Name to Exclude" default="" visible="eq(-8,true) + eq(-1,true)"/>
+        <setting type="sep" visible="eq(-9,true)"/>
+        <setting id="GlobalRule_4_Enabled" type="bool" label="Only Play Watched Items" default="false" visible="eq(-10,true)"/>
+        <setting type="sep" visible="eq(-11,true)"/>
+        <setting id="GlobalRule_11_Enabled" type="bool" label="Only Play Unwatched Items" default="false" visible="eq(-12,true)"/>
+        <setting type="sep" visible="eq(-13,true)"/>
+        <setting id="GlobalRule_6_Enabled" type="bool" label="Interleave Another Channel" default="false" visible="eq(-14,true)"/>
+        <setting id="GlobalRule_6_opt_1" type="number" label="    Channel Number" default="0" visible="eq(-15,true) + eq(-1,true)"/>
+        <setting id="GlobalRule_6_opt_2" type="number" label="    Min Interleave Count" default="1" visible="eq(-16,true) + eq(-2,true)"/>
+        <setting id="GlobalRule_6_opt_3" type="number" label="    Max Interleave Count" default="1" visible="eq(-17,true) + eq(-3,true)"/>
+        <setting type="sep" visible="eq(-18,true)"/>
+        <setting id="GlobalRule_12_Enabled" type="bool" label="Play TV Shows In Order" default="false" visible="eq(-19,true)"/>
+        <setting type="sep" visible="eq(-20,true)"/>
+        <setting id="GlobalRule_17_Enabled" type="bool" label="Limit Media Duration" default="false" visible="eq(-21,true)"/>
+        <setting id="GlobalRule_17_opt_1" type="number" label="    Maximum Duration (minutes)" default="60" visible="eq(-22,true) + eq(-1,true)"/>
+        <setting id="GlobalRule_17_opt_2" type="number" label="    Minimum Duration (minutes)" default="0" visible="eq(-23,true) + eq(-2,true)"/>
+        <setting type="sep" visible="eq(-24,true)"/>
+        <setting id="GlobalRule_26_Enabled" type="bool" label="Plot Keyword Filter" default="false" visible="eq(-25,true)"/>
+        <setting id="GlobalRule_26_opt_1" type="text" label="    Keywords to Exclude" default="Christmas,Santa,Thanksgiving,Pilgrims,Halloween" visible="eq(-26,true) + eq(-1,true)"/>
+        <setting type="lsep" label="Apply Global Rules To:" visible="eq(-27,true)"/>
+        <setting id="GlobalRules_CustomPlaylist" type="bool" label="Custom Playlists (Type 0)" default="true" visible="eq(-28,true)"/>
+        <setting id="GlobalRules_TVGenre" type="bool" label="TV Genre Channels (Type 3)" default="true" visible="eq(-29,true)"/>
+        <setting id="GlobalRules_MovieGenre" type="bool" label="Movie Genre Channels (Type 4)" default="true" visible="eq(-30,true)"/>
+        <setting id="GlobalRules_MusicGenre" type="bool" label="Music Genre Channels (Type 12)" default="true" visible="eq(-31,true)"/>
+        <setting type="lsep" label="Exclude Specific Channels:" visible="eq(-32,true)"/>
+        <setting id="GlobalRules_ExcludeChannels" type="text" label="Excluded Channel Numbers (comma-separated)" default="" visible="eq(-33,true)"/>
+    </category>
+    <category label="Speed Dial">
+        <setting label="Speed Dial Configuration" type="lsep"/>
+        <setting type="action" label="Open Speed Dial Configuration Window" action="RunScript($CWD/resources/lib/Overlay.py,ShowSpeedDialConfig)"/>
+        <setting type="action" label="Clear All Speed Dial Settings" action="RunScript($CWD/resources/lib/Overlay.py,ClearAllSpeedDial)"/>
+        <setting type="sep"/>
+        <setting label="Show Speed Dials" type="lsep"/>
+        <setting id="SpeedDialShow1" type="text" label="Speed Dial Show 1" default="" visible="false"/>
+        <setting type="action" label="Configure Show 1" action="RunScript($CWD/resources/lib/Overlay.py,ConfigureShowSpeedDial,1)">
+            <visible>!IsEmpty(Window(Home).Property(SpeedDialShow1))</visible>
+        </setting>
+        <setting type="text" label="Show 1:" enable="false" visible="!IsEmpty(Window(Home).Property(SpeedDialShow1))">
+            <default>$INFO[Window(Home).Property(SpeedDialShow1)]</default>
+        </setting>
+        <setting id="SpeedDialShow2" type="text" label="Speed Dial Show 2" default="" visible="false"/>
+        <setting type="action" label="Configure Show 2" action="RunScript($CWD/resources/lib/Overlay.py,ConfigureShowSpeedDial,2)">
+            <visible>!IsEmpty(Window(Home).Property(SpeedDialShow2))</visible>
+        </setting>
+        <setting type="text" label="Show 2:" enable="false" visible="!IsEmpty(Window(Home).Property(SpeedDialShow2))">
+            <default>$INFO[Window(Home).Property(SpeedDialShow2)]</default>
+        </setting>
+        <setting id="SpeedDialShow3" type="text" label="Speed Dial Show 3" default="" visible="false"/>
+        <setting type="action" label="Configure Show 3" action="RunScript($CWD/resources/lib/Overlay.py,ConfigureShowSpeedDial,3)">
+            <visible>!IsEmpty(Window(Home).Property(SpeedDialShow3))</visible>
+        </setting>
+        <setting type="text" label="Show 3:" enable="false" visible="!IsEmpty(Window(Home).Property(SpeedDialShow3))">
+            <default>$INFO[Window(Home).Property(SpeedDialShow3)]</default>
+        </setting>
+        <setting type="sep"/>
+        <setting label="Channel Speed Dials (Keys 1-9)" type="lsep"/>
+        <setting id="SpeedDialChannel1" type="number" label="Key 1 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel2" type="number" label="Key 2 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel3" type="number" label="Key 3 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel4" type="number" label="Key 4 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel5" type="number" label="Key 5 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel6" type="number" label="Key 6 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel7" type="number" label="Key 7 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel8" type="number" label="Key 8 - Channel Number" default="0"/>
+        <setting id="SpeedDialChannel9" type="number" label="Key 9 - Channel Number" default="0"/>
+        <setting type="sep"/>
+        <setting label="Speed Dial Options" type="lsep"/>
+        <setting id="SpeedDialDefaultAction" type="enum" label="Speed Dial Default Action" values="Direct Jump/Play|Show Menu" default="0"/>
+        <setting id="SpeedDialHoldForMenu" type="bool" label="Long Press for Menu (when Direct Jump enabled)" default="true" visible="eq(-1,0)"/>
+        <setting id="SpeedDialMode" type="enum" label="Speed Dial Mode" values="Instant Jump|Show Confirmation|Preview Window" default="0"/>
+        <setting id="SpeedDialShowImages" type="bool" label="Show Landscape Images in Speed Dial Window" default="true"/>
+        <setting id="SpeedDialPersistence" type="enum" label="Storage Method" values="JSON File (Recommended)|Addon Settings|Both" default="2"/>
+    </category>
+    <category label="Preset Refresh">
+        <setting label="9-Phase Preset Macro System with Weekly Scheduling" type="lsep"/>
+        <setting id="EnablePresetSystem" type="bool" label="Enable Preset Refresh System" default="false"/>
+        <setting type="sep"/>
+        <setting label="Weekly Preset Schedule" type="lsep"/>
+        <setting id="MondayPreset" type="enum" label="Monday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="1"/>
+		<setting id="TuesdayPreset" type="enum" label="Tuesday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="1"/>
+		<setting id="WednesdayPreset" type="enum" label="Wednesday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="1"/>
+		<setting id="ThursdayPreset" type="enum" label="Thursday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
+		<setting id="FridayPreset" type="enum" label="Friday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
+		<setting id="SaturdayPreset" type="enum" label="Saturday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
+		<setting id="SundayPreset" type="enum" label="Sunday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
+        <setting type="sep"/>
+        <setting label="NFO Renamer Directories (for Phase 1 Maintenance)" type="lsep"/>
+        <setting id="NFOBumpersPath" type="folder" label="Bumpers Directory" source="auto" default=""/>
+        <setting id="NFOMoviesPath" type="folder" label="Movies Directory" source="auto" default=""/>
+        <setting id="NFOTelevisionPath" type="folder" label="TV Shows Directory" source="auto" default=""/>
+        <setting type="sep"/>
+        <setting label="ALPHA Preset - Heavy Maintenance" type="lsep"/>
+        <setting id="AlphaDescription" type="text" label="Description" default="Full maintenance with all tasks" enable="false"/>
+        <setting label="Alpha Phase 1: Maintenance" type="lsep"/>
+        <setting id="AlphaPhase1Time" type="time" label="Time" default="03:50"/>
+        <setting id="AlphaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="true"/>
+        <setting id="AlphaPhase1NFOMovies" type="bool" label="Rename Movies" default="true"/>
+        <setting id="AlphaPhase1NFOTelevision" type="bool" label="Rename TV Shows" default="true"/>
+        <setting id="AlphaPhase1VideoLibrary" type="bool" label="Update Video Library" default="true"/>
+        <setting id="AlphaPhase1CleanVideo" type="bool" label="Clean Video Library" default="true"/>
+        <setting id="AlphaPhase1MusicLibrary" type="bool" label="Update Music Library" default="true"/>
+        <setting id="AlphaPhase1CleanMusic" type="bool" label="Clean Music Library" default="true"/>
+        <setting id="AlphaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
+        <setting id="AlphaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
+        <setting id="AlphaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
+        <setting label="Alpha Phase 2: First Startup" type="lsep"/>
+        <setting id="AlphaPhase2Time" type="time" label="Time" default="04:20"/>
+        <setting id="AlphaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
+        <setting id="AlphaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="AlphaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Alpha Phase 3: First Shutdown" type="lsep"/>
+        <setting id="AlphaPhase3Time" type="time" label="Time" default="04:40"/>
+        <setting id="AlphaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Alpha Phase 4: Push to Slaves" type="lsep"/>
+        <setting id="AlphaPhase4Time" type="time" label="Time" default="04:50"/>
+        <setting id="AlphaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
+        <setting label="Alpha Phase 5: First Wake" type="lsep"/>
+        <setting id="AlphaPhase5Time" type="time" label="Time" default="04:55"/>
+        <setting id="AlphaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="AlphaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
+        <setting id="AlphaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Alpha Phase 6: Second Shutdown" type="lsep"/>
+        <setting id="AlphaPhase6Time" type="time" label="Time" default="07:00"/>
+        <setting id="AlphaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Alpha Phase 7: Second Startup" type="lsep"/>
+        <setting id="AlphaPhase7Time" type="time" label="Time" default="16:00"/>
+        <setting id="AlphaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="AlphaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="AlphaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Alpha Phase 8: Third Shutdown" type="lsep"/>
+        <setting id="AlphaPhase8Time" type="time" label="Time" default="17:15"/>
+        <setting id="AlphaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Alpha Phase 9: Evening Startup" type="lsep"/>
+        <setting id="AlphaPhase9Time" type="time" label="Time" default="17:55"/>
+        <setting id="AlphaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="AlphaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="AlphaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+        <setting type="sep"/>
+        <setting label="OMEGA Preset - Quick Refresh" type="lsep"/>
+        <setting id="OmegaDescription" type="text" label="Description" default="Light refresh, library updates only" enable="false"/>
+        <setting label="Omega Phase 1: Maintenance" type="lsep"/>
+        <setting id="OmegaPhase1Time" type="time" label="Time" default="05:50"/>
+        <setting id="OmegaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="true"/>
+        <setting id="OmegaPhase1NFOMovies" type="bool" label="Rename Movies" default="true"/>
+        <setting id="OmegaPhase1NFOTelevision" type="bool" label="Rename TV Shows" default="true"/>
+        <setting id="OmegaPhase1VideoLibrary" type="bool" label="Update Video Library" default="true"/>
+        <setting id="OmegaPhase1CleanVideo" type="bool" label="Clean Video Library" default="true"/>
+        <setting id="OmegaPhase1MusicLibrary" type="bool" label="Update Music Library" default="true"/>
+        <setting id="OmegaPhase1CleanMusic" type="bool" label="Clean Music Library" default="true"/>
+        <setting id="OmegaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
+        <setting id="OmegaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
+        <setting id="OmegaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
+        <setting label="Omega Phase 2: First Startup" type="lsep"/>
+        <setting id="OmegaPhase2Time" type="time" label="Time" default="06:20"/>
+        <setting id="OmegaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
+        <setting id="OmegaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="OmegaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Omega Phase 3: First Shutdown" type="lsep"/>
+        <setting id="OmegaPhase3Time" type="time" label="Time" default="06:40"/>
+        <setting id="OmegaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Omega Phase 4: Push to Slaves" type="lsep"/>
+        <setting id="OmegaPhase4Time" type="time" label="Time" default="06:50"/>
+        <setting id="OmegaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
+        <setting label="Omega Phase 5: First Wake" type="lsep"/>
+        <setting id="OmegaPhase5Time" type="time" label="Time" default="06:55"/>
+        <setting id="OmegaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="OmegaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
+        <setting id="OmegaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Omega Phase 6: Second Shutdown" type="lsep"/>
+        <setting id="OmegaPhase6Time" type="time" label="Time" default="09:00"/>
+        <setting id="OmegaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Omega Phase 7: Second Startup" type="lsep"/>
+        <setting id="OmegaPhase7Time" type="time" label="Time" default="18:15"/>
+        <setting id="OmegaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="OmegaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="OmegaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Omega Phase 8: Third Shutdown" type="lsep"/>
+        <setting id="OmegaPhase8Time" type="time" label="Time" default="18:45"/>
+        <setting id="OmegaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Omega Phase 9: Evening Startup" type="lsep"/>
+        <setting id="OmegaPhase9Time" type="time" label="Time" default="20:00"/>
+        <setting id="OmegaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="OmegaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="OmegaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+        <setting type="sep"/>
+        <setting label="DELTA" type="lsep"/>
+        <setting id="DeltaDescription" type="text" label="Description" default="Normal Day Off" enable="false"/>
+        <setting label="Delta Phase 1: Maintenance" type="lsep"/>
+        <setting id="DeltaPhase1Time" type="time" label="Time" default="05:50"/>
+        <setting id="DeltaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="false"/>
+        <setting id="DeltaPhase1NFOMovies" type="bool" label="Rename Movies" default="false"/>
+        <setting id="DeltaPhase1NFOTelevision" type="bool" label="Rename TV Shows" default="false"/>
+        <setting id="DeltaPhase1VideoLibrary" type="bool" label="Update Video Library" default="true"/>
+        <setting id="DeltaPhase1CleanVideo" type="bool" label="Clean Video Library" default="true"/>
+        <setting id="DeltaPhase1MusicLibrary" type="bool" label="Update Music Library" default="true"/>
+        <setting id="DeltaPhase1CleanMusic" type="bool" label="Clean Music Library" default="true"/>
+        <setting id="DeltaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
+        <setting id="DeltaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
+        <setting id="DeltaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
+        <setting label="Delta Phase 2: First Startup" type="lsep"/>
+        <setting id="DeltaPhase2Time" type="time" label="Time" default="06:20"/>
+        <setting id="DeltaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
+        <setting id="DeltaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="DeltaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Delta Phase 3: First Shutdown" type="lsep"/>
+        <setting id="DeltaPhase3Time" type="time" label="Time" default="06:40"/>
+        <setting id="DeltaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Delta Phase 4: Push to Slaves" type="lsep"/>
+        <setting id="DeltaPhase4Time" type="time" label="Time" default="06:50"/>
+        <setting id="DeltaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
+        <setting label="Delta Phase 5: First Wake" type="lsep"/>
+        <setting id="DeltaPhase5Time" type="time" label="Time" default="06:55"/>
+        <setting id="DeltaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="DeltaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
+        <setting id="DeltaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Delta Phase 6: Second Shutdown" type="lsep"/>
+        <setting id="DeltaPhase6Time" type="time" label="Time" default="12:15"/>
+        <setting id="DeltaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Delta Phase 7: Second Startup" type="lsep"/>
+        <setting id="DeltaPhase7Time" type="time" label="Time" default="13:45"/>
+        <setting id="DeltaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="DeltaPhase7StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
+        <setting id="DeltaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Delta Phase 8: Third Shutdown" type="lsep"/>
+        <setting id="DeltaPhase8Time" type="time" label="Time" default="17:15"/>
+        <setting id="DeltaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Delta Phase 9: Evening Startup" type="lsep"/>
+        <setting id="DeltaPhase9Time" type="time" label="Time" default="17:55"/>
+        <setting id="DeltaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="DeltaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="DeltaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+        <setting type="sep"/>
+        <setting label="EPSILON Preset - Slaves Early Start" type="lsep"/>
+        <setting id="EpsilonDescription" type="text" label="Description" default="Minimal - channel reset only" enable="false"/>
+        <setting label="Epsilon Phase 1: Maintenance" type="lsep"/>
+        <setting id="EpsilonPhase1Time" type="time" label="Time" default="05:50"/>
+        <setting id="EpsilonPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="false"/>
+        <setting id="EpsilonPhase1NFOMovies" type="bool" label="Rename Movies" default="false"/>
+        <setting id="EpsilonPhase1NFOTelevision" type="bool" label="Rename TV Shows" default="false"/>
+        <setting id="EpsilonPhase1VideoLibrary" type="bool" label="Update Video Library" default="true"/>
+        <setting id="EpsilonPhase1CleanVideo" type="bool" label="Clean Video Library" default="true"/>
+        <setting id="EpsilonPhase1MusicLibrary" type="bool" label="Update Music Library" default="true"/>
+        <setting id="EpsilonPhase1CleanMusic" type="bool" label="Clean Music Library" default="true"/>
+        <setting id="EpsilonPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
+        <setting id="EpsilonPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
+        <setting id="EpsilonPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
+        <setting label="Epsilon Phase 2: First Startup" type="lsep"/>
+        <setting id="EpsilonPhase2Time" type="time" label="Time" default="06:20"/>
+        <setting id="EpsilonPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
+        <setting id="EpsilonPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="EpsilonPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Epsilon Phase 3: First Shutdown" type="lsep"/>
+        <setting id="EpsilonPhase3Time" type="time" label="Time" default="06:40"/>
+        <setting id="EpsilonPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Epsilon Phase 4: Push to Slaves" type="lsep"/>
+        <setting id="EpsilonPhase4Time" type="time" label="Time" default="06:50"/>
+        <setting id="EpsilonPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
+        <setting label="Epsilon Phase 5: First Wake" type="lsep"/>
+        <setting id="EpsilonPhase5Time" type="time" label="Time" default="06:55"/>
+        <setting id="EpsilonPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="EpsilonPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
+        <setting id="EpsilonPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Epsilon Phase 6: Second Shutdown" type="lsep"/>
+        <setting id="EpsilonPhase6Time" type="time" label="Time" default="12:15"/>
+        <setting id="EpsilonPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Epsilon Phase 7: Second Startup" type="lsep"/>
+        <setting id="EpsilonPhase7Time" type="time" label="Time" default="13:45"/>
+        <setting id="EpsilonPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="EpsilonPhase7StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
+        <setting id="EpsilonPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Epsilon Phase 8: Third Shutdown" type="lsep"/>
+        <setting id="EpsilonPhase8Time" type="time" label="Time" default="17:15"/>
+        <setting id="EpsilonPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Epsilon Phase 9: Evening Startup" type="lsep"/>
+        <setting id="EpsilonPhase9Time" type="time" label="Time" default="17:55"/>
+        <setting id="EpsilonPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="EpsilonPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="EpsilonPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+        <setting type="sep"/>
+        <setting label="GAMMA Preset - Weekend Special" type="lsep"/>
+        <setting id="GammaDescription" type="text" label="Description" default="Weekend configuration" enable="false"/>
+        <setting label="Gamma Phase 1: Maintenance" type="lsep"/>
+        <setting id="GammaPhase1Time" type="time" label="Time" default="05:50"/>
+        <setting id="GammaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="false"/>
+        <setting id="GammaPhase1NFOMovies" type="bool" label="Rename Movies" default="false"/>
+        <setting id="GammaPhase1NFOTelevision" type="bool" label="Rename TV Shows" default="false"/>
+        <setting id="GammaPhase1VideoLibrary" type="bool" label="Update Video Library" default="true"/>
+        <setting id="GammaPhase1CleanVideo" type="bool" label="Clean Video Library" default="true"/>
+        <setting id="GammaPhase1MusicLibrary" type="bool" label="Update Music Library" default="true"/>
+        <setting id="GammaPhase1CleanMusic" type="bool" label="Clean Music Library" default="true"/>
+        <setting id="GammaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
+        <setting id="GammaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
+        <setting id="GammaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
+        <setting label="Gamma Phase 2: First Startup" type="lsep"/>
+        <setting id="GammaPhase2Time" type="time" label="Time" default="06:20"/>
+        <setting id="GammaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
+        <setting id="GammaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="GammaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Gamma Phase 3: First Shutdown" type="lsep"/>
+        <setting id="GammaPhase3Time" type="time" label="Time" default="06:40"/>
+        <setting id="GammaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Gamma Phase 4: Push to Slaves" type="lsep"/>
+        <setting id="GammaPhase4Time" type="time" label="Time" default="06:50"/>
+        <setting id="GammaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
+        <setting label="Gamma Phase 5: First Wake" type="lsep"/>
+        <setting id="GammaPhase5Time" type="time" label="Time" default="06:55"/>
+        <setting id="GammaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="GammaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
+        <setting id="GammaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Gamma Phase 6: Second Shutdown" type="lsep"/>
+        <setting id="GammaPhase6Time" type="time" label="Time" default="12:15"/>
+        <setting id="GammaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Gamma Phase 7: Second Startup" type="lsep"/>
+        <setting id="GammaPhase7Time" type="time" label="Time" default="13:45"/>
+        <setting id="GammaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="GammaPhase7StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
+        <setting id="GammaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+        <setting label="Gamma Phase 8: Third Shutdown" type="lsep"/>
+        <setting id="GammaPhase8Time" type="time" label="Time" default="17:15"/>
+        <setting id="GammaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+        <setting label="Gamma Phase 9: Evening Startup" type="lsep"/>
+        <setting id="GammaPhase9Time" type="time" label="Time" default="17:55"/>
+        <setting id="GammaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+        <setting id="GammaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+        <setting id="GammaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+		<setting type="sep"/>
+		<setting label="SIGMA Preset - No Maintenance Mode" type="lsep"/>
+		<setting id="SigmaDescription" type="text" label="Description" default="Slave system preset - no maintenance, no push" enable="false"/>
+		<setting label="Sigma Phase 2: First Startup" type="lsep"/>
+		<setting id="SigmaPhase2Time" type="time" label="Time" default="06:00"/>
+		<setting id="SigmaPhase2EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="SigmaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="SigmaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="Sigma Phase 3: First Shutdown" type="lsep"/>
+		<setting id="SigmaPhase3Time" type="time" label="Time" default="09:00"/>
+		<setting id="SigmaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="Sigma Phase 4: Push to Slaves" type="lsep"/>
+		<setting type="lsep" label="[COLOR red]Phase 4 is automatically disabled for Sigma (slave-only preset)[/COLOR]"/>
+		<setting id="SigmaPhase4Time" type="time" label="Time" default="09:10" enable="false"/>
+		<setting id="SigmaPhase4Enable" type="bool" label="Enable Push to Slaves" default="false" enable="false"/>
+		<setting label="Sigma Phase 5: First Wake" type="lsep"/>
+		<setting id="SigmaPhase5Time" type="time" label="Time" default="12:00"/>
+		<setting id="SigmaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="SigmaPhase5StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="SigmaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="Sigma Phase 6: Second Shutdown" type="lsep"/>
+		<setting id="SigmaPhase6Time" type="time" label="Time" default="14:00"/>
+		<setting id="SigmaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="Sigma Phase 7: Second Startup" type="lsep"/>
+		<setting id="SigmaPhase7Time" type="time" label="Time" default="16:00"/>
+		<setting id="SigmaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="SigmaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="SigmaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="Sigma Phase 8: Third Shutdown" type="lsep"/>
+		<setting id="SigmaPhase8Time" type="time" label="Time" default="18:00"/>
+		<setting id="SigmaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="Sigma Phase 9: Evening Startup" type="lsep"/>
+		<setting id="SigmaPhase9Time" type="time" label="Time" default="19:00"/>
+		<setting id="SigmaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="SigmaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="SigmaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+		<setting type="sep"/>
+		<setting label="OMICRON" type="lsep"/>
+		<setting id="OmicronDescription" type="text" label="Description" default="Slave Late Start" enable="false"/>
+		<setting label="Omicron Phase 2: First Startup" type="lsep"/>
+		<setting id="OmicronPhase2Time" type="time" label="Time" default="06:45"/>
+		<setting id="OmicronPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
+		<setting id="OmicronPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="OmicronPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="Omicron Phase 3: First Shutdown" type="lsep"/>
+		<setting id="OmicronPhase3Time" type="time" label="Time" default="06:50"/>
+		<setting id="OmicronPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="Omicron Phase 4: Push to Slaves" type="lsep"/>
+		<setting type="lsep" label="[COLOR red]Phase 4 is automatically disabled for Omicron (slave-only preset)[/COLOR]"/>
+		<setting id="OmicronPhase4Time" type="time" label="Time" default="10:10" enable="false"/>
+		<setting id="OmicronPhase4Enable" type="bool" label="Enable Push to Slaves" default="false" enable="false"/>
+		<setting label="Omicron Phase 5: First Wake" type="lsep"/>
+		<setting id="OmicronPhase5Time" type="time" label="Time" default="06:55"/>
+		<setting id="OmicronPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="OmicronPhase5StartChannel" type="number" label="Channel Number" default="4" visible="eq(-1,true)"/>
+		<setting id="OmicronPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="Omicron Phase 6: Second Shutdown" type="lsep"/>
+		<setting id="OmicronPhase6Time" type="time" label="Time" default="09:00"/>
+		<setting id="OmicronPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="Omicron Phase 7: Second Startup" type="lsep"/>
+		<setting id="OmicronPhase7Time" type="time" label="Time" default="16:00"/>
+		<setting id="OmicronPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="OmicronPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="OmicronPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="Omicron Phase 8: Third Shutdown" type="lsep"/>
+		<setting id="OmicronPhase8Time" type="time" label="Time" default="17:55"/>
+		<setting id="OmicronPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="Omicron Phase 9: Evening Startup" type="lsep"/>
+		<setting id="OmicronPhase9Time" type="time" label="Time" default="20:55"/>
+		<setting id="OmicronPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="OmicronPhase9StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
+		<setting id="OmicronPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+		<setting type="sep"/>
+        <setting type="lsep" label="Preset System Information:"/>
+        <setting type="lsep" label="• 7 configurable presets: Alpha, Omega, Delta, Epsilon, Gamma, Sigma, Omicron"/>
+        <setting type="lsep" label="• Assign any preset to any day of the week"/>
+        <setting type="lsep" label="• Each preset has 9 independent phases with custom timing"/>
+        <setting type="lsep" label="• Phase 1: Maintenance (NFO, Library, Reset, Organize)"/>
+        <setting type="lsep" label="• Phases 2,5,7,9: Startup with channel tuning &amp; volume"/>
+        <setting type="lsep" label="• Phases 3,6,8: Shutdown (Normal or Blackout)"/>
+        <setting type="lsep" label="• Phase 4: Automatically pushes to slave systems after rebuild"/>
+        <setting type="lsep" label="• Perfect for multi-room synchronized viewing"/>
+    </category>
+    <category label="Shutdown Scheduler">
+        <setting label="Automatic PSTV Shutdown" type="lsep"/>
+        <setting id="EnableShutdownScheduler" type="bool" label="Enable Shutdown Scheduler Service" default="false"/>
+        <setting id="ShowShutdownNotification" type="bool" label="Show Shutdown Notifications" default="true"/>
+        <setting type="sep"/>
+        <setting label="Schedule 1" type="lsep"/>
+        <setting id="EnableShutdownScheduler1" type="bool" label="Enable Schedule 1" default="false"/>
+        <setting id="ShutdownScheduleLabel1" type="text" label="Schedule Name" default="Bedtime" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime1" type="time" label="Shutdown Time" default="23:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays1" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="0" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays1" type="text" label="Custom Days (1=Mon,7=Sun)" default="1,2,3,4,5" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction1" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="0" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 2" type="lsep"/>
+        <setting id="EnableShutdownScheduler2" type="bool" label="Enable Schedule 2" default="false"/>
+        <setting id="ShutdownScheduleLabel2" type="text" label="Schedule Name" default="Late Night" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime2" type="time" label="Shutdown Time" default="02:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays2" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="2" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays2" type="text" label="Custom Days (1=Mon,7=Sun)" default="6,7" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction2" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="0" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 3" type="lsep"/>
+        <setting id="EnableShutdownScheduler3" type="bool" label="Enable Schedule 3" default="false"/>
+        <setting id="ShutdownScheduleLabel3" type="text" label="Schedule Name" default="Afternoon Break" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime3" type="time" label="Shutdown Time" default="15:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays3" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="1" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays3" type="text" label="Custom Days (1=Mon,7=Sun)" default="1,2,3,4,5" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction3" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 4" type="lsep"/>
+        <setting id="EnableShutdownScheduler4" type="bool" label="Enable Schedule 4" default="false"/>
+        <setting id="ShutdownScheduleLabel4" type="text" label="Schedule Name" default="Morning Reset" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime4" type="time" label="Shutdown Time" default="06:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays4" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="0" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays4" type="text" label="Custom Days (1=Mon,7=Sun)" default="1,2,3,4,5" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction4" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 5" type="lsep"/>
+        <setting id="EnableShutdownScheduler5" type="bool" label="Enable Schedule 5" default="false"/>
+        <setting id="ShutdownScheduleLabel5" type="text" label="Schedule Name" default="Lunch Break" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime5" type="time" label="Shutdown Time" default="13:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays5" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="1" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays5" type="text" label="Custom Days (1=Mon,7=Sun)" default="1,2,3,4,5" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction5" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 6" type="lsep"/>
+        <setting id="EnableShutdownScheduler6" type="bool" label="Enable Schedule 6" default="false"/>
+        <setting id="ShutdownScheduleLabel6" type="text" label="Schedule Name" default="Dinner Time" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime6" type="time" label="Shutdown Time" default="18:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays6" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="0" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays6" type="text" label="Custom Days (1=Mon,7=Sun)" default="1,2,3,4,5" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction6" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 7" type="lsep"/>
+        <setting id="EnableShutdownScheduler7" type="bool" label="Enable Schedule 7" default="false"/>
+        <setting id="ShutdownScheduleLabel7" type="text" label="Schedule Name" default="Weekend Late Night" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime7" type="time" label="Shutdown Time" default="01:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays7" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="2" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays7" type="text" label="Custom Days (1=Mon,7=Sun)" default="6,7" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction7" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="0" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 8" type="lsep"/>
+        <setting id="EnableShutdownScheduler8" type="bool" label="Enable Schedule 8" default="false"/>
+        <setting id="ShutdownScheduleLabel8" type="text" label="Schedule Name" default="Work Hours End" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime8" type="time" label="Shutdown Time" default="17:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays8" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="1" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays8" type="text" label="Custom Days (1=Mon,7=Sun)" default="1,2,3,4,5" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction8" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 9" type="lsep"/>
+        <setting id="EnableShutdownScheduler9" type="bool" label="Enable Schedule 9" default="false"/>
+        <setting id="ShutdownScheduleLabel9" type="text" label="Schedule Name" default="Custom Shutdown 9" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime9" type="time" label="Shutdown Time" default="22:30" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays9" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="3" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays9" type="text" label="Custom Days (1=Mon,7=Sun)" default="1,3,5" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction9" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="0" enable="eq(-5,true)"/>
+        <setting type="sep"/>
+        <setting label="Schedule 10" type="lsep"/>
+        <setting id="EnableShutdownScheduler10" type="bool" label="Enable Schedule 10" default="false"/>
+        <setting id="ShutdownScheduleLabel10" type="text" label="Schedule Name" default="Custom Shutdown 10" enable="eq(-1,true)"/>
+        <setting id="ShutdownScheduleTime10" type="time" label="Shutdown Time" default="00:00" enable="eq(-2,true)"/>
+        <setting id="ShutdownScheduleDays10" type="enum" label="Days" values="Every Day|Weekdays|Weekends|Custom Days" default="3" enable="eq(-3,true)"/>
+        <setting id="ShutdownCustomDays10" type="text" label="Custom Days (1=Mon,7=Sun)" default="2,4,6" enable="eq(-4,true) + eq(-1,3)" visible="eq(-1,3)"/>
+        <setting id="ShutdownAction10" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="0" enable="eq(-5,true)"/>
+    </category>
+    <category label="Utility Tools">
+        <setting label="Configuration Tools" type="lsep"/>
+        <setting type="action" label="Reload Configuration" action="RunScript($CWD/utilities/config_reloader.py)"/>
+        <setting type="action" label="Organize Channels by Type" action="RunScript($CWD/utilities/channel_organizer.py)"/>
+        <setting type="sep"/>
+        <setting label="NFO Renaming Tools" type="lsep"/>
+        <setting type="action" label="Rename Bumpers" action="RunScript($CWD/resources/lib/nfo_renamer_bumpers.py)"/>
+        <setting type="action" label="Rename Movies" action="RunScript($CWD/resources/lib/nfo_renamer_movies.py)"/>
+        <setting type="action" label="Rename TV Shows" action="RunScript($CWD/resources/lib/nfo_renamer_television.py)"/>
+        <setting type="action" label="Rename Remote Channel Images" action="RunScript($CWD/utilities/run_remote_channel_rename.py)"/>
+        <setting type="sep"/>
+        <setting label="Library Maintenance" type="lsep"/>
+        <setting type="action" label="Update Video Library" action="UpdateLibrary(video)"/>
+        <setting type="action" label="Clean Video Library" action="CleanLibrary(video)"/>
+        <setting type="action" label="Update Music Library" action="UpdateLibrary(music)"/>
+        <setting type="action" label="Clean Music Library" action="CleanLibrary(music)"/>
+        <setting type="sep"/>
+        <setting label="Genre Organization Tools" type="lsep"/>
+		<setting type="action" label="Organize TV Show Genres" action="RunScript($CWD/utilities/organize_tv_genres.py)"/>
+		<setting type="action" label="Check TV Genre Consistency" action="RunScript($CWD/utilities/tv_genre_consistency.py)"/>
+		<setting type="action" label="Organize Movie Genres" action="RunScript($CWD/utilities/organize_movie_genres.py)"/>
+		<setting type="action" label="Check Movie Genre Consistency" action="RunScript($CWD/utilities/movie_genre_consistency.py)"/>
+		<setting type="action" label="Repair Corrupted NFO Files" action="RunScript($CWD/utilities/repair_corrupted_nfo.py)"/>
+        <setting type="sep"/>
+        <setting label="Timer Services" type="lsep"/>
+        <setting type="action" label="Start Preset Timer Service" action="RunScript($CWD/resources/lib/ptv_preset_timer.py)"/>
+        <setting type="action" label="Start Shutdown Timer Service" action="RunScript($CWD/resources/lib/ptv_shutdown_timer.py)"/>
+        <setting type="action" label="Push to Slaves (Manual)" action="RunScript($CWD/resources/lib/ptv_push_to_slaves.py)"/>
+		<setting id="EnableSatelliteAlignment" type="bool" label="Enable Satellite Alignment" default="false"/>
+        <setting type="action" label="Satellite Alignment (Manual)" action="RunScript($CWD/resources/lib/ptv_satellite_alignment.py)" enable="eq(-1,true)"/>
+        <setting type="sep"/>
+        <setting type="text" label="Note: Timer services run in background" enable="false"/>
+        <setting type="text" label="They will stop when Kodi closes" enable="false"/>
+        <setting type="text" label="Use service.py for auto-start" enable="false"/>
+    </category>
+    <category label="Favorite Shows">
+        <setting id="EnableFavoriteShows" type="bool" label="Enable Favorite Show Notifications" default="true"/>
+        <setting id="FavoriteShowsList" type="text" label="Favorite Shows (comma separated)" default="" enable="eq(-1,true)" visible="false"/>
+        <setting id="FavoriteShowAdvance" type="slider" label="Notification Time (minutes before show)" range="1,1,30" option="int" default="5" enable="eq(-2,true)"/>
+        <setting id="FavoriteShowsCooldown" type="slider" label="Cooldown Between Notifications (minutes)" range="10,10,120" option="int" default="30" enable="eq(-3,true)"/>
+        <setting label="Manage Favorite Shows" type="action" action="RunScript(script.paragontv,MANAGE_FAVORITES)" enable="eq(-4,true)"/>
+    </category>
+	
+	<!-- Sonarr Settings -->
+	<category label="Sonarr/Radarr">
+		<setting id="SonarrEnabled" type="bool" label="Enable Sonarr" default="false"/>
+		<setting id="SonarrURL" type="text" label="Sonarr URL" default="http://localhost:8989" enable="eq(-1,true)"/>
+		<setting id="SonarrAPIKey" type="text" label="Sonarr API Key" default="" enable="eq(-2,true)" option="hidden"/>
+		
+		<setting type="sep"/>
+		
+		<setting id="RadarrEnabled" type="bool" label="Enable Radarr" default="false"/>
+		<setting id="RadarrURL" type="text" label="Radarr URL" default="http://localhost:7878" enable="eq(-1,true)"/>
+		<setting id="RadarrAPIKey" type="text" label="Radarr API Key" default="" enable="eq(-2,true)" option="hidden"/>
+	</category>
+	
+    <category label="Multi-Room Sync">
+        <setting type="lsep" label="[COLOR yellow]Master Systems:[/COLOR]"/>
+        <setting id="EnableMasterPush" type="bool" label="Enable Push to Slaves" default="false"/>
+        <setting type="lsep" label="Configure Slave Systems" enable="eq(-1,true)"/>
+        <setting id="SlaveIP1" type="text" label="Slave 1 IP Address" default="" enable="eq(-2,true)"/>
+        <setting id="SlaveIP2" type="text" label="Slave 2 IP Address" default="" enable="eq(-3,true)"/>
+        <setting id="SlaveIP3" type="text" label="Slave 3 IP Address" default="" enable="eq(-4,true)"/>
+        <setting id="SlaveIP4" type="text" label="Slave 4 IP Address" default="" enable="eq(-5,true)"/>
+        <setting id="SlaveIP5" type="text" label="Slave 5 IP Address" default="" enable="eq(-6,true)"/>
+        <setting type="lsep" label="[COLOR yellow]Info:[/COLOR] Master pushes after channel rebuild" enable="eq(-7,true)"/>
+        <setting type="lsep" label="[COLOR yellow]Note:[/COLOR] SSH keys must be configured to all slaves" enable="eq(-8,true)"/>
+        <setting type="lsep" label="[COLOR yellow]Phase 4:[/COLOR] Presets push to slaves automatically" enable="eq(-9,true)"/>
+        <setting type="sep"/>
+        <setting type="lsep" label="[COLOR yellow]Slave Systems:[/COLOR]"/>
+        <setting type="lsep" label="No configuration needed - slaves receive automatic updates"/>
+        <setting type="lsep" label="from master after channel rebuilds"/>
+    </category>
+    <setting id="PresetRebuildMode" type="bool" label="Preset Rebuild Mode" default="false" visible="false"/>
+    <setting id="TempStartChannel" type="text" label="Temporary Start Channel" default="" visible="false"/>
+    <setting id="LastMaintenanceRun" type="text" label="Last Maintenance Run" default="" visible="false"/>
+</settings>

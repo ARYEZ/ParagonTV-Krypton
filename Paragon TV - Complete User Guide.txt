@@ -1,0 +1,1143 @@
+# Paragon TV - Complete User Guide
+## The Ultimate Personal TV Network for Kodi
+
+**Created by:** Aryez  
+**Year:** 2025  
+**Based on:** PseudoTV by Jason102  
+**Version:** For Kodi 17.6 (Krypton) | Python 2.7
+
+---
+
+## Table of Contents
+
+1. [Introduction & Overview](#chapter-1-introduction--overview)
+2. [Getting Started](#chapter-2-getting-started)
+3. [Channel Types & Configuration](#chapter-3-channel-types--configuration)
+4. [Channel Organizer](#chapter-4-channel-organizer)
+5. [10-Phase Preset System](#chapter-5-10-phase-preset-system)
+6. [Timer Systems](#chapter-6-timer-systems)
+7. [Speed Dial Navigation](#chapter-7-speed-dial-navigation)
+8. [Episode Browser](#chapter-8-episode-browser)
+9. [Favorite Shows & Notifications](#chapter-9-favorite-shows--notifications)
+10. [Weather Overlay](#chapter-10-weather-overlay)
+11. [Multi-Room Synchronization](#chapter-11-multi-room-synchronization)
+12. [Extended Filename Format](#chapter-12-extended-filename-format)
+13. [Helper Add-ons](#chapter-13-helper-add-ons)
+14. [Paragon Sentry](#chapter-14-paragon-sentry)
+15. [Advanced Features & Global Rules](#chapter-15-advanced-features--global-rules)
+16. [Troubleshooting](#chapter-16-troubleshooting)
+
+---
+
+# Chapter 1: Introduction & Overview
+
+## What is Paragon TV?
+
+Paragon TV transforms your Kodi media center into a sophisticated personal television network. Instead of browsing through endless menus to find something to watch, Paragon TV creates custom TV channels from your media library - giving you the authentic channel-surfing experience you remember, but with content you actually own and love.
+
+## Why Paragon TV?
+
+**The Problem:**
+Modern streaming services and media libraries require constant decision-making. You spend more time browsing than watching, suffering from "choice paralysis."
+
+**The Solution:**
+Paragon TV brings back the simplicity and comfort of traditional television:
+- **Just turn it on** - Something's already playing
+- **Surf through channels** - Like flipping through your favorite networks
+- **Discover content** - Stumble upon shows you forgot you owned
+- **Set it and forget it** - Automated scheduling handles everything
+
+## Key Features at a Glance
+
+- **Custom Channels** - TV shows, movies, music, and smart playlists
+- **Smart Distribution** - Ensures fair episode rotation across your library
+- **10-Phase Automation** - Schedule your TV day from morning to night
+- **Speed Dial** - Instant access to favorite channels and shows
+- **Multi-Room Sync** - Coordinate playback across multiple TVs
+- **Weather Overlay** - Live weather display while watching
+- **Episode Browser** - Jump to any episode without leaving your show
+- **Favorite Notifications** - Get alerts when your favorite shows are about to start
+- **Paragon Sentry** - Visual channel monitoring with real-time artwork
+
+## Technical Requirements
+
+- **Kodi Version:** 17.6 (Krypton)
+- **Python:** 2.7 runtime
+- **Storage:** Sufficient space for channel configurations (typically 50-100MB)
+- **Network:** For multi-room sync and weather features (optional)
+- **Operating System:** Windows, Linux (LibreELEC recommended), macOS, Android
+
+---
+
+# Chapter 2: Getting Started
+
+## Installation
+
+### Step 1: Download Paragon TV
+1. Download the latest Paragon TV package (`script.paragontv-x.x.x.zip`)
+2. Save it to a location you can access from Kodi
+
+### Step 2: Install the Add-on
+1. Open Kodi
+2. Go to **Add-ons** from the main menu
+3. Click the **Package Icon** (📦) at the top left
+4. Select **Install from zip file**
+5. Navigate to your downloaded `script.paragontv-x.x.x.zip`
+6. Wait for the installation confirmation
+
+### Step 3: Initial Configuration
+1. After installation, Paragon TV will appear in your **Program Add-ons**
+2. Launch it for the first time
+3. You'll be guided through basic setup:
+   - Library scan confirmation
+   - Auto-start preferences
+   - Basic channel creation
+
+## First Launch
+
+When you launch Paragon TV for the first time:
+
+1. **Library Scan** - Paragon TV will scan your Kodi library to discover available content
+2. **Channel Creation** - Basic channels will be auto-created based on your library
+3. **EPG Generation** - The Electronic Program Guide will be populated
+4. **Ready to Watch** - You'll land on Channel 1 with content already playing
+
+## Basic Navigation
+
+**Remote Control:**
+- **Up/Down Arrows** - Change channels
+- **OK/Select** - Open Program Guide (EPG)
+- **Info** - Show currently playing information
+- **Back** - Return to previous screen/Close overlay
+- **Number Keys (0-9)** - Direct channel access or Speed Dial
+
+**EPG (Program Guide):**
+- **Left/Right** - Scroll through time
+- **Up/Down** - Navigate between channels
+- **OK** - Jump to selected program
+- **Menu** - Access settings and configuration
+
+---
+
+# Chapter 3: Channel Types & Configuration
+
+## Understanding Channel Types
+
+Paragon TV supports four main channel types:
+
+### Type 0: Smart Playlist Channels
+**What it does:** Creates channels from Kodi Smart Playlists  
+**Best for:** Custom collections (Recently Added, Highly Rated, Genre mixes)  
+**Example:** "90s Action Movies" or "Watched Last Month"
+
+**How to create:**
+1. Create a Smart Playlist in Kodi first
+2. In Paragon TV Config, select **Type 0: Playlist**
+3. Browse to your playlist file
+4. Set playback mode and limits
+5. Save
+
+### Type 3: TV Show Channels
+**What it does:** Dedicates a channel to TV shows by genre or title  
+**Best for:** Genre channels (Comedy, Drama, Sci-Fi) or single-show channels  
+**Example:** "Comedy Central" showing all your sitcoms
+
+**Special Feature - Smart Distribution:**
+- Every show gets at least 1 episode
+- Maximum 5% per show (5 episodes per 100 total)
+- Weighted selection favors smaller shows
+- Episode spacing prevents clustering
+
+**How to create:**
+1. Select **Type 3: TV Shows**
+2. Choose genre or manually select shows
+3. Smart Distribution is automatic
+4. Configure shuffle and repeat options
+
+### Type 4: Movie Channels
+**What it does:** Creates movie-only channels by genre  
+**Best for:** Movie marathons (Horror Night, Rom-Com channel)  
+**Example:** "Action Theater" or "Friday Frights"
+
+**How to create:**
+1. Select **Type 4: Movies**
+2. Pick a genre from your library
+3. Set shuffle and repeat preferences
+4. Configure bumpers and commercials (optional)
+
+### Type 12: Music Channels
+**What it does:** Creates audio-only channels from your music library  
+**Best for:** Background music or specific genre channels  
+**Example:** "Chill Lounge" or "Classic Rock Radio"
+
+**How to create:**
+1. Select **Type 12: Music**
+2. Choose genre or create smart playlist
+3. Music will play with visualizations
+4. Configure duration and shuffle options
+
+## Channel Configuration
+
+### Basic Settings
+- **Channel Name** - What appears in the guide
+- **Channel Icon** - Visual identifier
+- **Playback Mode** - Random, Sequential, or Resume
+- **Episode Limit** - Maximum per channel rebuild
+- **Reset Every X Hours** - Automatic refresh interval
+
+### Advanced Options
+- **Interleaving** - Mix in content from other channels
+- **Bumpers** - Add channel identification videos
+- **Commercials** - Insert ads or trailers
+- **Resume Mode** - Control how playback continues
+- **Excluded Content** - Block specific shows/movies
+
+---
+
+# Chapter 4: Channel Organizer
+
+## What is Channel Organizer?
+
+The Channel Organizer is a powerful utility that automatically arranges your channels into a professional, logical layout. Instead of manually organizing dozens of channels, one click gives you a perfectly structured channel lineup.
+
+## Default Organization Structure
+
+The organizer creates this professional layout:
+
+**Channels 2-49: TV Shows**
+- Channels 2-29: Non-documentary shows (alphabetically)
+- Channels 30-49: Documentary & performance channels
+
+**Channels 50-69: Movies**
+- Organized alphabetically by genre
+- Action, Comedy, Drama, Horror, etc.
+
+**Channels 70-79: Music Videos**
+- Dedicated to music video content
+
+**Channels 80-89: Reserved**
+- Space for future expansion
+
+**Channels 90-99: Music**
+- Audio-only music channels by genre
+
+**Special Channels:**
+- Channel 1: Never touched (your default)
+- Holiday channels: Ordered by season
+- Channels 110-999: Preserved as-is
+
+## Using Channel Organizer
+
+### Access Methods
+
+**Method 1: Settings Menu**
+1. Go to Paragon TV Settings
+2. Navigate to **Utility Tools**
+3. Select **Channel Organizer**
+4. Confirm to reorganize
+
+**Method 2: Quick Access**
+1. From EPG, press **Menu**
+2. Select **Organize Channels**
+3. Confirm action
+
+### What Happens During Organization
+
+1. **Backup Created** - Your current settings are saved
+2. **Channels Analyzed** - System categorizes all channels
+3. **Smart Sorting** - Channels moved to appropriate ranges
+4. **Remote Sync** - Changes pushed to other rooms (if configured)
+5. **EPG Rebuild** - Guide updated with new layout
+
+### Customization Options
+
+**Pre-Organization:**
+- Define custom ranges for channel types
+- Set alphabetical vs. manual ordering
+- Configure holiday channel placement
+
+**Post-Organization:**
+- Fine-tune individual channel positions
+- Lock channels to prevent future moves
+- Create custom channel groups
+
+---
+
+# Chapter 5: 10-Phase Preset System
+
+## Understanding Presets
+
+The 10-Phase Preset System allows you to create sophisticated daily viewing schedules. Each preset can control up to 10 different phases throughout your day, automating maintenance, startups, shutdowns, and channel changes.
+
+## Available Presets
+
+Paragon TV includes 5 customizable presets:
+- **Alpha** - Typically for weekdays
+- **Omega** - Weekend configuration
+- **Delta** - Special occasions
+- **Epsilon** - Guest mode
+- **Gamma** - Vacation settings
+
+## The 10 Phases Explained
+
+### Phase 1: Maintenance
+- Runs cleanup tasks
+- Updates library
+- Refreshes channel lineups
+- **Typical time:** 4:00 AM
+
+### Phase 2: First Startup
+- Launches Paragon TV
+- Tunes to morning channel
+- Sets volume level
+- **Typical time:** 6:00 AM
+
+### Phase 3: First Shutdown
+- Closes Paragon TV
+- Optional blackout mode
+- **Typical time:** 8:30 AM (after morning shows)
+
+### Phase 4: Second Startup
+- Midday activation
+- Different channel/volume
+- **Typical time:** 12:00 PM
+
+### Phase 5: Second Shutdown
+- Afternoon closure
+- **Typical time:** 2:00 PM
+
+### Phase 6: Third Startup
+- Evening viewing begins
+- Prime time settings
+- **Typical time:** 5:00 PM
+
+### Phase 7: Third Shutdown
+- Brief break
+- **Typical time:** 6:30 PM
+
+### Phase 8: Fourth Startup
+- Late evening settings
+- **Typical time:** 7:00 PM
+
+### Phase 9: Fourth Shutdown
+- Pre-sleep shutdown
+- **Typical time:** 11:00 PM
+
+### Phase 10: Final Wake
+- Late night option
+- **Typical time:** 11:30 PM
+
+## Configuring Presets
+
+### Basic Setup
+1. Go to **Settings** → **Schedulers** → **Preset System**
+2. Select a preset (Alpha, Omega, etc.)
+3. For each phase you want to use:
+   - Set the time
+   - Choose action type
+   - Configure options
+
+### Phase Options
+
+**Maintenance Phases:**
+- Select individual maintenance tasks
+- Set force channel reset
+- Configure library updates
+
+**Startup Phases:**
+- Enable/disable channel tuning
+- Select starting channel
+- Set volume level (0-100%)
+
+**Shutdown Phases:**
+- Choose exit type (Normal/Blackout)
+- Configure warning time
+- Set cleanup options
+
+### Weekly Assignment
+
+Assign presets to days:
+1. Go to **Preset Schedule**
+2. For each day, select a preset:
+   - Monday: Alpha
+   - Tuesday: Alpha
+   - Wednesday: Delta
+   - Thursday: Alpha
+   - Friday: Omega
+   - Saturday: Omega
+   - Sunday: Epsilon
+
+---
+
+# Chapter 6: Timer Systems
+
+## Overview
+
+Paragon TV includes four independent timer systems for complete automation:
+
+### 1. Startup Timer
+
+**Purpose:** Automatically launch Paragon TV and tune to specific channels
+
+**Features:**
+- 30 configurable schedules
+- Channel selection per schedule
+- Volume control
+- Force reset detection
+- Day-of-week scheduling
+
+**Example Use:**
+```
+Schedule 1: Weekday Mornings
+- Time: 6:00 AM
+- Channel: 5 (Morning News)
+- Volume: 30%
+- Days: Mon-Fri
+```
+
+### 2. Shutdown Timer
+
+**Purpose:** Schedule automatic shutdowns with warnings
+
+**Features:**
+- 10 shutdown schedules
+- Warning notifications (1-30 minutes)
+- Exit types (Normal/Blackout)
+- Nuclear shutdown (Linux only)
+- Grace period for user override
+
+**Exit Types Explained:**
+- **Normal Exit** - Saves position, gentle close
+- **Blackout Exit** - Instant close, no save
+- **Nuclear Shutdown** - Closes Kodi completely (Linux)
+
+### 3. Maintenance Timer
+
+**Purpose:** Automate library updates and channel refreshes
+
+**Features:**
+- 99 maintenance schedules
+- Individual task selection
+- Background operation
+- Force channel reset option
+- Staggered execution
+
+**Available Tasks:**
+- NFO Bumpers processing
+- NFO Movies processing
+- NFO Television processing
+- Video Library Update
+- Video Library Clean
+- Music Library Update
+- Music Library Clean
+- Force Channel Reset
+
+### 4. Preset Timer
+
+**Purpose:** Coordinates all other timers via preset system
+
+**Features:**
+- Manages 10-phase daily schedules
+- Switches between presets by day
+- Handles complex automation
+- Prevents timer conflicts
+
+---
+
+# Chapter 7: Speed Dial Navigation
+
+## What is Speed Dial?
+
+Speed Dial revolutionizes channel navigation by mapping your number keys (1-9) to instant actions. Instead of entering full channel numbers, single key presses jump to favorite channels or open show browsers.
+
+## Two Speed Dial Modes
+
+### 1. Channel Speed Dial
+Map number keys to jump directly to channels:
+- Press "1" → Jump to Channel 15 (Sports)
+- Press "2" → Jump to Channel 12 (Comedy)
+- Press "7" → Jump to Channel 52 (Action Movies)
+
+### 2. Show Speed Dial
+Map directional combinations to TV show browsers:
+- Press "Up + 1" → The Office episode browser
+- Press "Down + 2" → Game of Thrones browser
+- Press "Right + 3" → Breaking Bad browser
+
+## Configuring Speed Dial
+
+### Method 1: Settings Menu
+1. Go to **Settings** → **Speed Dial**
+2. For each slot (1-9):
+   - Choose type: Channel or Show
+   - Select target channel/show
+   - Save settings
+
+### Method 2: Long Press (Direct Mode)
+1. Enable **Direct Mode** in settings
+2. While watching, long-press any number
+3. Menu appears:
+   - Assign Channel
+   - Assign Show
+   - Clear Assignment
+
+### Advanced Features
+
+**Smart Detection:**
+- Recognizes multi-digit entries
+- 1-second timeout for combinations
+- Visual feedback on screen
+
+**Override Behavior:**
+- Speed Dial takes priority
+- Enter "05" for Channel 5 if "5" is mapped
+- Hold "0" to temporarily disable
+
+---
+
+# Chapter 8: Episode Browser
+
+## Overview
+
+The Episode Browser provides instant access to any episode of any show without leaving Paragon TV. It's like having an on-demand service built into your channels.
+
+## Key Features
+
+- **Instant Access** - No loading screens or menu navigation
+- **Visual Browse** - Thumbnails and episode descriptions
+- **Season Organization** - Grouped by season with episode counts
+- **Resume Tracking** - See watched status and resume points
+- **Return to Live** - Seamlessly go back to channel viewing
+
+## Accessing the Browser
+
+### Method 1: Info Button
+1. While watching any TV show
+2. Press **Info** on your remote
+3. Select **Browse Episodes**
+4. Browser opens with current show
+
+### Method 2: Speed Dial
+1. Configure shows in Speed Dial
+2. Use directional + number combo
+3. Browser opens instantly
+
+### Method 3: EPG Context Menu
+1. In the program guide
+2. Highlight any TV show
+3. Press **Menu/Context**
+4. Select **Browse All Episodes**
+
+## Using the Browser
+
+### Navigation
+- **Up/Down** - Navigate episodes
+- **Left/Right** - Switch seasons
+- **Page Up/Down** - Jump between seasons
+- **OK/Select** - Play episode
+- **Info** - View episode details
+- **Back** - Return to live TV
+
+### Visual Layout
+```
+[Season Selector]
+Season 1 | Season 2 | Season 3 | Season 4
+            ↓
+[Episode List]
+├─ S02E01 - The Dundees         [✓] Watched
+├─ S02E02 - Sexual Harassment   [▶] Resume at 12:35
+├─ S02E03 - Office Olympics     [ ] Unwatched
+└─ S02E04 - Fire Drill          [ ] Unwatched
+```
+
+### Smart Features
+
+**Auto-Resume:**
+- Picks up where you left off
+- Asks to restart if mostly watched
+
+**Playlist Integration:**
+- Play from selected episode forward
+- Create impromptu marathons
+- Respect channel rules
+
+---
+
+# Chapter 9: Favorite Shows & Notifications
+
+## The Favorites System
+
+Never miss your must-watch shows again. The Favorites system monitors all channels and alerts you before your favorite shows start.
+
+## How It Works
+
+1. **Mark Your Favorites** - Tag shows you never want to miss
+2. **Set Alert Timing** - Get notified 1-30 minutes before
+3. **Receive Notifications** - Pop-up alerts on any screen
+4. **Quick Jump** - Select notification to tune immediately
+
+## Managing Favorites
+
+### Adding Favorites
+
+**From Currently Playing:**
+1. While watching a show
+2. Press **Info** button
+3. Select **Add to Favorites** ⭐
+4. Confirmation appears
+
+**From EPG:**
+1. Highlight any show
+2. Press **Menu/Context**
+3. Select **Add to Favorites**
+4. Show marked with ⭐
+
+**From Settings:**
+1. **Settings** → **Favorite Shows**
+2. **Manage Favorites**
+3. Browse and select shows
+4. Save changes
+
+### Removing Favorites
+
+Same methods as adding:
+- Info button → **Remove from Favorites**
+- EPG context → **Remove from Favorites**
+- Settings → Uncheck shows
+
+## Notification Settings
+
+### Timing Options
+- **Alert Time:** 1-30 minutes before showtime
+- **Default:** 5 minutes
+- **Per-Show Override:** Available in advanced settings
+
+### Cooldown Period
+- Prevents notification spam
+- Default: 30 minutes between same show
+- Adjustable: 10-120 minutes
+
+### Display Options
+- **Duration:** How long notification shows
+- **Position:** Screen placement
+- **Sound:** Optional alert tone
+- **Action:** What happens when selected
+
+## Smart Features
+
+**Multi-Channel Awareness:**
+- Checks ALL channels
+- Finds earliest airing
+- Ignores in-progress shows
+
+**Intelligent Suppression:**
+- No alerts while in Paragon TV EPG
+- Respects "Do Not Disturb" hours
+- Avoids duplicate notifications
+
+---
+
+# Chapter 10: Weather Overlay
+
+## Overview
+
+The Weather Overlay displays current conditions and a 5-hour forecast directly on your TV screen while watching. No need to check your phone or switch apps.
+
+## Features
+
+- **Current Conditions** - Temperature, conditions, "feels like"
+- **5-Hour Forecast** - Hourly predictions with icons
+- **Minimal Design** - Non-intrusive sidebar placement
+- **Auto-Updates** - Refreshes every 30 minutes
+- **Custom Icons** - Match your skin's aesthetic
+
+## Setup
+
+### Enable Weather
+1. Ensure Kodi weather service is configured
+2. Go to **Settings** → **Weather Overlay**
+3. Enable **Show Weather Overlay**
+4. Configure display options
+
+### Display Options
+- **Position:** Left or Right sidebar
+- **Opacity:** 0-100% transparency
+- **Update Frequency:** 10-60 minutes
+- **Hide Delay:** Auto-hide after X seconds
+- **Activation:** Always on or button trigger
+
+## Visual Layout
+
+```
+┌─────────────┐
+│   72°F      │ Current
+│   Sunny     │
+│ Feels: 68°F │
+├─────────────┤
+│ 2PM   75°F  │ Hour +1
+│ 3PM   76°F  │ Hour +2
+│ 4PM   74°F  │ Hour +3
+│ 5PM   71°F  │ Hour +4
+│ 6PM   68°F  │ Hour +5
+└─────────────┘
+```
+
+## Customization
+
+### Icon Packs
+Place custom weather icons in:
+```
+/addons/script.paragontv/resources/weather/
+```
+
+Supported formats: PNG (recommended), JPG
+Required icons: 0.png through 47.png
+
+### Skin Integration
+Weather overlay respects your skin's:
+- Font selections
+- Color schemes
+- Animation settings
+- Shadow effects
+
+---
+
+# Chapter 11: Multi-Room Synchronization
+
+## Overview
+
+Multi-Room Sync ensures all TVs in your home share the same Paragon TV experience. Change a channel in the living room, it updates everywhere.
+
+## Sync Features
+
+- **Channel Configuration** - All rooms share channel setup
+- **EPG Data** - Same guide information everywhere
+- **Playback Position** - Resume from any room
+- **Favorite Shows** - Shared favorite lists
+- **Settings Sync** - Most settings replicate
+
+## Network Setup
+
+### Requirements
+- All Kodi instances on same network
+- Static IP addresses (recommended)
+- SSH enabled (LibreELEC)
+- Shared storage or sync method
+
+### Master/Client Configuration
+
+**1. Designate Master System**
+- Usually the main/living room system
+- Most powerful hardware
+- Always on
+
+**2. Configure Clients**
+Each additional room:
+1. **Settings** → **Multi-Room**
+2. Set as **Client**
+3. Enter Master IP address
+4. Configure sync options
+
+### Sync Options
+
+**Real-Time Sync:**
+- Channel changes propagate instantly
+- Higher network usage
+- Best for frequently used rooms
+
+**Scheduled Sync:**
+- Updates every X minutes
+- Lower network impact
+- Good for guest rooms
+
+**Manual Sync:**
+- Push updates on demand
+- Minimal automation
+- For rarely used systems
+
+## File Sync Methods
+
+### Method 1: Network Share
+```
+Master: /storage/.kodi/userdata/addon_data/script.paragontv/settings2.xml
+Clients: Mount and symlink to same file
+```
+
+### Method 2: Rsync (Recommended)
+```bash
+# Client cron job (every 5 minutes)
+*/5 * * * * rsync -av root@master:/storage/.kodi/userdata/addon_data/script.paragontv/settings2.xml /storage/.kodi/userdata/addon_data/script.paragontv/
+```
+
+### Method 3: Built-in Sync
+- Paragon TV handles sync automatically
+- Uses SSH for file transfer
+- Configure in Multi-Room settings
+
+---
+
+# Chapter 12: Extended Filename Format
+
+## Overview
+
+The Extended Filename Format allows Paragon TV to extract rich metadata directly from filenames, eliminating the need for separate NFO files or online lookups.
+
+## Format Structure
+
+```
+SSxEE - Episode Title - Show Title - Genre - Resolution - Audio Channels - Audio Codec - Holiday.ext
+```
+
+### Examples
+```
+01x01 - Pilot - The Office - Comedy - 1080 - 2 - AAC.mkv
+02x05 - Halloween - Brooklyn Nine-Nine - Comedy - 1080 - 6 - DTS - Halloween.mkv
+00x00 - A Charlie Brown Christmas - Peanuts - Animation - 720 - 2 - AAC - Christmas.mkv
+```
+
+## Components Explained
+
+1. **SSxEE** - Season x Episode (00x00 for specials)
+2. **Episode Title** - Name of the episode
+3. **Show Title** - Series name
+4. **Genre** - Primary genre
+5. **Resolution** - 480/720/1080/2160
+6. **Audio Channels** - 2/6/8
+7. **Audio Codec** - AAC/DTS/DTS-HD/TrueHD
+8. **Holiday** - Christmas/Halloween/Thanksgiving
+
+## Using with Paragon TV
+
+### Automatic Detection
+Paragon TV automatically:
+- Parses extended filenames
+- Extracts all metadata
+- Displays in EPG and overlays
+- Uses for smart filtering
+
+### Benefits
+- **Faster Loading** - No NFO parsing needed
+- **Richer Display** - More info in guides
+- **Holiday Detection** - Automatic seasonal channels
+- **Audio/Video Flags** - Visual quality indicators
+
+---
+
+# Chapter 13: Helper Add-ons
+
+## Paragon Parser
+
+### Purpose
+Batch convert your entire library to Extended Filename Format automatically.
+
+### Features
+- Reads existing NFO files
+- Extracts MediaInfo data
+- Detects holiday specials
+- Renames files safely
+- Progress tracking
+- Undo capability
+
+### Usage
+1. Install **Paragon Parser** addon
+2. Configure source paths
+3. Run analysis first
+4. Review proposed changes
+5. Execute renaming
+6. Enjoy enhanced metadata
+
+## Paragon Poster
+
+### Purpose
+Display artwork from remote Kodi instances, perfect for channel preview windows.
+
+### Features
+- Fetches posters from network Kodi
+- Caches artwork locally
+- Supports Extended Filename Format
+- Music album art support
+- Channel number overlays
+
+### Setup
+1. Install on display system
+2. Configure remote Kodi IP
+3. Set refresh intervals
+4. Map to channel numbers
+5. Position display window
+
+## Configuration Reloader
+
+### Purpose
+Force immediate reload of channel configurations without restart.
+
+### When to Use
+- After manual edits to settings2.xml
+- Testing channel changes
+- Troubleshooting issues
+- Forcing sync updates
+
+### Access
+- Settings → Utility Tools → Reload Config
+- Or assign to a remote button
+
+---
+
+# Chapter 14: Paragon Sentry
+
+## What is Paragon Sentry?
+
+Paragon Sentry is a specialized monitoring display that shows you what's playing on multiple channels simultaneously. Perfect for a control room setup or multi-viewer display.
+
+## Key Features
+
+- **3-Channel Display** - Monitor channels 1, 2, and 3
+- **Live Artwork** - Shows current poster/album art
+- **Media Info** - Title, episode, duration, codec details
+- **Channel Switching** - Use arrow keys to flip through channels
+- **Auto-Launch** - Can start with Kodi
+
+## Display Layout
+
+```
+┌─────────────────────────────────┐
+│         PARAGON SENTRY          │
+│   KODI 17.6 KRYPTON (OFFICE)   │
+├─────────┬─────────┬─────────────┤
+│    1    │    2    │      3      │
+│ [Show]  │ [Show]  │   [Show]    │
+│ Poster  │ Poster  │   Poster    │
+│         │         │             │
+│ Title   │ Title   │   Title     │
+│ S01E05  │ S02E10  │   S03E15    │
+│ 42:35   │ 41:20   │   43:10     │
+└─────────┴─────────┴─────────────┘
+```
+
+## Configuration
+
+### Installation
+1. Paragon Sentry installs with Paragon TV
+2. Find it in Program Add-ons
+3. Launch to start monitoring
+
+### Settings
+- **Auto-Start** - Launch with Kodi
+- **Refresh Rate** - 1-10 seconds
+- **Display Mode** - Full info or compact
+- **Channel Range** - Which channels to monitor
+
+## Use Cases
+
+**Home Control Center:**
+- Dedicated monitor showing all channels
+- Quick visual check of what's playing
+- Family can see options at a glance
+
+**Testing & Development:**
+- Monitor channel behavior
+- Verify scheduling works
+- Check automation results
+
+**Digital Signage:**
+- Display in common areas
+- Show available content
+- Promote viewing options
+
+---
+
+# Chapter 15: Advanced Features & Global Rules
+
+## Global Rules System
+
+Global Rules apply content filters across ALL channels simultaneously, ensuring consistent viewing preferences.
+
+### Available Rules
+
+1. **Force Resume Mode**
+   - Makes all channels resume from last position
+   - Overrides individual channel settings
+
+2. **Force Random**
+   - All channels play content randomly
+   - Disables sequential playback
+
+3. **Force Real-Time**
+   - Channels follow actual broadcast schedule
+   - Content plays at specific times only
+
+4. **Force New Episodes Only**
+   - Only unwatched episodes appear
+   - Great for catch-up viewing
+
+5. **Force Lower Rating**
+   - Excludes content above set rating
+   - Family-friendly filtering
+
+6. **Force Unwatched Only**
+   - Hides all watched content
+   - Perfect for discovery
+
+7. **Exclude Shows Without Artwork**
+   - Hides content missing posters
+   - Cleaner visual experience
+
+8. **Pause Commercials**
+   - Auto-pause when commercials start
+   - Manual resume required
+
+9. **Exclude Specific Episodes**
+   - Hide by episode number patterns
+   - Useful for recap episodes
+
+### Exclusion Management
+
+**Global Exclusions:**
+1. **Settings** → **Advanced** → **Global Exclusions**
+2. Add shows/movies to exclude everywhere
+3. Supports wildcards and regex
+
+**Holiday Exclusions:**
+- Hide Christmas episodes in July
+- Control seasonal content display
+- Date-based automatic filtering
+
+## Channel Interleaving
+
+Mix content from multiple channels:
+- Channel 7 = 70% Drama + 30% Comedy
+- Creates variety channels
+- Maintains source channel rules
+
+## Advanced Scheduling
+
+**Strmode Options:**
+- Resume - Continue from last position
+- Random - Shuffle all content
+- Sequential - Play in order
+- Real-time - Follow schedule strictly
+
+**Reset Modes:**
+- Time-based - Reset every X hours
+- Watch-based - Reset after X plays
+- Manual only - User controlled
+- Never - Persistent playlist
+
+---
+
+# Chapter 16: Troubleshooting
+
+## Common Issues & Solutions
+
+### Channels Not Playing
+
+**Symptom:** Black screen or immediate skip
+
+**Solutions:**
+1. Check if content exists in Kodi library
+2. Verify file paths are accessible
+3. Clear channel and rebuild
+4. Check codec compatibility
+5. Review log for errors
+
+### EPG Not Updating
+
+**Symptom:** Old or missing guide data
+
+**Solutions:**
+1. Force EPG refresh (Settings → Actions)
+2. Check available storage space
+3. Verify time/date settings
+4. Clear EPG database
+5. Increase EPG build time
+
+### Slow Performance
+
+**Symptom:** Laggy interface, slow channel changes
+
+**Solutions:**
+1. Reduce channel count
+2. Lower EPG days (3 instead of 7)
+3. Disable unused features
+4. Clear thumbnail cache
+5. Check CPU/memory usage
+
+### Multi-Room Sync Issues
+
+**Symptom:** Changes don't propagate
+
+**Solutions:**
+1. Verify network connectivity
+2. Check SSH credentials
+3. Confirm file permissions
+4. Test manual sync
+5. Review firewall settings
+
+### Weather Not Showing
+
+**Symptom:** Blank weather overlay
+
+**Solutions:**
+1. Configure Kodi weather service
+2. Check internet connection
+3. Verify API key (if required)
+4. Update weather addon
+5. Check overlay settings
+
+## Debug Mode
+
+Enable comprehensive logging:
+1. **Settings** → **Advanced** → **Debug Mode**
+2. Reproduce the issue
+3. Check log at: `/userdata/temp/kodi.log`
+4. Filter for: `[script.paragontv]`
+
+## Getting Help
+
+**Before Asking for Help:**
+1. Check this manual
+2. Review debug log
+3. Test with minimal config
+4. Document steps to reproduce
+
+**Information to Provide:**
+- Kodi version
+- Paragon TV version
+- Operating system
+- Debug log (pastebin)
+- settings2.xml (if relevant)
+
+## Maintenance Best Practices
+
+### Weekly
+- Clear cache if needed
+- Check for updates
+- Verify sync status
+- Review favorite shows
+
+### Monthly
+- Clean video library
+- Update channel lineup
+- Optimize settings
+- Backup configuration
+
+### As Needed
+- Reorganize channels
+- Update Extended Filenames
+- Refresh artwork cache
+- Clean old logs
+
+---
+
+## Conclusion
+
+Paragon TV transforms Kodi into your personal television network. With its advanced automation, intelligent content distribution, and seamless multi-room support, it provides the perfect balance of traditional TV comfort and modern streaming convenience.
+
+Remember: The goal is to spend less time managing and more time enjoying your content. Set it up once, tune it to your preferences, and let Paragon TV handle the rest.
+
+**Happy Viewing!**
+
+---
+
+*Paragon TV User Guide - Version 3.0*  
+*Created by Aryez - 2025*  
+*For Kodi 17.6 (Krypton)*

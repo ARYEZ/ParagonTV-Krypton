@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">8000</defaultcontrol>
+    <backgroundcolor>0xFF000000</backgroundcolor>
+    <controls>
+        <include>BackgroundItems37</include>
+        <!-- Title -->
+        <control type="label">
+            <left>0</left>
+            <top>300</top>
+            <width>1000</width>
+            <height>70</height>
+            <label>$INFO[Window.Property(ShowTitle)]</label>
+            <font>fontsize_70</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <align>center</align>
+        </control>
+        <!-- Season List -->
+        <control type="list" id="8000">
+            <left>50</left>
+            <top>415</top>
+            <width>1190</width>
+            <height>270</height>
+            <onright>8001</onright>
+            <scrolltime tween="cubic" easing="out">300</scrolltime>
+            <itemlayout height="65" width="710">
+                <control type="image">
+                    <left>-25</left>
+                    <top/>
+                    <width>630</width>
+                    <height>70</height>
+                    <texture>buttons/MenuItemNF.png</texture>
+                </control>
+                <control type="label">
+                    <left>15</left>
+                    <top>0</top>
+                    <width>435</width>
+                    <height>63</height>
+                    <font>FontSize_36</font>
+                    <textcolor>77white</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                </control>
+            </itemlayout>
+            <focusedlayout height="65">
+                <control type="image">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>435</width>
+                    <height>70</height>
+                    <texture>buttons/focus.png</texture>
+                </control>
+                <control type="label">
+                    <left>15</left>
+                    <top>0</top>
+                    <width>435</width>
+                    <height>63</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>FontSize_36</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                </control>
+            </focusedlayout>
+        </control>
+        <!-- Episode List -->
+        <control type="list" id="8001">
+            <left>1000</left>
+            <top>150</top>
+            <width>1370</width>
+            <height>800</height>
+            <onleft>8000</onleft>
+            <scrolltime>200</scrolltime>
+            <itemlayout height="150">
+                <control type="image">
+                    <left>10</left>
+                    <top>10</top>
+                    <width>200</width>
+                    <height>130</height>
+                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <aspectratio>keep</aspectratio>
+                </control>
+                <control type="label">
+                    <left>230</left>
+                    <top>10</top>
+                    <width>1100</width>
+                    <height>50</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>font27</font>
+                    <textcolor>FF888888</textcolor>
+                </control>
+                <control type="textbox">
+                    <left>230</left>
+                    <top>60</top>
+                    <width>1100</width>
+                    <height>80</height>
+                    <label>$INFO[ListItem.Plot]</label>
+                    <font>font20</font>
+                    <textcolor>FF666666</textcolor>
+                </control>
+            </itemlayout>
+            <focusedlayout height="150">
+                <control type="image">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1370</width>
+                    <height>150</height>
+                    <texture>list-focus.png</texture>
+                </control>
+                <control type="image">
+                    <left>10</left>
+                    <top>10</top>
+                    <width>200</width>
+                    <height>130</height>
+                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <aspectratio>keep</aspectratio>
+                </control>
+                <control type="label">
+                    <left>230</left>
+                    <top>10</top>
+                    <width>1100</width>
+                    <height>50</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>font27</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                </control>
+                <control type="textbox">
+                    <left>230</left>
+                    <top>60</top>
+                    <width>1100</width>
+                    <height>80</height>
+                    <label>$INFO[ListItem.Plot]</label>
+                    <font>font20</font>
+                    <textcolor>FFAAAAAA</textcolor>
+                </control>
+            </focusedlayout>
+        </control>
+        <!-- Add this after your existing episode list control -->
+        <!-- Show Logo/Banner -->
+        <control type="image">
+            <left>1280</left>
+            <top>50</top>
+            <width>600</width>
+            <height>150</height>
+            <aspectratio align="center">keep</aspectratio>
+            <texture>$INFO[Window.Property(ShowLogo)]</texture>
+            <visible>!IsEmpty(Window.Property(ShowLogo))</visible>
+        </control>
+        <!-- Selected Episode Thumbnail (larger display) -->
+        <control type="image">
+            <left>1000</left>
+            <top>730</top>
+            <width>370</width>
+            <height>208</height>
+            <aspectratio align="center">keep</aspectratio>
+            <texture fallback="Paragon Landscape.jpg">$INFO[Container(8001).ListItem.Thumb]</texture>
+            <bordertexture border="5">other_textures/ButtonFo.png</bordertexture>
+            <bordersize>4</bordersize>
+        </control>
+        <!-- Episode Info Panel -->
+        <control type="group">
+            <left>1400</left>
+            <top>730</top>
+            <width>480</width>
+            <height>208</height>
+            <control type="textbox">
+                <left>10</left>
+                <top>10</top>
+                <width>460</width>
+                <height>188</height>
+                <label>$INFO[Container(8001).ListItem.Plot]</label>
+                <font>FontSize_22</font>
+                <textcolor>CCFFFFFF</textcolor>
+                <autoscroll delay="3000" time="2000" repeat="10000">true</autoscroll>
+            </control>
+        </control>
+        <!-- Navigation Instructions -->
+        <control type="label">
+            <left>50</left>
+            <top>950</top>
+            <width>800</width>
+            <height>40</height>
+            <label>[B]Navigation:[/B] Select Season • Right for Episodes • Select to Play</label>
+            <font>FontSize_20</font>
+            <textcolor>77FFFFFF</textcolor>
+            <align>left</align>
+        </control>
+    </controls>
+</window>

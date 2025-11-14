@@ -1,0 +1,3897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol>101</defaultcontrol>
+    <controls>
+        <!-- Channel Bug (watermark) -->
+        <control type="image" id="103">
+            <description>Channel Bug</description>
+            <posx>240r</posx>
+            <posy>200r</posy>
+            <width>235</width>
+            <height>235</height>
+            <aspectratio>keep</aspectratio>
+            <animation effect="fade" start="25" end="25" condition="True">Conditional</animation>
+        </control>
+        <control type="group" id="102">
+            <posx>0</posx>
+            <posy>0</posy>
+            <include>BackgroundItems20</include>
+            <control type="image" id="506">
+                <description>Show Channel Icon</description>
+                <posx>1610</posx>
+                <posy>20</posy>
+                <width>275</width>
+                <height>155</height>
+                <animation effect="fade" start="50" end="50" condition="True">Conditional</animation>
+            </control>
+            <control type="group">
+                <posx>-51</posx>
+                <posy>-680</posy>
+                <control type="label" id="1001">
+                    <description>Channel Number</description>
+                    <top>714</top>
+                    <left>290r</left>
+                    <width>230</width>
+                    <height>120</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <wrapmultiline>true</wrapmultiline>
+                    <textcolor>black</textcolor>
+                    <font>fontsize_120</font>
+                </control>
+                <control type="label" id="1002">
+                    <description>Channel Number</description>
+                    <top>710</top>
+                    <left>287r</left>
+                    <width>230</width>
+                    <height>120</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <wrapmultiline>true</wrapmultiline>
+                    <textcolor>white</textcolor>
+                    <font>fontsize_120</font>
+                </control>
+            </control>
+            <!-- Info Labels -->
+            <control type="label" id="502">
+                <description>Status (Now Playing/Coming Up)</description>
+                <font/>
+                <textcolor>white</textcolor>
+            </control>
+            <control type="label" id="503">
+                <description>Title</description>
+                <font/>
+                <textcolor>white</textcolor>
+            </control>
+            <control type="label" id="504">
+                <description>Episode Title</description>
+                <font/>
+                <textcolor>white</textcolor>
+            </control>
+            <control type="textbox" id="505">
+                <description>Plot</description>
+                <font/>
+                <textcolor>white</textcolor>
+            </control>
+        </control>
+        
+        <!-- Pause Overlay Group -->
+        <control type="group" id="104">
+            <visible>Player.Paused</visible>
+            <animation effect="fade" start="0" end="100" time="200">Visible</animation>
+            <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+            <!-- Background overlay -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>1920</width>
+                <height>1080</height>
+                <texture>CHANNEL PAUSED BG.png</texture>
+                <aspectratio>stretch</aspectratio>
+            </control>
+            <!-- Paused text -->
+            <control type="label">
+                <description>Paused text shadow</description>
+                <left>71</left>
+                <top>550</top>
+                <width>885</width>
+                <font>FontSize_160</font>
+                <textcolor>black</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>center</align>
+                <aligny>center</aligny>
+                <label>Paused</label>
+            </control>
+            <control type="label">
+                <description>Paused text</description>
+                <left>75</left>
+                <top>545</top>
+                <width>885</width>
+                <font>FontSize_160</font>
+                <textcolor>white</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>center</align>
+                <aligny>center</aligny>
+                <label>Paused</label>
+            </control>
+            <!-- Channel info -->
+            <control type="label">
+                <description>Channel text</description>
+                <left>265</left>
+                <top>355</top>
+                <width>400</width>
+                <font>FontSize_90</font>
+                <textcolor>99white</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>Channel</label>
+            </control>
+            <control type="label" id="1002">
+                <description>Channel number</description>
+                <left>655</left>
+                <top>355</top>
+                <width>200</width>
+                <font>FontSize_90</font>
+                <textcolor>99white</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+            </control>
+            <!-- Media artwork/info section -->
+            <control type="group">
+                <left>1010</left>
+                <top>300</top>
+                <control type="image">
+                    <posx>0</posx>
+                    <posy>0</posy>
+                    <width>835</width>
+                    <height>470</height>
+                    <align>center</align>
+                    <aspectratio>keep</aspectratio>
+                    <texture>$INFO[Player.Art(landscape)]</texture>
+                    <visible>!IsEmpty(Player.Art(landscape))</visible>
+                </control>
+                <control type="image">
+                    <posx>0</posx>
+                    <posy>0</posy>
+                    <width>835</width>
+                    <height>470</height>
+                    <align>center</align>
+                    <aspectratio>keep</aspectratio>
+                    <texture fallback="flags/genre/television/,.png]">$INFO[Player.Art(tvshow.landscape)]</texture>
+                    <visible>!IsEmpty(Player.Art(tvshow.landscape)) + IsEmpty(Player.Art(landscape))</visible>
+                </control>
+                <control type="image">
+                    <posx>0</posx>
+                    <posy>0</posy>
+                    <width>835</width>
+                    <height>470</height>
+                    <align>center</align>
+                    <aspectratio>keep</aspectratio>
+                    <texture>$INFO[Control.GetLabel(506)]</texture>
+                    <visible>IsEmpty(Player.Art(landscape)) + IsEmpty(Player.Art(tvshow.landscape))</visible>
+                </control>
+            </control>
+        </control>
+        
+        <!-- Coming Up Overlay -->
+        <control type="group">
+            <visible>String.IsEqual(Window(Home).Property(PTV.ComingUp),true)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <include>BackgroundItems38</include>
+            <control type="image">
+                <description>Coming Up artwork</description>
+                <posx>55</posx>
+                <posy>633</posy>
+                <width>467</width>
+                <height>322</height>
+                <align>center</align>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[Window(Home).Property(PTV.ComingUp.Image)]</texture>
+                <animation effect="fade" start="95" end="95" condition="True">Conditional</animation>
+            </control>
+            <control type="label">
+                <description>Popup fadelabel</description>
+                <posx>593</posx>
+                <posy>829</posy>
+                <width>1340</width>
+                <height>40</height>
+                <visible>!Player.HasAudio + Player.HasVideo</visible>
+                <label>$INFO[Window(Home).Property(PTV.ComingUp.Title)]</label>
+                <font>fontsize_50</font>
+                <scroll>true</scroll>
+                <scrollout>false</scrollout>
+                <textcolor>white</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>left</align>
+                <autoscroll time="2000" delay="0" repeat="0">Skin.HasSetting(AutoScroll)</autoscroll>
+            </control>
+            <control type="label">
+                <description>Popup fadelabel</description>
+                <posx>593</posx>
+                <posy>829</posy>
+                <width>1340</width>
+                <height>40</height>
+                <visible>true</visible>
+                <label>$INFO[MusicPlayer.offset(1).Artist]</label>
+                <font>fontsize_50</font>
+                <scroll>true</scroll>
+                <scrollout>false</scrollout>
+                <textcolor>white</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>left</align>
+                <autoscroll time="2000" delay="0" repeat="0">Skin.HasSetting(AutoScroll)</autoscroll>
+                <visible>!Player.HasVideo</visible>
+            </control>
+        </control>
+        
+        <!-- Favorite Show Notification -->
+        <control type="group">
+            <visible>String.IsEqual(Window(Home).Property(PTV.FavoriteShow),true)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <include>BackgroundItems49</include>
+            <control type="image">
+                <description>Favorite show artwork</description>
+                <posx>55</posx>
+                <posy>633</posy>
+                <width>467</width>
+                <height>322</height>
+                <align>center</align>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[Window(Home).Property(PTV.FavoriteShow.Image)]</texture>
+                <animation effect="fade" start="95" end="95" condition="True">Conditional</animation>
+            </control>
+            <control type="image">
+                <posx>55</posx>
+                <posy>633</posy>
+                <width>467</width>
+                <height>322</height>
+                <align>center</align>
+                <aspectratio>keep</aspectratio>
+                <texture>faded.png</texture>
+            </control>
+            <control type="image">
+                <left>0</left>
+                <top>-109</top>
+                <width>1920</width>
+                <height>1200</height>
+                <texture>channel.png</texture>
+            </control>
+            <control type="group">
+                <posx>104</posx>
+                <posy>855</posy>
+                <control type="label">
+                    <posx>445</posx>
+                    <posy>-38</posy>
+                    <width>280</width>
+                    <height>100</height>
+                    <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Channel)]</label>
+                    <font>fontsize_160</font>
+                    <textcolor>black</textcolor>
+                    <align>right</align>
+                </control>
+                <control type="label">
+                    <posx>450</posx>
+                    <posy>-43</posy>
+                    <width>280</width>
+                    <height>100</height>
+                    <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Channel)]</label>
+                    <font>fontsize_160</font>
+                    <textcolor>white</textcolor>
+                    <align>right</align>
+                </control>
+            </control>
+            <control type="label">
+                <description>Favorite show title</description>
+                <posx>593</posx>
+                <posy>829</posy>
+                <width>1340</width>
+                <height>40</height>
+                <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Title)]</label>
+                <font>fontsize_50</font>
+                <scroll>true</scroll>
+                <scrollout>false</scrollout>
+                <textcolor>white</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>left</align>
+                <autoscroll time="2000" delay="0" repeat="0">Skin.HasSetting(AutoScroll)</autoscroll>
+            </control>
+        </control>
+        
+        <!-- CALENDAR + WEATHER COMBINED OVERLAY -->
+        <control type="group">
+            <visible>String.IsEqual(Window(Home).Property(PTV.Calendar),true)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            
+            <!-- Weather in Lower Third -->
+            <control type="group">
+                <visible>String.IsEqual(Window(Home).Property(PTV.Weather),true)</visible>
+                <include>FadeInOutAnimations</include>
+                <width>1920</width>
+                <height>1080</height>
+                
+                <control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG.png</texture>
+                </control>
+				<control type="image">
+                <texture>SonRad.png</texture>
+            </control>
+			
+			<control type="image">
+                    <left>55</left>
+                    <top>615</top>
+                    <width>475</width>
+                    <height>355</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.CurrentIcon)]</texture>
+                </control>
+			<control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG TINT.png</texture>
+                </control>
+                <control type="label">
+                    <description>Temperature shadow</description>
+                    <left>-119</left>
+                    <top>504</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>black</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Temperature</description>
+                    <left>-115</left>
+                    <top>500</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Conditions</description>
+                    <left>-10</left>
+                    <top>880</top>
+                    <width>600</width>
+                    <height>40</height>
+                    <font>FontSize_30</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Conditions)]</label>
+                </control>
+                <control type="group">
+                    <left>650</left>
+                    <top>705</top>
+                    <width>1240</width>
+                    <height>150</height>
+                    <!-- Hour 1 -->
+                    <control type="group">
+                        <left>-90</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>left</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour0.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 2 -->
+                    <control type="group">
+                        <left>180</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour1.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 3 -->
+                    <control type="group">
+                        <left>452</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>right</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour2.Icon)]</texture>
+                        </control>
+						 <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 4 -->
+                    <control type="group">
+                        <left>718</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour3.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 5 -->
+                    <control type="group">
+                        <left>980</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour4.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Temp)]</label>
+                        </control>
+                    </control>
+                </control>
+			</control>
+            
+            <!-- TODAY'S FEATURED ITEM (Upper section - LEFT SIDE) -->
+            <control type="group">
+                <posx>60</posx>
+                <posy>60</posy>
+                <width>1200</width>
+                <height>480</height>
+                <control type="image">
+                    <description>Today's featured poster</description>
+                    <posx>40</posx>
+                    <posy>140</posy>
+                    <width>320</width>
+                    <height>400</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>$INFO[Window(Home).Property(PTV.Calendar.Today.Poster)]</texture>
+                </control>
+                <control type="group">
+                    <posx>400</posx>
+                    <posy>140</posy>
+                    <control type="label">
+                        <posx>0</posx>
+                        <posy>50</posy>
+                        <width>950</width>
+                        <height>70</height>
+                        <font>fontsize_70</font>
+                        <textcolor>white</textcolor>
+                        <align>left</align>
+                        <scroll>true</scroll>
+                        <label>$INFO[Window(Home).Property(PTV.Calendar.Today.Title)]</label>
+                    </control>
+                    <control type="label">
+                        <posx>2</posx>
+                        <posy>140</posy>
+                        <width>750</width>
+                        <height>40</height>
+                        <font>fontsize_28</font>
+                        <textcolor>FFAAAAAA</textcolor>
+                        <align>left</align>
+                        <scroll>true</scroll>
+                        <label>$INFO[Window(Home).Property(PTV.Calendar.Today.Episode)]</label>
+                    </control>
+                    <control type="label">
+                        <posx>2</posx>
+						<posy>175</posy>
+						<width>750</width>
+						<height>40</height>
+						<font>fontsize_24</font>
+						<textcolor>white</textcolor>
+						<align>left</align>
+                        <label>$INFO[Window(Home).Property(PTV.Calendar.Today.Status)]</label>
+                    </control>
+                </control>
+            </control>
+            
+            <!-- THIS WEEK'S UPCOMING (RIGHT SIDE - VERTICAL LIST) -->
+            <control type="group">
+                <posx>1300</posx>
+                <posy>190</posy>
+                <width>560</width>
+                <height>680</height>
+                
+                <!-- Week Item 1 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>60</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.1)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.1)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.1.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>60</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.1)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.1)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.1.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 2 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>100</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.2)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.2)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.2.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>100</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.2)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.2)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.2.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 3 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>140</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.3)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.3)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.3.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>140</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.3)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.3)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.3.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 4 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>180</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.4)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.4)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.4.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>180</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.4)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.4)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.4.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 5 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>220</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.5)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.5)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.5.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>220</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.5)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.5)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.5.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 6 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>260</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.6)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.6)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.6.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>260</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.6)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.6)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.6.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 7 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>300</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.7)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.7)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.7.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>300</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.7)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.7)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.7.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 8 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>340</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.8)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.8)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.8.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>340</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.8)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.8)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.8.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 9 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>380</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.9)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.9)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.9.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>380</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.9)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.9)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.9.InLibrary),true)</visible>
+                </control>
+                
+                <!-- Week Item 10 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>420</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.10)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.10)) + String.IsEqual(Window(Home).Property(PTV.Calendar.Week.10.InLibrary),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>420</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>44white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Calendar.Week.10)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Calendar.Week.10)) + !String.IsEqual(Window(Home).Property(PTV.Calendar.Week.10.InLibrary),true)</visible>
+                </control>
+            </control>
+		</control>
+        
+        <!-- RECENTLY ADDED OVERLAY -->
+        <control type="group">
+            <visible>String.IsEqual(Window(Home).Property(PTV.RecentlyAdded),true)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            
+            <!-- Weather in Lower Third -->
+            <control type="group">
+                <visible>String.IsEqual(Window(Home).Property(PTV.Weather),true)</visible>
+                <include>FadeInOutAnimations</include>
+                <width>1920</width>
+                <height>1080</height>
+                
+                <control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG.png</texture>
+                </control>
+				<control type="image">
+					<texture>NewPrev.png</texture>
+				</control>
+				<control type="image">
+                    <left>55</left>
+                    <top>615</top>
+                    <width>475</width>
+                    <height>355</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.CurrentIcon)]</texture>
+                </control>
+			<control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG TINT.png</texture>
+                </control>
+                <control type="label">
+                    <description>Temperature shadow</description>
+                    <left>-109</left>
+                    <top>531</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_110</font>
+                    <textcolor>black</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Time</info>
+                </control>
+                <control type="label">
+                    <description>Temperature</description>
+                    <left>-105</left>
+                    <top>535</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_110</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Time</info>
+                </control>
+                <control type="label">
+                    <description>Conditions</description>
+                    <left>-10</left>
+                    <top>880</top>
+                    <width>600</width>
+                    <height>40</height>
+                    <font>FontSize_30</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Date</info>
+                </control>
+                <!-- Hourly Forecast -->
+                <control type="group">
+                    <left>650</left>
+                    <top>705</top>
+                    <width>1240</width>
+                    <height>150</height>
+                    <!-- Hour 1 -->
+                    <control type="group">
+                        <left>-90</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>left</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour0.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 2 -->
+                    <control type="group">
+                        <left>180</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour1.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 3 -->
+                    <control type="group">
+                        <left>452</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>right</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour2.Icon)]</texture>
+                        </control>
+						 <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 4 -->
+                    <control type="group">
+                        <left>718</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour3.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 5 -->
+                    <control type="group">
+                        <left>980</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour4.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Temp)]</label>
+                        </control>
+                    </control>
+                </control>
+            </control>
+            
+            <!-- FEATURED ITEM (Upper section - LEFT SIDE) -->
+            <control type="group">
+                <posx>60</posx>
+                <posy>60</posy>
+                <width>1200</width>
+                <height>480</height>
+                <control type="image">
+                    <description>Recently added featured poster</description>
+                    <posx>40</posx>
+                    <posy>140</posy>
+                    <width>320</width>
+                    <height>400</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture fallback="DefaultVideo.png">$INFO[Window(Home).Property(PTV.Recent.Featured.Poster)]</texture>
+                    <animation effect="fade" time="500">VisibleChange</animation>
+                </control>
+                <control type="image">
+                    <description>Watched overlay</description>
+                    <posx>40</posx>
+                    <posy>140</posy>
+                    <width>320</width>
+                    <height>400</height>
+                    <texture colordiffuse="88000000">white.png</texture>
+                    <visible>String.IsEqual(Window(Home).Property(PTV.Recent.Featured.Watched),True)</visible>
+                </control>
+                <control type="group">
+                    <posx>400</posx>
+                    <posy>140</posy>
+                    <control type="label">
+                        <posx>0</posx>
+                        <posy>50</posy>
+                        <width>850</width>
+                        <height>70</height>
+                        <font>fontsize_70</font>
+                        <textcolor>white</textcolor>
+                        <align>left</align>
+                        <scroll>true</scroll>
+                        <label>$INFO[Window(Home).Property(PTV.Recent.Featured.Title)]</label>
+                        <animation effect="fade" time="500">VisibleChange</animation>
+                    </control>
+                    
+                    <control type="label">
+                        <posx>2</posx>
+                        <posy>140</posy>
+                        <width>750</width>
+                        <height>40</height>
+                        <font>fontsize_28</font>
+                        <textcolor>FFAAAAAA</textcolor>
+                        <align>left</align>
+                        <scroll>true</scroll>
+                        <label>$INFO[Window(Home).Property(PTV.Recent.Featured.EpisodeTitle)]</label>
+                        <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.Featured.EpisodeTitle))</visible>
+                        <animation effect="fade" time="500">VisibleChange</animation>
+                    </control>
+                    <control type="textbox">
+						<posx>2</posx>
+						<posy>185</posy>
+						<width>750</width>
+						<height>160</height>
+						<font>fontsize_18</font>
+						<textcolor>white</textcolor>
+						<align>left</align>
+						<label>$INFO[Window(Home).Property(PTV.Recent.Featured.Plot)]</label>
+						<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+						<animation effect="fade" time="500">VisibleChange</animation>
+					</control>
+                </control>
+            </control>
+            
+            <!-- RECENT LIST (RIGHT SIDE - Items 6-10) -->
+            <control type="group">
+                <posx>1300</posx>
+                <posy>190</posy>
+                <width>560</width>
+                <height>680</height>
+                    
+                <!-- List Item 1 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>60</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>66white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.1)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.1)) + String.IsEqual(Window(Home).Property(PTV.Recent.List.1.Watched),True)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>60</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.1)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.1)) + !String.IsEqual(Window(Home).Property(PTV.Recent.List.1.Watched),True)</visible>
+                </control>
+                
+                <!-- List Item 2 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>100</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>66white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.2)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.2)) + String.IsEqual(Window(Home).Property(PTV.Recent.List.2.Watched),True)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>100</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.2)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.2)) + !String.IsEqual(Window(Home).Property(PTV.Recent.List.2.Watched),True)</visible>
+                </control>
+                
+                <!-- List Item 3 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>140</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>66white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.3)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.3)) + String.IsEqual(Window(Home).Property(PTV.Recent.List.3.Watched),True)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>140</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.3)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.3)) + !String.IsEqual(Window(Home).Property(PTV.Recent.List.3.Watched),True)</visible>
+                </control>
+                
+                <!-- List Item 4 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>180</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>66white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.4)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.4)) + String.IsEqual(Window(Home).Property(PTV.Recent.List.4.Watched),True)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>180</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.4)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.4)) + !String.IsEqual(Window(Home).Property(PTV.Recent.List.4.Watched),True)</visible>
+                </control>
+                
+                <!-- List Item 5 -->
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>220</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>66white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.5)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.5)) + String.IsEqual(Window(Home).Property(PTV.Recent.List.5.Watched),True)</visible>
+                </control>
+                <control type="label">
+                    <posx>30</posx>
+                    <posy>220</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_22</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>• $INFO[Window(Home).Property(PTV.Recent.List.5)]</label>
+                    <visible>!String.IsEmpty(Window(Home).Property(PTV.Recent.List.5)) + !String.IsEqual(Window(Home).Property(PTV.Recent.List.5.Watched),True)</visible>
+                </control>
+            </control>
+        </control>
+        
+        <!-- RECOMMENDATIONS OVERLAY -->
+        <control type="group">
+            <visible>String.IsEqual(Window(Home).Property(PTV.Recommendations),true)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            
+            <!-- Weather in Lower Third (reused) -->
+            <control type="group">
+                <visible>String.IsEqual(Window(Home).Property(PTV.Weather),true)</visible>
+                <include>FadeInOutAnimations</include>
+                <width>1920</width>
+                <height>1080</height>
+                
+                <control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG.png</texture>
+                </control>
+                <control type="image">
+                    <texture>Spotlight.png</texture>
+                </control>
+				<control type="image">
+                    <left>55</left>
+                    <top>615</top>
+                    <width>475</width>
+                    <height>355</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.CurrentIcon)]</texture>
+                </control>
+			<control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG TINT.png</texture>
+                </control>
+                <control type="label">
+                    <description>Temperature shadow</description>
+                    <left>-119</left>
+                    <top>504</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>black</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Temperature</description>
+                    <left>-115</left>
+                    <top>500</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Conditions</description>
+                    <left>-10</left>
+                    <top>880</top>
+                    <width>600</width>
+                    <height>40</height>
+                    <font>FontSize_30</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Conditions)]</label>
+                </control>
+                <!-- Hourly Forecast -->
+                <control type="group">
+                    <left>650</left>
+                    <top>705</top>
+                    <width>1240</width>
+                    <height>150</height>
+                    <!-- Hour 1 -->
+                    <control type="group">
+                        <left>-90</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>left</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour0.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 2 -->
+                    <control type="group">
+                        <left>180</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour1.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 3 -->
+                    <control type="group">
+                        <left>452</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>right</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour2.Icon)]</texture>
+                        </control>
+						 <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 4 -->
+                    <control type="group">
+                        <left>718</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour3.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 5 -->
+                    <control type="group">
+                        <left>980</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour4.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Temp)]</label>
+                        </control>
+                    </control>
+                </control>
+            </control>
+            
+            <!-- FEATURED RECOMMENDATION (Upper section - LEFT SIDE) -->
+            <control type="group">
+                <posx>60</posx>
+                <posy>60</posy>
+                <width>1200</width>
+                <height>480</height>
+                
+                <!-- Featured Poster -->
+                <control type="image">
+                    <description>Featured recommendation poster</description>
+                    <posx>40</posx>
+                    <posy>140</posy>
+                    <width>320</width>
+                    <height>400</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>$INFO[Window(Home).Property(PTV.Recommendations.Featured.Poster)]</texture>
+                    <animation effect="fade" time="500">VisibleChange</animation>
+                </control>
+                
+                <!-- Info Section -->
+                <control type="group">
+                    <posx>402</posx>
+                    <posy>140</posy>
+                    
+                   
+                    
+                    
+                    <!-- Title -->
+                    <control type="label">
+                        <posx>0</posx>
+                        <posy>50</posy>
+                        <width>820</width>
+                        <height>70</height>
+                        <font>fontsize_70</font>
+                        <textcolor>white</textcolor>
+                        <align>left</align>
+                        <scroll>true</scroll>
+                        <label>$INFO[Window(Home).Property(PTV.Recommendations.Featured.Title)]</label>
+                        <animation effect="fade" time="500">VisibleChange</animation>
+                    </control>
+                    
+					<!-- NEW: Subtitle (for Audio - shows Artist - Album) -->
+					<control type="label">
+						<posx>2</posx>
+						<posy>140</posy>
+						<width>750</width>
+						<height>40</height>
+						<font>fontsize_32</font>
+						<textcolor>FFCCCCCC</textcolor>
+						<align>left</align>
+						<scroll>true</scroll>
+						<label>$INFO[Window(Home).Property(PTV.Recommendations.Featured.Subtitle)]</label>
+						<visible>String.IsEqual(Window(Home).Property(PTV.Recommendations.Featured.Type),Audio Track)</visible>
+						<animation effect="fade" time="500">VisibleChange</animation>
+					</control>
+					
+                    <!-- Episode Title (for TV shows) -->
+                    <control type="label">
+                        <posx>2</posx>
+                        <posy>140</posy>
+                        <width>750</width>
+                        <height>40</height>
+                        <font>fontsize_28</font>
+                        <textcolor>FFAAAAAA</textcolor>
+                        <align>left</align>
+                        <scroll>true</scroll>
+                        <label>$INFO[Window(Home).Property(PTV.Recommendations.Featured.EpisodeTitle)]</label>
+                        <visible>!String.IsEmpty(Window(Home).Property(PTV.Recommendations.Featured.EpisodeTitle))</visible>
+                        <animation effect="fade" time="500">VisibleChange</animation>
+                    </control>
+                    
+					<!-- MPAA Rating (for Movies) -->
+					<control type="label">
+						<posx>2</posx>
+						<posy>140</posy>
+						<width>750</width>
+						<height>40</height>
+						<font>fontsize_28</font>
+						<textcolor>FFAAAAAA</textcolor>
+						<align>left</align>
+						<label>$INFO[Window(Home).Property(PTV.Recommendations.Featured.MPAA)]</label>
+						<visible>!String.IsEmpty(Window(Home).Property(PTV.Recommendations.Featured.MPAA))</visible>
+						<animation effect="fade" time="500">VisibleChange</animation>
+					</control>
+					
+                    <!-- Plot -->
+                    <control type="textbox">
+						<posx>2</posx>
+						<posy>185</posy>
+						<width>750</width>
+						<height>160</height>
+						<font>fontsize_18</font>
+						<textcolor>white</textcolor>
+						<align>left</align>
+						<label>$INFO[Window(Home).Property(PTV.Recommendations.Featured.Plot)]</label>
+						<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+						<animation effect="fade" time="500">VisibleChange</animation>
+					</control>
+                </control>
+            </control>
+            
+            <!-- GENRE ARTWORK (RIGHT SIDE - Single Large Image) -->
+			<control type="group">
+				<posx>1300</posx>
+				<posy>190</posy>
+				<width>560</width>
+				<height>680</height>
+				
+				<!-- Single Large Genre Artwork -->
+				<control type="image">
+					<posx>45</posx>
+					<posy>60</posy>
+					<width>500</width>
+					<height>300</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[Window(Home).Property(PTV.Recommendations.GenreArtwork)]</texture>
+					<animation effect="fade" time="500">VisibleChange</animation>
+				</control>
+				
+				<!-- Airtime Info -->
+				<control type="label">
+					<posx>45</posx>
+					<posy>380</posy>
+					<width>500</width>
+					<height>50</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>center</align>
+					<label>$INFO[Window(Home).Property(PTV.Recommendations.AirtimeInfo)]</label>
+					<animation effect="fade" time="500">VisibleChange</animation>
+				</control>
+			</control>
+        </control>
+        
+		<!-- SERVER STATS OVERLAY -->
+		<control type="group">
+			<visible>String.IsEqual(Window(Home).Property(PTV.ServerStats),true)</visible>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1920</width>
+			<height>1080</height>
+			
+			<!-- Weather in Lower Third -->
+			<control type="group">
+				<visible>String.IsEqual(Window(Home).Property(PTV.Weather),true)</visible>
+				<include>FadeInOutAnimations</include>
+				<width>1920</width>
+				<height>1080</height>
+				
+				<control type="image">
+					<description>Background</description>
+					<texture>WEATHER BG.png</texture>
+				</control>
+				<control type="image">
+					<texture>ServStats.png</texture>
+				</control>
+				<control type="image">
+                    <left>55</left>
+                    <top>615</top>
+                    <width>475</width>
+                    <height>355</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.CurrentIcon)]</texture>
+                </control>
+			<control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG TINT.png</texture>
+                </control>
+				<control type="label">
+                    <description>Temperature shadow</description>
+                    <left>-109</left>
+                    <top>531</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_110</font>
+                    <textcolor>black</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Time</info>
+                </control>
+                <control type="label">
+                    <description>Temperature</description>
+                    <left>-105</left>
+                    <top>535</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_110</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Time</info>
+                </control>
+                <control type="label">
+                    <description>Conditions</description>
+                    <left>-10</left>
+                    <top>880</top>
+                    <width>600</width>
+                    <height>40</height>
+                    <font>FontSize_30</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Date</info>
+                </control>
+				<!-- Hourly Forecast (copy from other pages) -->
+				<control type="group">
+                    <left>650</left>
+                    <top>705</top>
+                    <width>1240</width>
+                    <height>150</height>
+                    <!-- Hour 1 -->
+                    <control type="group">
+                        <left>-90</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>left</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour0.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 2 -->
+                    <control type="group">
+                        <left>180</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour1.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 3 -->
+                    <control type="group">
+                        <left>452</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>right</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour2.Icon)]</texture>
+                        </control>
+						 <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 4 -->
+                    <control type="group">
+                        <left>718</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour3.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 5 -->
+                    <control type="group">
+                        <left>980</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour4.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Temp)]</label>
+                        </control>
+                    </control>
+                </control>
+			
+			
+			<!-- SERVER INFO (Upper section - LEFT SIDE) -->
+			<control type="group">
+				<posx>422</posx>
+				<posy>160</posy>
+				<width>1200</width>
+				<height>480</height>
+				
+				<!-- Server Name -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>80</posy>
+					<width>500</width>
+					<height>90</height>
+					<font>fontsize_70</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>$INFO[Window(Home).Property(PTV.ServerStats.Name)]</label>
+				</control>
+				
+				<!-- Uptime -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>180</posy>
+					<width>500</width>
+					<height>50</height>
+					<font>fontsize_38</font>
+					<textcolor>FFCCCCCC</textcolor>
+					<align>left</align>
+					<label>Uptime: $INFO[Window(Home).Property(PTV.ServerStats.Uptime)]</label>
+				</control>
+				
+				<!-- CPU Temp -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>232</posy>
+					<width>500</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>CPU: $INFO[Window(Home).Property(PTV.ServerStats.CPUTemp)]</label>
+				</control>
+				
+				<!-- CPU Usage % -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>275</posy>
+					<width>500</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>CPU Usage: $INFO[Window(Home).Property(PTV.ServerStats.CPUUsage)]</label>
+				</control>
+
+				<!-- RAM Usage % -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>318</posy>
+					<width>500</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>RAM: $INFO[Window(Home).Property(PTV.ServerStats.RAMUsage)]</label>
+				</control>
+				
+				
+				
+				<!-- Array Total -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>360</posy>
+					<width>600</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>Array: $INFO[Window(Home).Property(PTV.ServerStats.Array.Used)] / $INFO[Window(Home).Property(PTV.ServerStats.Array.Total)] ($INFO[Window(Home).Property(PTV.ServerStats.Array.Percent)]%)</label>
+				</control>
+			</control>
+			
+			<!-- DISK LIST (RIGHT SIDE - VERTICAL LIST) -->
+			<control type="group">
+				<posx>1300</posx>
+				<posy>190</posy>
+				<width>560</width>
+				<height>680</height>
+				
+				<!-- Disk 1 -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>60</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_22</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>• $INFO[Window(Home).Property(PTV.ServerStats.Disk.1.Name)]: $INFO[Window(Home).Property(PTV.ServerStats.Disk.1.Percent)]% ($INFO[Window(Home).Property(PTV.ServerStats.Disk.1.Used)]/$INFO[Window(Home).Property(PTV.ServerStats.Disk.1.Total)])</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.ServerStats.Disk.1.Name))</visible>
+				</control>
+				
+				<!-- Disk 2 -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>100</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_22</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>• $INFO[Window(Home).Property(PTV.ServerStats.Disk.2.Name)]: $INFO[Window(Home).Property(PTV.ServerStats.Disk.2.Percent)]% ($INFO[Window(Home).Property(PTV.ServerStats.Disk.2.Used)]/$INFO[Window(Home).Property(PTV.ServerStats.Disk.2.Total)])</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.ServerStats.Disk.2.Name))</visible>
+				</control>
+				
+				<!-- Disk 3 -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>140</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_22</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>• $INFO[Window(Home).Property(PTV.ServerStats.Disk.3.Name)]: $INFO[Window(Home).Property(PTV.ServerStats.Disk.3.Percent)]% ($INFO[Window(Home).Property(PTV.ServerStats.Disk.3.Used)]/$INFO[Window(Home).Property(PTV.ServerStats.Disk.3.Total)])</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.ServerStats.Disk.3.Name))</visible>
+				</control>
+				
+				<!-- Disk 4 -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>180</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_22</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>• $INFO[Window(Home).Property(PTV.ServerStats.Disk.4.Name)]: $INFO[Window(Home).Property(PTV.ServerStats.Disk.4.Percent)]% ($INFO[Window(Home).Property(PTV.ServerStats.Disk.4.Used)]/$INFO[Window(Home).Property(PTV.ServerStats.Disk.4.Total)])</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.ServerStats.Disk.4.Name))</visible>
+				</control>
+				
+				<!-- Cache -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>240</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_22</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>• Cache: $INFO[Window(Home).Property(PTV.ServerStats.Cache.Percent)]% ($INFO[Window(Home).Property(PTV.ServerStats.Cache.Used)]/$INFO[Window(Home).Property(PTV.ServerStats.Cache.Total)]) - $INFO[Window(Home).Property(PTV.ServerStats.Cache.Temp)]</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.ServerStats.Cache.Percent))</visible>
+				</control>
+			</control>
+		</control>
+	</control>
+
+
+
+        <!-- WIKIPEDIA OVERLAY -->
+        <control type="group">
+            <visible>String.IsEqual(Window(Home).Property(PTV.ShowWikipedia),true)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            
+            <!-- Weather in Lower Third -->
+            <control type="group">
+                <visible>String.IsEqual(Window(Home).Property(PTV.Weather),true)</visible>
+                <include>FadeInOutAnimations</include>
+                <width>1920</width>
+                <height>1080</height>
+                
+                <control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG.png</texture>
+                </control>
+                <control type="image">
+                    <texture>ParaProf.png</texture>
+                </control>
+				<control type="image">
+                    <left>55</left>
+                    <top>615</top>
+                    <width>475</width>
+                    <height>355</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.CurrentIcon)]</texture>
+                </control>
+			<control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG TINT.png</texture>
+                </control>
+                <control type="label">
+                    <description>Temperature shadow</description>
+                    <left>-119</left>
+                    <top>504</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>black</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Temperature</description>
+                    <left>-115</left>
+                    <top>500</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Conditions</description>
+                    <left>-10</left>
+                    <top>880</top>
+                    <width>600</width>
+                    <height>40</height>
+                    <font>FontSize_30</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Conditions)]</label>
+                </control>
+                <!-- Hourly Forecast -->
+                <control type="group">
+                    <left>650</left>
+                    <top>705</top>
+                    <width>1240</width>
+                    <height>150</height>
+                    <!-- Hour 1 -->
+                    <control type="group">
+                        <left>-90</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>left</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour0.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 2 -->
+                    <control type="group">
+                        <left>180</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour1.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 3 -->
+                    <control type="group">
+                        <left>452</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>right</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour2.Icon)]</texture>
+                        </control>
+						 <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 4 -->
+                    <control type="group">
+                        <left>718</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour3.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 5 -->
+                    <control type="group">
+                        <left>980</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour4.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Temp)]</label>
+                        </control>
+                    </control>
+                </control>
+            </control>
+            
+            <!-- ARTICLE CONTENT (LEFT SIDE) -->
+            <control type="group">
+                <posx>60</posx>
+                <posy>60</posy>
+                <width>1200</width>
+                <height>560</height>
+                
+                <!-- Article Title -->
+                <control type="label">
+                    <posx>403</posx>
+                    <posy>190</posy>
+                    <width>820</width>
+                    <height>70</height>
+                    <font>fontsize_70</font>
+                    <textcolor>white</textcolor>
+                    <align>left</align>
+                    <scroll>true</scroll>
+                    <label>$INFO[Window(Home).Property(PTV.Wikipedia.Title)]</label>
+                </control>
+                
+                <!-- Article Image -->
+                <control type="image">
+					<posx>40</posx>
+					<posy>140</posy>
+					<width>1000</width>
+					<height>563</height>
+					<aspectratio>scale</aspectratio>
+					<texture></texture>
+				</control>
+                
+                <!-- Article Text (Auto-scrolling) -->
+				<control type="textbox">
+					<posx>403</posx>
+					<posy>288</posy>
+					<width>780</width>
+					<height>283</height>
+					<font>fontsize_18</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>$INFO[Window(Home).Property(PTV.Wikipedia.Text)]</label>
+					<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+				</control>
+            </control>
+            
+            <!-- ARTICLE METADATA (RIGHT SIDE) -->
+            <control type="group">
+                <posx>1300</posx>
+                <posy>190</posy>
+                <width>560</width>
+                <height>680</height>
+                
+              
+			
+				
+				<!-- Single Large Genre Artwork -->
+				<control type="image">
+					<posx>55</posx>
+					<posy>75</posy>
+					<width>500</width>
+					<height>280</height>
+					<aspectratio>keep</aspectratio>
+					<texture fallback="">$INFO[Window(Home).Property(PTV.Wikipedia.Image)]</texture>
+					<animation effect="fade" time="500">VisibleChange</animation>
+				</control>
+               
+                <!-- Last Updated Label -->
+                <control type="label">
+                    <posx>90</posx>
+                    <posy>390</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_30</font>
+                    <textcolor>grey</textcolor>
+                    <align>left</align>
+                    <label>Last Updated:</label>
+                </control>
+                
+                <!-- Last Updated Value -->
+                <control type="label">
+                    <posx>310</posx>
+                    <posy>390</posy>
+                    <width>500</width>
+                    <height>32</height>
+                    <font>fontsize_30</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <label>$INFO[Window(Home).Property(PTV.Wikipedia.Date)]</label>
+                </control>
+            </control>
+		</control>
+
+	<!-- MYSQL STATS OVERLAY -->
+		<control type="group">
+			<visible>String.IsEqual(Window(Home).Property(PTV.MySQLStats),true)</visible>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1920</width>
+			<height>1080</height>
+			
+			<!-- Weather in Lower Third (same as server stats) -->
+			<control type="group">
+				<visible>String.IsEqual(Window(Home).Property(PTV.Weather),true)</visible>
+				<include>FadeInOutAnimations</include>
+				<width>1920</width>
+				<height>1080</height>
+				
+				<control type="image">
+					<description>Background</description>
+					<texture>WEATHER BG.png</texture>
+				</control>
+				<control type="image">
+					<texture>MySql.png</texture>
+				</control>
+				<control type="image">
+                    <left>55</left>
+                    <top>615</top>
+                    <width>475</width>
+                    <height>355</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.CurrentIcon)]</texture>
+                </control>
+			<control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG TINT.png</texture>
+                </control>
+				<control type="label">
+                    <description>Temperature shadow</description>
+                    <left>-109</left>
+                    <top>531</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_110</font>
+                    <textcolor>black</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Time</info>
+                </control>
+                <control type="label">
+                    <description>Temperature</description>
+                    <left>-105</left>
+                    <top>535</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_110</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Time</info>
+                </control>
+                <control type="label">
+                    <description>Conditions</description>
+                    <left>-10</left>
+                    <top>880</top>
+                    <width>600</width>
+                    <height>40</height>
+                    <font>FontSize_30</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <info>System.Date</info>
+                </control>
+				<!-- Hourly Forecast -->
+				<control type="group">
+                    <left>650</left>
+                    <top>705</top>
+                    <width>1240</width>
+                    <height>150</height>
+                    <!-- Hour 1 -->
+                    <control type="group">
+                        <left>-90</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>left</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour0.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 2 -->
+                    <control type="group">
+                        <left>180</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour1.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 3 -->
+                    <control type="group">
+                        <left>452</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>right</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour2.Icon)]</texture>
+                        </control>
+						 <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 4 -->
+                    <control type="group">
+                        <left>718</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour3.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 5 -->
+                    <control type="group">
+                        <left>980</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour4.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Temp)]</label>
+                        </control>
+                    </control>
+                </control>
+			</control>
+			
+			<!-- MYSQL INFO (Upper section - LEFT SIDE) -->
+			<control type="group">
+				<posx>422</posx>
+				<posy>160</posy>
+				<width>1200</width>
+				<height>480</height>
+				
+				<!-- Server Name -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>80</posy>
+					<width>500</width>
+					<height>90</height>
+					<font>fontsize_70</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>$INFO[Window(Home).Property(PTV.MySQLStats.Name)]</label>
+				</control>
+				
+				<!-- Uptime -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>180</posy>
+					<width>500</width>
+					<height>50</height>
+					<font>fontsize_38</font>
+					<textcolor>FFCCCCCC</textcolor>
+					<align>left</align>
+					<label>Uptime: $INFO[Window(Home).Property(PTV.MySQLStats.Uptime)]</label>
+				</control>
+				
+				<!-- CPU Usage -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>232</posy>
+					<width>500</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>CPU: $INFO[Window(Home).Property(PTV.MySQLStats.CPUUsage)]</label>
+				</control>
+				
+				<!-- Memory Usage -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>275</posy>
+					<width>500</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>Memory: $INFO[Window(Home).Property(PTV.MySQLStats.MemoryUsage)]</label>
+				</control>
+
+				<!-- Network I/O -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>318</posy>
+					<width>600</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>Network: $INFO[Window(Home).Property(PTV.MySQLStats.NetworkIO)]</label>
+				</control>
+				
+				<!-- Active Connections -->
+				<control type="label">
+					<posx>40</posx>
+					<posy>360</posy>
+					<width>600</width>
+					<height>40</height>
+					<font>fontsize_30</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>Active Connections: $INFO[Window(Home).Property(PTV.MySQLStats.ActiveConnections)]</label>
+				</control>
+			</control>
+			
+			<!-- DATABASE LIST (RIGHT SIDE - VERTICAL LIST) -->
+			<control type="group">
+				<posx>1305</posx>
+				<posy>177</posy>
+				<width>560</width>
+				<height>680</height>
+				
+				<!-- Library Stats Header -->
+					
+				<!-- Movies Count -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>65</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_20</font>
+					<textcolor>FFCCCCCC</textcolor>
+					<align>left</align>
+					<label>Movies: $INFO[Window(Home).Property(PTV.MySQLStats.Movies)]</label>
+				</control>
+				
+				<!-- TV Shows Count -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>95</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_20</font>
+					<textcolor>FFCCCCCC</textcolor>
+					<align>left</align>
+					<label>TV Shows: $INFO[Window(Home).Property(PTV.MySQLStats.TVShows)]</label>
+				</control>
+				
+				<!-- Episodes Count -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>125</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_20</font>
+					<textcolor>FFCCCCCC</textcolor>
+					<align>left</align>
+					<label>Episodes: $INFO[Window(Home).Property(PTV.MySQLStats.Episodes)]</label>
+				</control>
+				
+				<!-- Files Count -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>155</posy>
+					<width>500</width>
+					<height>32</height>
+					<font>fontsize_20</font>
+					<textcolor>FFCCCCCC</textcolor>
+					<align>left</align>
+					<label>Files: $INFO[Window(Home).Property(PTV.MySQLStats.Files)]</label>
+				</control>
+				
+				
+				
+				<!-- Kodi Clients Header -->
+				
+				<!-- Client 1 - Name (grey) -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>210</posy>
+					<width>400</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FF888888</textcolor>
+					<align>left</align>
+					<label>$INFO[Window(Home).Property(PTV.MySQLStats.Client.1.Name)]:</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.MySQLStats.Client.1.Name))</visible>
+				</control>
+				
+				<!-- Client 1 - Status CONNECTED (green) -->
+				<control type="label">
+					<posx>260</posx>
+					<posy>210</posy>
+					<width>300</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>Connected</label>
+					<visible>String.IsEqual(Window(Home).Property(PTV.MySQLStats.Client.1.Online),true)</visible>
+				</control>
+				
+				<!-- Client 1 - Status OFFLINE (grey) -->
+				<control type="label">
+					<posx>380</posx>
+					<posy>210</posy>
+					<width>300</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FF888888</textcolor>
+					<align>left</align>
+					<label>Offline</label>
+					<visible>String.IsEqual(Window(Home).Property(PTV.MySQLStats.Client.1.Online),false)</visible>
+				</control>
+				
+				<!-- Client 2 - Name (grey) -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>260</posy>
+					<width>400</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FF888888</textcolor>
+					<align>left</align>
+					<label>$INFO[Window(Home).Property(PTV.MySQLStats.Client.2.Name)]:</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.MySQLStats.Client.2.Name))</visible>
+				</control>
+				
+				<!-- Client 2 - Status CONNECTED (green) -->
+				<control type="label">
+					<posx>300</posx>
+					<posy>260</posy>
+					<width>300</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>Connected</label>
+					<visible>String.IsEqual(Window(Home).Property(PTV.MySQLStats.Client.2.Online),true)</visible>
+				</control>
+				
+				<!-- Client 2 - Status OFFLINE (grey) -->
+				<control type="label">
+					<posx>380</posx>
+					<posy>260</posy>
+					<width>300</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FF888888</textcolor>
+					<align>left</align>
+					<label>Offline</label>
+					<visible>String.IsEqual(Window(Home).Property(PTV.MySQLStats.Client.2.Online),false)</visible>
+				</control>
+				
+				<!-- Client 3 - Name (grey) -->
+				<control type="label">
+					<posx>30</posx>
+					<posy>310</posy>
+					<width>400</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FF888888</textcolor>
+					<align>left</align>
+					<label>$INFO[Window(Home).Property(PTV.MySQLStats.Client.3.Name)]:</label>
+					<visible>!String.IsEmpty(Window(Home).Property(PTV.MySQLStats.Client.3.Name))</visible>
+				</control>
+				
+				<!-- Client 3 - Status CONNECTED (green) -->
+				<control type="label">
+					<posx>290</posx>
+					<posy>310</posy>
+					<width>300</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+					<label>Connected</label>
+					<visible>String.IsEqual(Window(Home).Property(PTV.MySQLStats.Client.3.Online),true)</visible>
+				</control>
+				
+				<!-- Client 3 - Status OFFLINE (grey) -->
+				<control type="label">
+					<posx>380</posx>
+					<posy>310</posy>
+					<width>300</width>
+					<height>32</height>
+					<font>fontsize_38</font>
+					<textcolor>FF888888</textcolor>
+					<align>left</align>
+					<label>Offline</label>
+					<visible>String.IsEqual(Window(Home).Property(PTV.MySQLStats.Client.3.Online),false)</visible>
+				</control>
+				
+				
+				
+				
+				
+				
+			</control>
+		</control>
+
+	<!-- KODI BOX STATS OVERLAY (Page 7) -->
+		<control type="group" id="9900">
+			<visible>String.IsEqual(Window(Home).Property(PTV.KodiBoxStats),true)</visible>
+			<animation effect="fade" start="0" end="100" time="300">Visible</animation>
+			<animation effect="fade" start="100" end="0" time="300">Hidden</animation>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1920</width>
+			<height>1080</height>
+			
+			<!-- Weather in Lower Third -->
+            <control type="group">
+                <visible>String.IsEqual(Window(Home).Property(PTV.Weather),true)</visible>
+                <include>FadeInOutAnimations</include>
+                <width>1920</width>
+                <height>1080</height>
+                
+                <control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG.png</texture>
+                </control>
+				<control type="image">
+                <texture>KodiBox.png</texture>
+            </control>
+			<control type="image">
+                    <left>55</left>
+                    <top>615</top>
+                    <width>475</width>
+                    <height>355</height>
+                    <aspectratio align="center" aligny="center">keep</aspectratio>
+                    <texture>special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.CurrentIcon)]</texture>
+                </control>
+			<control type="image">
+                    <description>Background</description>
+                    <texture>WEATHER BG TINT.png</texture>
+                </control>
+                <control type="label">
+                    <description>Temperature shadow</description>
+                    <left>-119</left>
+                    <top>504</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>black</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Temperature</description>
+                    <left>-115</left>
+                    <top>500</top>
+                    <width>800</width>
+                    <height>520</height>
+                    <font>FontSize_170</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Temperature)]</label>
+                </control>
+                <control type="label">
+                    <description>Conditions</description>
+                    <left>-10</left>
+                    <top>880</top>
+                    <width>600</width>
+                    <height>40</height>
+                    <font>FontSize_30</font>
+                    <textcolor>white</textcolor>
+                    <shadowcolor>99000000</shadowcolor>
+                    <align>center</align>
+                    <label>$INFO[Window(Home).Property(PTV.Weather.Conditions)]</label>
+                </control>
+                <control type="group">
+                    <left>650</left>
+                    <top>705</top>
+                    <width>1240</width>
+                    <height>150</height>
+                    <!-- Hour 1 -->
+                    <control type="group">
+                        <left>-90</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>left</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour0.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>37</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour0.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 2 -->
+                    <control type="group">
+                        <left>180</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour1.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour1.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 3 -->
+                    <control type="group">
+                        <left>452</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>right</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour2.Icon)]</texture>
+                        </control>
+						 <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour2.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 4 -->
+                    <control type="group">
+                        <left>718</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour3.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>30</left>
+                            <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour3.Temp)]</label>
+                        </control>
+                    </control>
+                    <!-- Hour 5 -->
+                    <control type="group">
+                        <left>980</left>
+                        <top>0</top>
+                        <width>188</width>
+                        <height>150</height>
+                        <align>center</align>
+                        
+                        <control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture fallback="Electronic.png">special://home/addons/script.paragontv/resources/weather/$INFO[Window(Home).Property(PTV.Weather.Hour4.Icon)]</texture>
+                        </control>
+						<control type="image">
+                            <description>Weather icon</description>
+                            <left>35</left>
+                           <top>5</top>
+                            <width>253</width>
+                            <height>160</height>
+                            <texture>WEATHER ICON TINT.png</texture>
+                        </control>
+						
+						<control type="label">
+                            <description>Hour</description>
+                            <left>-10</left>
+                            <top>10</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>center</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Time)]</label>
+                        </control>
+                        <control type="label">
+                            <description>Temperature</description>
+                            <left>70</left>
+                            <top>120</top>
+                            <width>188</width>
+                            <height>30</height>
+                            <font>fontsize_20</font>
+                            <textcolor>FFFFFFFF</textcolor>
+                            <align>right</align>
+                            <label>$INFO[Window(Home).Property(PTV.Weather.Hour4.Temp)]</label>
+                        </control>
+                    </control>
+                </control>
+            </control>
+			
+			<!-- Left Side - Main Stats -->
+			<control type="group">
+				<left>462</left>
+				<top>185</top>
+				<width>800</width>
+				<height>900</height>
+				
+				<!-- Hostname (Large) -->
+				<control type="label" id="9901">
+					<left>0</left>
+					<top>60</top>
+					<width>800</width>
+					<height>80</height>
+					<label>OFFICE</label>
+					<font>fontsize_70</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- Uptime -->
+				<control type="label" id="9902">
+					<left>0</left>
+					<top>160</top>
+					<width>800</width>
+					<height>40</height>
+					<label>Uptime: 2 days, 4 hours</label>
+					<font>fontsize_32</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- CPU Temperature -->
+				<control type="label" id="9903">
+					<left>0</left>
+					<top>210</top>
+					<width>800</width>
+					<height>40</height>
+					<label>CPU Temp: 45°C</label>
+					<font>fontsize_32</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- CPU Usage -->
+				<control type="label" id="9907">
+					<left>0</left>
+					<top>260</top>
+					<width>800</width>
+					<height>40</height>
+					<label>Kodi: Running (15% CPU)</label>
+					<font>fontsize_32</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- Memory Usage -->
+				<control type="label" id="9905">
+					<left>0</left>
+					<top>310</top>
+					<width>800</width>
+					<height>40</height>
+					<label>Memory: 45%</label>
+					<font>fontsize_32</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- Network Traffic -->
+				<control type="label" id="9906">
+					<left>0</left>
+					<top>360</top>
+					<width>800</width>
+					<height>40</height>
+					<label>Network: ↓1234MB ↑567MB</label>
+					<font>fontsize_32</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- Kodi Status -->
+				
+			</control>
+			
+			<!-- Right Side - System Info & CPU Cores -->
+			<control type="group">
+				<left>1337</left>
+				<top>185</top>
+				<width>900</width>
+				<height>900</height>
+				
+				<!-- LibreELEC Version -->
+				<control type="label" id="9911">
+					<left>0</left>
+					<top>60</top>
+					<width>900</width>
+					<height>35</height>
+					<label>LibreELEC: 11.0.3</label>
+					<font>fontsize_28</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- IP Address -->
+				<control type="label" id="9912">
+					<left>0</left>
+					<top>100</top>
+					<width>900</width>
+					<height>35</height>
+					<label>IP: 10.0.0.99</label>
+					<font>fontsize_28</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- Root Storage -->
+				<control type="label" id="9913">
+					<left>0</left>
+					<top>140</top>
+					<width>900</width>
+					<height>35</height>
+					<label>Root: 250M / 512M (48%)</label>
+					<font>fontsize_28</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- CPU Core 0 -->
+				<control type="label" id="9920">
+					<left>0</left>
+					<top>195</top>
+					<width>900</width>
+					<height>30</height>
+					<label>Core 0: 25%</label>
+					<font>fontsize_28</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- CPU Core 1 -->
+				<control type="label" id="9921">
+					<left>0</left>
+					<top>230</top>
+					<width>900</width>
+					<height>30</height>
+					<label>Core 1: 30%</label>
+					<font>fontsize_28</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- CPU Core 2 -->
+				<control type="label" id="9922">
+					<left>0</left>
+					<top>265</top>
+					<width>900</width>
+					<height>30</height>
+					<label>Core 2: 15%</label>
+					<font>fontsize_28</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+				
+				<!-- CPU Core 3 -->
+				<control type="label" id="9923">
+					<left>0</left>
+					<top>300</top>
+					<width>900</width>
+					<height>30</height>
+					<label>Core 3: 20%</label>
+					<font>fontsize_28</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+				</control>
+			</control>
+		</control>
+
+	<!-- Black background for initial loading -->
+
+        <!-- Black background for initial loading -->
+        <control type="image" id="101">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>black.png</texture>
+            <visible>true</visible>
+        </control>
+        
+        <!-- Sidebar Background Overlay -->
+        <control type="image" id="7001">
+            <description>Sidebar Background Overlay</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>DialogBack.png</texture>
+            <colordiffuse>88000000</colordiffuse>
+            <visible>false</visible>
+            <animation effect="fade" start="0" end="100" time="200">Visible</animation>
+            <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+        </control>
+        
+        <!-- Sidebar Menu Group -->
+        <control type="group" id="7000">
+            <!-- rest of sidebar code... -->
+        </control>
+    </controls>
+</window>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol>9201</defaultcontrol>
+    <allowoverlay>no</allowoverlay>
+    <controls>
+        <include>BackgroundItems48</include>
+        <!-- Background overlay -->
+        <control type="group">
+            <visible>true</visible>
+            <!-- Main container -->
+            <control type="group">
+                <posx>360</posx>
+                <!-- Center the 1200px wide container -->
+                <posy>140</posy>
+                <width>1200</width>
+                <height>1000</height>
+                <!-- Left Column - Shows -->
+                <control type="group">
+                    <posx>-330</posx>
+                    <posy>152</posy>
+                    <width>350</width>
+                    <height>800</height>
+                    <!-- Show Slot 1 -->
+                    <control type="group" id="9210">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>300</width>
+                        <height>169</height>
+                        <!-- Show 1 Landscape Image -->
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>370</width>
+                            <height>217</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture>$INFO[Window.Property(SpeedDial.Show1.Image)]</texture>
+                            <visible>!IsEmpty(Window.Property(SpeedDial.Show1.Image))</visible>
+                        </control>
+                        <!-- Show 1 Placeholder when empty -->
+                        
+                        <!-- Show 1 Name Label Overlay -->
+                        
+                        <!-- Show 1 Button (invisible) -->
+                        <control type="button" id="9201">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>300</width>
+                            <height>169</height>
+                            <texturefocus>-</texturefocus>
+                            <texturenofocus>-</texturenofocus>
+                            <ondown>9202</ondown>
+                            <onright>9301</onright>
+                            <onclick>RunScript($CWD/resources/lib/Overlay.py,SpeedDialShow,1)</onclick>
+                        </control>
+                        <!-- Focus highlight -->
+                        <control type="image">
+                            <posx>-4</posx>
+                            <posy>-4</posy>
+                            <width>385</width>
+                            <height>230</height>
+                            <texture>focusshow.png</texture>
+                            <visible>Control.HasFocus(9201)</visible>
+                        </control>
+                    </control>
+                    <!-- Show Slot 2 -->
+                    <control type="group" id="9220">
+                        <posx>0</posx>
+                        <posy>273</posy>
+                        <width>300</width>
+                        <height>169</height>
+                        <!-- Show 2 Landscape Image -->
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>370</width>
+                            <height>217</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture>$INFO[Window.Property(SpeedDial.Show2.Image)]</texture>
+                            <visible>!IsEmpty(Window.Property(SpeedDial.Show2.Image))</visible>
+                        </control>
+                        <!-- Show 2 Placeholder when empty -->
+                        
+                        <!-- Show 2 Name Label Overlay -->
+                        
+                        <!-- Show 2 Button (invisible) -->
+                        <control type="button" id="9202">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>300</width>
+                            <height>169</height>
+                            <texturefocus>-</texturefocus>
+                            <texturenofocus>-</texturenofocus>
+                            <onup>9201</onup>
+                            <ondown>9203</ondown>
+                            <onright>9302</onright>
+                            <onclick>RunScript($CWD/resources/lib/Overlay.py,SpeedDialShow,2)</onclick>
+                        </control>
+                        <!-- Focus highlight -->
+                        <control type="image">
+                            <posx>-4</posx>
+                            <posy>-4</posy>
+                            <width>385</width>
+                            <height>230</height>
+                            <texture>focusshow.png</texture>
+                            <visible>Control.HasFocus(9202)</visible>
+                        </control>
+                    </control>
+                    <!-- Show Slot 3 -->
+                    <control type="group" id="9230">
+                        <posx>0</posx>
+                        <posy>546</posy>
+                        <width>300</width>
+                        <height>169</height>
+                        <!-- Show 3 Landscape Image -->
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>370</width>
+                            <height>217</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture>$INFO[Window.Property(SpeedDial.Show3.Image)]</texture>
+                            <visible>!IsEmpty(Window.Property(SpeedDial.Show3.Image))</visible>
+                        </control>
+                        <!-- Show 3 Placeholder when empty -->
+                        
+                        <!-- Show 3 Name Label Overlay -->
+                        
+                        <!-- Show 3 Button (invisible) -->
+                        <control type="button" id="9203">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>300</width>
+                            <height>169</height>
+                            <texturefocus>-</texturefocus>
+                            <texturenofocus>-</texturenofocus>
+                            <onup>9202</onup>
+                            <onright>9303</onright>
+                            <onclick>RunScript($CWD/resources/lib/Overlay.py,SpeedDialShow,3)</onclick>
+                        </control>
+                        <!-- Focus highlight -->
+                        <control type="image">
+                            <posx>-4</posx>
+                            <posy>-4</posy>
+                            <width>385</width>
+                            <height>230</height>
+                            <texture>focusshow.png</texture>
+                            <visible>Control.HasFocus(9203)</visible>
+                        </control>
+                    </control>
+                </control>
+                <!-- Right Column - Channels -->
+                <control type="group">
+                    <posx>1150</posx>
+                    <posy>-310</posy>
+                    <width>350</width>
+                    <height>1000</height>
+                    <!-- Channel Slot 1 -->
+                    <control type="group" id="9310">
+                        <posx>0</posx>
+                        <posy>190</posy>
+                        <width>350</width>
+                        <height>197</height>
+                        <!-- Channel 1 Landscape Image -->
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>370</width>
+                            <height>217</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture>$INFO[Window.Property(SpeedDial.Channel1.Image)]</texture>
+                            <visible>!IsEmpty(Window.Property(SpeedDial.Channel1.Image))</visible>
+                        </control>
+                        <!-- Channel 1 Placeholder when empty -->
+                        
+                        <!-- Channel 1 Name Label Overlay -->
+                        
+                        <!-- Channel 1 Button (invisible) -->
+                        <control type="button" id="9301">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>350</width>
+                            <height>197</height>
+                            <texturefocus>-</texturefocus>
+                            <texturenofocus>-</texturenofocus>
+                            <onleft>9201</onleft>
+                            <ondown>9302</ondown>
+                            <onclick>RunScript($CWD/resources/lib/Overlay.py,SpeedDialChannel,1)</onclick>
+                        </control>
+                        <!-- Focus highlight -->
+                        <control type="image">
+                            <posx>-4</posx>
+                            <posy>-4</posy>
+                            <width>385</width>
+                            <height>230</height>
+                            <texture>focuschan1.png</texture>
+                            <visible>Control.HasFocus(9301)</visible>
+                        </control>
+                    </control>
+                    <!-- Channel Slot 2 -->
+                    <control type="group" id="9320">
+                        <posx>0</posx>
+                        <posy>463</posy>
+                        <width>350</width>
+                        <height>197</height>
+                        <!-- Channel 2 Landscape Image -->
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>370</width>
+                            <height>217</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture>$INFO[Window.Property(SpeedDial.Channel2.Image)]</texture>
+                            <visible>!IsEmpty(Window.Property(SpeedDial.Channel2.Image))</visible>
+                        </control>
+                        <!-- Channel 2 Placeholder when empty -->
+                        
+                        <!-- Channel 2 Name Label Overlay -->
+                        
+                        <!-- Channel 2 Button (invisible) -->
+                        <control type="button" id="9302">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>350</width>
+                            <height>197</height>
+                            <texturefocus>-</texturefocus>
+                            <texturenofocus>-</texturenofocus>
+                            <onleft>9202</onleft>
+                            <onup>9301</onup>
+                            <ondown>9303</ondown>
+                            <onclick>RunScript($CWD/resources/lib/Overlay.py,SpeedDialChannel,2)</onclick>
+                        </control>
+                        <!-- Focus highlight -->
+                        <control type="image">
+                            <posx>-4</posx>
+                            <posy>-4</posy>
+                            <width>385</width>
+                            <height>230</height>
+                            <texture>focuschan2.png</texture>
+							<visible>Control.HasFocus(9302)</visible>
+                        </control>
+                    </control>
+                    <!-- Channel Slot 3 -->
+                    <control type="group" id="9330">
+                        <posx>0</posx>
+                        <posy>735</posy>
+                        <width>350</width>
+                        <height>197</height>
+                        <!-- Channel 3 Landscape Image -->
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>370</width>
+                            <height>217</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture>$INFO[Window.Property(SpeedDial.Channel3.Image)]</texture>
+                            <visible>!IsEmpty(Window.Property(SpeedDial.Channel3.Image))</visible>
+                        </control>
+                        <!-- Channel 3 Placeholder when empty -->
+                        
+                        <!-- Channel 3 Name Label Overlay -->
+                        
+                        <!-- Channel 3 Button (invisible) -->
+                        <control type="button" id="9303">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>350</width>
+                            <height>197</height>
+                            <texturefocus>-</texturefocus>
+                            <texturenofocus>-</texturenofocus>
+                            <onleft>9203</onleft>
+                            <onup>9302</onup>
+                            <ondown>9304</ondown>
+                            <onclick>RunScript($CWD/resources/lib/Overlay.py,SpeedDialChannel,3)</onclick>
+                        </control>
+                        <!-- Focus highlight -->
+                        <control type="image">
+                            <posx>-4</posx>
+                            <posy>-4</posy>
+                            <width>385</width>
+                            <height>230</height>
+                            <texture>focuschan3.png</texture>
+                            <visible>Control.HasFocus(9303)</visible>
+                        </control>
+                    </control>
+                    <!-- Channel Slot 4 -->
+                    <control type="group" id="9340">
+                        <posx>0</posx>
+                        <posy>1010</posy>
+                        <width>350</width>
+                        <height>197</height>
+                        <!-- Channel 4 Landscape Image -->
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>370</width>
+                            <height>217</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture>$INFO[Window.Property(SpeedDial.Channel4.Image)]</texture>
+                            <visible>!IsEmpty(Window.Property(SpeedDial.Channel4.Image))</visible>
+                        </control>
+                        <!-- Channel 4 Placeholder when empty -->
+                        
+                        <!-- Channel 4 Button (invisible) -->
+                        <control type="button" id="9304">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>350</width>
+                            <height>197</height>
+                            <texturefocus>-</texturefocus>
+                            <texturenofocus>-</texturenofocus>
+                            <onleft>9203</onleft>
+                            <onup>9303</onup>
+                            <onclick>RunScript($CWD/resources/lib/Overlay.py,SpeedDialChannel,4)</onclick>
+                        </control>
+                        <!-- Focus highlight -->
+                        <control type="image">
+                            <posx>-4</posx>
+                            <posy>-4</posy>
+                            <width>385</width>
+                            <height>230</height>
+                            <texture>focuschan4.png</texture>
+                            <visible>Control.HasFocus(9304)</visible>
+                        </control>
+                    </control>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

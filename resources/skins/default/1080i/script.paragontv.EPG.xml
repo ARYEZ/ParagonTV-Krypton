@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <animation type="WindowOpen" reversible="false">
+        <effect type="fade" start="0" end="100" time="200"/>
+    </animation>
+    <animation type="WindowClose" reversible="false">
+        <effect type="fade" start="100" end="0" time="200"/>
+    </animation>
+    <controls>
+        <include>BackgroundItems18</include>
+        <!--HEADER-->
+        <control type="group">
+            <posy>-10</posy>
+            <control type="label">
+                <posx>1891</posx>
+                <posy>-65</posy>
+                <width>800</width>
+                <height>200</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <font>fontsize_26</font>
+                <textcolor>white</textcolor>
+                <info>System.Date</info>
+            </control>
+            <control type="label">
+                <posx>1895</posx>
+                <posy>0</posy>
+                <width>750</width>
+                <height>200</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <font>fontsize_80</font>
+                <textcolor>white</textcolor>
+                <info>System.Time</info>
+            </control>
+        </control>
+        <!--TIME INFO-->
+        <control type="group">
+            <left>0</left>
+            <top>0</top>
+            <control type="label" id="101">
+                <description>Time 1 Label</description>
+                <posx>400</posx>
+                <posy>107</posy>
+                <width>270</width>
+                <height>26</height>
+                <label>Time 1</label>
+                <font>fontsize_30</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="label" id="102">
+                <description>Time 2 Label</description>
+                <posx>845</posx>
+                <posy>107</posy>
+                <width>270</width>
+                <height>26</height>
+                <label>Time 2</label>
+                <font>fontsize_30</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="label" id="103">
+                <description>Time 3 Label</description>
+                <posx>1315</posx>
+                <posy>107</posy>
+                <width>270</width>
+                <height>26</height>
+                <label>Time 3</label>
+                <font>fontsize_30</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textcolor>FFFFFFFF</textcolor>
+            </control>
+        </control>
+        <!--CHANNEL BUTTONS AND LABELS-->
+        <control type="label" id="104">
+            <description>Date Label</description>
+            <left>-10000</left>
+            <top>505</top>
+            <width>460</width>
+            <height>30</height>
+            <font>ParagonTv12</font>
+            <textcolor>FF12B2E7</textcolor>
+            <shadowcolor>22000000</shadowcolor>
+            <align>left</align>
+            <aligny>center</aligny>
+        </control>
+        <!--CHANNEL 1-->
+        <control type="image">
+            <left>0</left>
+            <top>547</top>
+            <width>480</width>
+            <height>61</height>
+            <texture flipy="true" border="3">ptv_separator.png</texture>
+        </control>
+        <control type="image">
+            <left>0</left>
+            <top>548</top>
+            <width>480</width>
+            <height>61</height>
+            <texture border="3">ptv_separator.png</texture>
+        </control>
+        <control type="label" id="311">
+            <description>Channel 1 Number</description>
+            <posx>50</posx>
+            <posy>293</posy>
+            <width>80</width>
+            <height>42</height>
+            <label>1</label>
+            <font>fontsize_32</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="label" id="301">
+            <description>Channel 1 Name</description>
+            <posx>75</posx>
+            <posy>293</posy>
+            <width>220</width>
+            <height>42</height>
+            <label>Channel</label>
+            <font>fontsize_24</font>
+            <align>left</align>
+            <aligny>center</aligny>
+            <textcolor>99white</textcolor>
+            <visible>StringCompare(Control.GetLabel(321),)</visible>
+        </control>
+        <control type="image" id="321">
+            <description>Channel 1 Icon</description>
+            <posx>75</posx>
+            <posy>231</posy>
+            <width>220</width>
+            <height>115</height>
+            <aspectratio/>
+            <colordiffuse>FFFFFFFF</colordiffuse>
+            <visible>!StringCompare(Control.GetLabel(321),)</visible>
+        </control>
+        <!-- CHANNEL 2 -->
+        <control type="image">
+            <left>0</left>
+            <top>608</top>
+            <width>480</width>
+            <height>61</height>
+            <texture border="3">ptv_separator.png</texture>
+        </control>
+        <control type="label" id="312">
+            <description>Channel 2 Number</description>
+            <posx>50</posx>
+            <posy>378</posy>
+            <width>80</width>
+            <height>42</height>
+            <label>2</label>
+            <font>fontsize_32</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="label" id="302">
+            <description>Channel 2 Name</description>
+            <posx>75</posx>
+            <posy>378</posy>
+            <width>220</width>
+            <height>42</height>
+            <label>Channel</label>
+            <font>fontsize_24</font>
+            <align>left</align>
+            <aligny>center</aligny>
+            <textcolor>99white</textcolor>
+            <visible>StringCompare(Control.GetLabel(322),)</visible>
+            <description>Channel 2 Name</description>
+        </control>
+        <control type="image" id="322">
+            <description>Channel 2 Icon</description>
+            <posx>75</posx>
+            <posy>313</posy>
+            <width>220</width>
+            <height>115</height>
+            <visible>!StringCompare(Control.GetLabel(322),)</visible>
+        </control>
+        <!-- CHANNEL 3 -->
+        <control type="image">
+            <left>0</left>
+            <top>668</top>
+            <width>480</width>
+            <height>61</height>
+            <texture border="3">ptv_separator.png</texture>
+        </control>
+        <control type="label" id="313">
+            <description>Channel 3 Number</description>
+            <posx>50</posx>
+            <posy>463</posy>
+            <width>80</width>
+            <height>42</height>
+            <label>3</label>
+            <font>fontsize_32</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="label" id="303">
+            <description>Channel 3 Name</description>
+            <posx>75</posx>
+            <posy>463</posy>
+            <width>220</width>
+            <height>42</height>
+            <label>Channel</label>
+            <font>fontsize_24</font>
+            <align>left</align>
+            <aligny>center</aligny>
+            <textcolor>99white</textcolor>
+            <visible>StringCompare(Control.GetLabel(323),)</visible>
+        </control>
+        <control type="image" id="323">
+            <description>Channel 3 Icon</description>
+            <posx>75</posx>
+            <posy>398</posy>
+            <width>220</width>
+            <height>115</height>
+            <visible>!StringCompare(Control.GetLabel(323),)</visible>
+        </control>
+        <!-- CHANNEL 4 -->
+        <control type="image">
+            <left>0</left>
+            <top>728</top>
+            <width>480</width>
+            <height>61</height>
+            <texture border="3">ptv_separator.png</texture>
+        </control>
+        <control type="label" id="314">
+            <description>Channel 4 Number</description>
+            <posx>50</posx>
+            <posy>548</posy>
+            <width>80</width>
+            <height>42</height>
+            <label>4</label>
+            <font>fontsize_32</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="label" id="304">
+            <description>Channel 4 Name</description>
+            <posx>75</posx>
+            <posy>548</posy>
+            <width>220</width>
+            <height>42</height>
+            <label>Channel</label>
+            <font>fontsize_24</font>
+            <align>left</align>
+            <aligny>center</aligny>
+            <textcolor>99white</textcolor>
+            <visible>StringCompare(Control.GetLabel(324),)</visible>
+        </control>
+        <control type="image" id="324">
+            <description>Channel 4 Icon</description>
+            <posx>75</posx>
+            <posy>484</posy>
+            <width>220</width>
+            <height>115</height>
+            <visible>!StringCompare(Control.GetLabel(324),)</visible>
+        </control>
+        <!-- CHANNEL 5 -->
+        <control type="image">
+            <left>0</left>
+            <top>788</top>
+            <width>480</width>
+            <height>61</height>
+            <texture border="3">ptv_separator.png</texture>
+        </control>
+        <control type="label" id="315">
+            <description>Channel 5 Number</description>
+            <posx>50</posx>
+            <posy>633</posy>
+            <width>80</width>
+            <height>42</height>
+            <label>5</label>
+            <font>fontsize_32</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="label" id="305">
+            <description>Channel 5 Name</description>
+            <posx>75</posx>
+            <posy>631</posy>
+            <width>215</width>
+            <height>42</height>
+            <label>Channel</label>
+            <font>fontsize_24</font>
+            <align>left</align>
+            <aligny>center</aligny>
+            <textcolor>99white</textcolor>
+            <visible>StringCompare(Control.GetLabel(325),)</visible>
+        </control>
+        <control type="image" id="325">
+            <description>Channel 5 Icon</description>
+            <posx>75</posx>
+            <posy>568</posy>
+            <width>220</width>
+            <height>115</height>
+            <visible>!StringCompare(Control.GetLabel(325),)</visible>
+        </control>
+        <!--EPG GRID LISTINGS-->
+        <control type="button" id="100">
+            <visible>false</visible>
+            <label>FFFFFFFF</label>
+            <!--un-focused text color-->
+            <label2>FFFFFFFF</label2>
+            <!--focused text color-->
+        </control>
+        <control type="button" id="105">
+            <visible>false</visible>
+            <label>fontsize_22</label>
+            <!--text font-->
+        </control>
+        <control type="group" id="111">
+            <posx>305</posx>
+            <posy>277</posy>
+            <width>1800</width>
+            <height>80</height>
+        </control>
+        <control type="group" id="112">
+            <posx>305</posx>
+            <posy>359</posy>
+            <width>1800</width>
+            <height>80</height>
+        </control>
+        <control type="group" id="113">
+            <posx>305</posx>
+            <posy>444</posy>
+            <width>1800</width>
+            <height>80</height>
+        </control>
+        <control type="group" id="114">
+            <posx>305</posx>
+            <posy>529</posy>
+            <width>1800</width>
+            <height>80</height>
+        </control>
+        <control type="group" id="115">
+            <posx>305</posx>
+            <posy>614</posy>
+            <width>1800</width>
+            <height>80</height>
+        </control>
+        <!--TIME BAR-->
+        <control type="image" id="120">
+            <posx>388</posx>
+            <posy>197</posy>
+            <width>32</width>
+            <height>580</height>
+            <aspectratio>keep</aspectratio>
+        </control>
+        <!--SELECTED INFO-->
+        <control type="label">
+            <description>Show Name Label</description>
+            <width>1255</width>
+            <posx>10</posx>
+            <posy>717</posy>
+            <height>40</height>
+            <label>$INFO[Control.GetLabel(500)]</label>
+            <font>fontsize_60</font>
+            <scroll>true</scroll>
+            <align>left</align>
+            <textcolor>FFFFFFFF</textcolor>
+            <shadowcolor>black</shadowcolor>
+        </control>
+        <control type="label">
+            <description>Show Title Label</description>
+            <width>1210</width>
+            <posx>10</posx>
+            <posy>767</posy>
+            <height>40</height>
+            <label>$INFO[Control.GetLabel(501)]</label>
+            <font>fontsize_22</font>
+            <align>left</align>
+            <textcolor>99white</textcolor>
+        </control>
+        <control type="textbox" id="502">
+            <description>Plot</description>
+            <posx>10</posx>
+            <posy>920</posy>
+            <width>1267</width>
+            <height>190</height>
+            <wrapmultiline>true</wrapmultiline>
+            <textcolor>99white</textcolor>
+            <font>fontsize_18</font>
+            <autoscroll time="4000" delay="6000" repeat="6000">True</autoscroll>
+        </control>
+        <control type="image" id="503">
+            <description>Show Channel Icon</description>
+            <posx>1300</posx>
+            <posy>703</posy>
+            <width>520</width>
+            <height>330</height>
+            <align>center</align>
+            <aspectratio>keep</aspectratio>
+            <animation effect="fade" start="95" end="95" condition="True">Conditional</animation>
+        </control>
+        <control type="group">
+            <visible>false</visible>
+            <control type="label" id="500"/>
+            <control type="label" id="501"/>
+        </control>
+    </controls>
+</window>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">8000</defaultcontrol>
+    <backgroundcolor>0xFF000000</backgroundcolor>
+    <controls>
+        <include>BackgroundItems37</include>
+        <!-- Show Title -->
+        <control type="label">
+            <left>0</left>
+            <top>300</top>
+            <width>1000</width>
+            <height>70</height>
+            <label>$INFO[Window.Property(ShowTitle)]</label>
+            <font>fontsize_70</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <align>center</align>
+        </control>
+        <!-- Show Landscape Image (Right Side) -->
+        <control type="image">
+            <left>978</left>
+            <top>297</top>
+            <width>890</width>
+            <height>470</height>
+            <aspectratio align="center">keep</aspectratio>
+            <texture fallback="DefaultVideo.png">$INFO[Window.Property(ShowLandscape)]</texture>
+        </control>
+        <!-- Season List (Left Side) -->
+        <control type="list" id="8000">
+            <left>60</left>
+            <top>400</top>
+            <width>800</width>
+            <height>250</height>
+            <onleft>8000</onleft>
+            <onright>8000</onright>
+            <scrolltime tween="cubic" easing="out">300</scrolltime>
+            <itemlayout height="80" width="800">
+                <control type="image">
+                    <left>0</left>
+                    <top>5</top>
+                    <width>800</width>
+                    <height>70</height>
+                    <texture border="10">buttons/MenuItemNF.png</texture>
+                    <colordiffuse>77FFFFFF</colordiffuse>
+                </control>
+                <control type="label">
+                    <left>40</left>
+                    <top>5</top>
+                    <width>350</width>
+                    <height>70</height>
+                    <font>FontSize_36</font>
+                    <textcolor>AAFFFFFF</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                </control>
+                <control type="label">
+                    <left>400</left>
+                    <top>5</top>
+                    <width>350</width>
+                    <height>70</height>
+                    <font>FontSize_36</font>
+                    <textcolor>AAFFFFFF</textcolor>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Label2]</label>
+                </control>
+            </itemlayout>
+            <focusedlayout height="80" width="800">
+                <control type="image">
+                    <left>0</left>
+                    <top>5</top>
+                    <width>800</width>
+                    <height>70</height>
+                    <texture border="10">buttons/focus.png</texture>
+                </control>
+                <control type="label">
+                    <left>40</left>
+                    <top>5</top>
+                    <width>350</width>
+                    <height>70</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>FontSize_36</font>
+                    <textcolor>black</textcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                </control>
+                <control type="label">
+                    <left>400</left>
+                    <top>5</top>
+                    <width>350</width>
+                    <height>70</height>
+                    <label>$INFO[ListItem.Label2]</label>
+                    <font>FontSize_36</font>
+                    <textcolor>black</textcolor>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                </control>
+            </focusedlayout>
+        </control>
+    </controls>
+</window>

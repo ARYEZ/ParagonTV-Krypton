@@ -1,0 +1,215 @@
+# XBMC Media Center language file
+# Addon Name: Paragon TV
+# Addon id: script.paragontv
+# Addon version: 2.4.4
+# Addon Provider: Aryez
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2014-03-08 04:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_gb\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Channel surfing for your video library"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Paragon TV. What cable should have been."
+msgstr ""
+
+
+msgctxt "#30000"
+msgid "General"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Auto-off Timer"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Force channel reset on next start"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Show info when changing channels"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Time between channel resets"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Coming Up Next"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Always show channel logo"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Show channel logo in epg"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Open Channel Configuration"
+msgstr ""
+
+#empty string with id 30009
+
+msgctxt "#30010"
+msgid "Channel Logo Folder"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Default channel times at startup"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Background Updating"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Shared Channels Folder"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Clock Display"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Enable Channel Sharing"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Show Coming Up Next box"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Hide very short videos"
+msgstr ""
+
+msgctxt "#30018"
+msgid "Duration of \"short\" videos"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Would you like to save your changes?"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Visuals"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Show Season/Episode number"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Tweaks"
+msgstr ""
+
+#empty string with id 30023
+
+msgctxt "#30024"
+msgid "Background Loading..."
+msgstr ""
+
+msgctxt "#30025"
+msgid "Added"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Auto Start"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Activate Service"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Service Delay"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Show Notification"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Service Starting..."
+msgstr ""
+
+msgctxt "#30031"
+msgid "Initiate Shutdown Sequence?"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Do you want to save all changes?"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Are you sure you want to clear this channel?"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Unable to open the cache file"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Unable to create the cache directory"
+msgstr ""
+
+msgctxt "#30036"
+msgid "Unable to create the storage directory"
+msgstr ""
+
+msgctxt "#30037"
+msgid "Unable to find any channels. Please configure the addon."
+msgstr ""
+
+msgctxt "#30038"
+msgid "Unable to populate channels. Please verify that you have scraped media in your library and that you have properly configured channels."
+msgstr ""
+
+msgctxt "#30039"
+msgid "Exceeded 3 invalidated channels. Exiting."
+msgstr ""
+
+msgctxt "#30040"
+msgid "No channels available. Exiting."
+msgstr ""
+
+msgctxt "#30041"
+msgid "Coming Up"
+msgstr ""
+
+msgctxt "#30042"
+msgid "Already Seen"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Now Playing"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Playlist Media Limit"
+msgstr ""
+
+msgctxt "#30045"
+msgid "OSD Channel Number Colour"
+msgstr ""
+
+msgctxt "#30046"
+msgid "Seek step forward"
+msgstr ""
+
+msgctxt "#30047"
+msgid "Seek step backward"
+msgstr ""

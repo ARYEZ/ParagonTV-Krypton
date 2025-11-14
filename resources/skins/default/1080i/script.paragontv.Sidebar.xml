@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">6000</defaultcontrol>
+    <allowoverlay>no</allowoverlay>
+    <controls>
+        <!-- Semi-transparent background overlay -->
+        <!-- Sidebar panel -->
+        <control type="group">
+            <left>0</left>
+            <top>0</top>
+            <animation effect="slide" start="-400,0" end="0,0" time="300" tween="cubic">WindowOpen</animation>
+            <animation effect="slide" start="0,0" end="-400,0" time="300" tween="cubic">WindowClose</animation>
+            <include>BackgroundItems19</include>
+            <!-- Channel Info Group -->
+            <control type="group">
+                <left>20</left>
+                <top>90</top>
+                <!-- Channel Logo -->
+                <control type="image" id="6001">
+                    <description>Channel logo</description>
+                    <left/>
+                    <top/>
+                    <width/>
+                    <height/>
+                    <font/>
+                    <label/>
+                    <textcolor/>
+                </control>
+                <!-- Channel Name -->
+                <control type="label" id="6002">
+                    <description>Channel name</description>
+                    <left/>
+                    <top/>
+                    <width/>
+                    <height/>
+                    <font/>
+                    <label/>
+                    <textcolor/>
+                </control>
+                <!-- Current Show -->
+                <control type="label" id="6003">
+                    <description>Current show</description>
+                    <left/>
+                    <top/>
+                    <width/>
+                    <height/>
+                    <font/>
+                    <label/>
+                    <textcolor/>
+                </control>
+                <!-- Time Progress -->
+                <control type="label" id="6004">
+                    <description>Time</description>
+                    <left/>
+                    <top/>
+                    <width/>
+                    <height/>
+                    <font/>
+                    <label/>
+                    <textcolor/>
+                </control>
+            </control>
+            <!-- Separator -->
+            <control type="label">
+                <posx>167</posx>
+                <posy>75</posy>
+                <width>255</width>
+                <height>180</height>
+                <aligny>center</aligny>
+                <align>center</align>
+                <font>fontsize_46</font>
+                <textcolor>white</textcolor>
+                <info>System.Time</info>
+            </control>
+            <control type="label">
+                <description>Video Time Remaining</description>
+                <posx>160</posx>
+                <posy>830</posy>
+                <width>255</width>
+                <height>180</height>
+                <aligny>center</aligny>
+                <align>center</align>
+                <font>fontsize_46</font>
+                <textcolor>white</textcolor>
+                <info>VideoPlayer.TimeRemaining(hh:mm:ss)</info>
+                <visible>Player.HasVideo</visible>
+            </control>
+            <!-- Menu List -->
+            <control type="list" id="6000">
+                <description>Menu list</description>
+                <posx>162</posx>
+                <posy>216</posy>
+                <width>265</width>
+                <height>780</height>
+                <onleft>noop</onleft>
+                <onright>9000</onright>
+                <scrolltime>200</scrolltime>
+                <orientation>vertical</orientation>
+                <itemlayout height="72">
+                    <control type="label">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>259</width>
+                        <height>72</height>
+                        <font/>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <textcolor/>
+                        <info>ListItem.Label</info>
+                    </control>
+                </itemlayout>
+                <focusedlayout height="72">
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>259</width>
+                        <height>72</height>
+                        <texture>ptvButtonFocus.png</texture>
+                        <visible>Control.HasFocus(6000)</visible>
+                    </control>
+                    <control type="label">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>259</width>
+                        <height>72</height>
+                        <font>fontsize_38</font>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <textcolor>ff000000</textcolor>
+                        <info>ListItem.Label</info>
+                    </control>
+                </focusedlayout>
+            </control>
+        </control>
+    </controls>
+</window>

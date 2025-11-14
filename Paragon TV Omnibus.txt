@@ -1,0 +1,290 @@
+# Paragon TV Omnibus
+## Comprehensive Project Guidelines & Reference
+
+---
+
+## Core Project Principles
+
+### 1. Project Separation
+- **This project is Paragon TV** - always refer to it as such
+- If referencing the previous version, call it "the old version of Paragon TV"
+- No mixing of code, features, or concepts between old and new versions unless explicitly requested
+- Each version maintains its own identity and purpose
+
+### 2. Technical Requirements
+- **Kodi Version:** 17.6 (Krypton) - Non-negotiable
+- **Python Version:** 2.7 only - No Python 3 syntax or features
+- **API Compatibility:** Must use Kodi 17.6 compatible APIs and methods
+
+### 3. Development Foundation
+- Built upon Steveb1968's fork of the original PseudoTV (by Jason102)
+- Heavily modified with custom features and enhancements
+- Respects the legacy codebase while extending functionality
+
+---
+
+## Development Guidelines
+
+### Code Standards
+- All code must be Python 2.7 compliant
+- Use Kodi 17.6 (Krypton) API calls only
+- Maintain compatibility with existing Paragon TV functionality
+- Document all modifications from the Steveb fork baseline
+
+### Testing Requirements
+- Primary testing platform: Kodi 17.6
+- Verify backward compatibility with existing features
+- Test on target hardware/environment when possible
+
+### Documentation Standards
+- Track all custom features and modifications
+- Maintain clear separation from base fork features
+- Document dependencies and library requirements for Python 2.7
+- **Build comprehensive user documentation as we work:**
+  - Document all features and how they work
+  - Explain functionality for beginners through experts
+  - Include step-by-step guides and examples
+  - Create a complete user manual within this Omnibus
+  - Document troubleshooting and common issues
+  - Explain technical concepts in accessible language
+
+---
+
+## Project History
+
+### Original PseudoTV (Jason102)
+- Created the concept of virtual TV channels in Kodi
+- Implemented basic EPG and channel surfing functionality
+- Established the foundation for all future forks
+
+### Steveb1968 Fork
+- Added extensive UI improvements and multiple skins
+- Implemented channel sharing and auto-start features
+- Added reset watched status functionality
+- Created advanced channel rules system
+- Supported Kodi versions 17 (Krypton) through 18 (Leia)
+
+### Paragon TV
+- **Creator: Aryez**
+- Heavily modified version of Steveb's fork
+- Custom features and extensive modifications (to be documented)
+- Optimized for Kodi 17.6 and Python 2.7 environment
+
+---
+
+## Key Features from Base (Steveb Fork)
+
+### Channel Management
+- Automatic channel creation from library
+- Custom channel configuration tool
+- Smart playlist support
+- Advanced channel rules
+
+### Playback Features
+- Multiple resume modes (Resume/Random/Real-Time)
+- Channel pausing and resuming
+- Background channel updating
+- Idle timer functionality
+
+### Visual/UI Features
+- Multiple skin support
+- Channel watermarks/logos
+- EPG with customizable display
+- Info displays and notifications
+- "Coming Up Next" box
+
+### Technical Features
+- Reset watched status (preserves library state)
+- Adjustable seek times
+- Playlist media limits
+- Channel sharing across systems
+- Hide short videos option
+
+---
+
+## Paragon TV Modifications
+*Section to be populated after file analysis*
+
+### Custom Features Added
+- TBD after codebase review
+
+### Modified Base Features
+- TBD after codebase review
+
+### Removed/Deprecated Features
+- TBD after codebase review
+
+---
+
+## Branding Guidelines
+
+### Rebranding Requirements
+- **ALL references to "pseudotv" must be replaced with "Paragon TV"**
+- **Creator attribution: Aryez** (replaces Steveb1968 references where applicable)
+- **Year: 2025** (replaces any legacy years like 2011, 2017, etc.)
+- This applies to:
+  - File names and paths
+  - Variable names and function names
+  - Code comments and documentation
+  - UI strings and labels
+  - Settings and configuration references
+  - Creator/author credits
+  - Copyright notices and dates
+  - Any other text or code references
+- Maintain consistency across entire codebase
+- Case sensitivity: Match the original case pattern (PseudoTV → Paragon TV, pseudotv → paragontv, etc.)
+
+---
+
+## Response & Editing Protocol
+
+### **CRITICAL RULE: No Guessing Allowed**
+- **NEVER guess at solutions** - if you don't know the answer, you MUST say so explicitly
+- You can present **theories** or **ideas** - but must clearly label them as such
+- Be upfront about uncertainty: "This is a theory..." or "I'm not certain, but here's an idea..."
+- Honesty about knowledge gaps is mandatory
+- Better to admit "I don't know" than to provide potentially incorrect information
+
+### Default File Handling
+- **Always provide complete file rewrites** with all changes integrated
+- Present the full, updated file ready for immediate use
+- Include all rebranding, modifications, and improvements in the complete rewrite
+- No partial snippets or "change this section" approaches by default
+
+### Exceptions to Complete Rewrites
+- Files exceeding 2000 lines (too large for single response)
+- When explicitly requested to provide only specific changes
+- **In these cases:**
+  - Provide complete rewrites of entire sections/functions that contain the changes
+  - Present changes in full context, not as isolated snippets
+  - Rewrite the complete logical unit (function, class, section) affected
+  - Ensure changes are shown with all surrounding code needed for proper integration
+
+### Benefits of This Approach
+- Immediate usability - copy and paste complete files
+- No manual integration of multiple changes required
+- Ensures all modifications are consistently applied
+- Reduces risk of missing changes or integration errors
+
+---
+
+## Communication Protocols
+
+### When Requesting Assistance
+1. Always refer to this project as **Paragon TV**
+2. Reference the previous version as "the old version of Paragon TV" if needed
+3. Provide relevant context and constraints
+4. Reference specific files/features when applicable
+5. Clarify if cross-version knowledge is needed
+
+### Context Switching
+- Explicitly state when referencing the old version of Paragon TV
+- Confirm understanding before proceeding with changes
+- Maintain awareness of version-specific constraints
+
+---
+
+## File Structure
+*Documentation of rebranded files*
+
+### Files Rebranded (17 total)
+
+#### Core Files
+1. **service.py** - Main service script for autostart and timer management
+2. **addon.xml** - Addon manifest and metadata
+3. **changelog.txt** - Version history and changes
+4. **default.py** - Main entry point script
+5. **kodi_restart_files_monitor.py** - Monitors and removes restart marker files
+
+#### Configuration & UI Files
+6. **AdvancedConfig.py** - Advanced rule configuration dialog
+7. **Config.py** - Main channel configuration window
+8. **BrowseWindow.py** - Content browsing interface
+9. **EPGWindow.py** - Electronic Program Guide window (key sections)
+10. **EpisodeBrowserWindow.py** - Episode/season browser for TV shows
+
+#### Core Logic Files
+11. **Channel.py** - Channel class and management
+12. **ChannelList.py** - Channel list management and smart distribution
+13. **ChannelListThread.py** - Background channel updating thread
+14. **GlobalRulesHandler.py** - Global rules system handler
+
+#### Utility Files
+15. **AVIParser.py** - AVI video file parser
+16. **FLVParser.py** - FLV video file parser
+17. **FileAccess.py** - File access and locking utilities
+
+### Rebranding Changes Applied
+
+**All files have been updated with:**
+- Copyright → 2025 Aryez
+- "PseudoTV" → "Paragon TV" in all comments and headers
+- ADDON_ID → 'script.paragontv'
+- Font names → "ParagonTv10", "ParagonTv12", etc. (where applicable)
+- XML references → "script.paragontv.*"
+- Window properties → "ParagonTV*" or "PTV.*"
+- Error notifications → "Paragon TV"
+
+### Key Features Documented
+
+#### Smart Distribution System (ChannelList.py)
+- Applies to TV Genre channels (type 3)
+- Every show gets at least 1 episode
+- 5% hard cap (max 5 episodes per 100 total)
+- Exception: channels with <10 shows get no hard cap
+- Weighted selection favors smaller shows
+- Episode spacing algorithm to prevent clustering
+
+#### Music Genre Support
+- Channel type 12 added for Music Genre
+- Audio library integration via JSON-RPC
+- Music file metadata parsing (Artist/Album/Track)
+- EPG display formatting for music tracks
+- Config.py updated with music genre selection
+
+#### Global Rules System
+- Rule compatibility mapping for channel types
+- Global rule application per channel type
+- Channel exclusion list support
+- Rule options configuration dialog
+
+#### Episode Browser
+- Two-window system: Season browser → Episode list
+- JSON-RPC integration for TV show data
+- Artwork support (landscape, logos, thumbnails)
+- Episode metadata display
+
+---
+
+## Future Considerations
+
+### Potential Upgrades
+- Document any planned migrations or updates
+- Track compatibility concerns with newer Kodi versions
+- Note Python 3 migration considerations (if applicable)
+
+### Maintenance Notes
+- Keep record of bug fixes and patches
+- Document workarounds for Kodi 17.6 limitations
+- Track third-party dependencies and their versions
+
+---
+
+## Reference Links
+
+### Original Projects
+- [Steveb1968 Fork](https://github.com/Steveb1968/script.pseudotv) (Archived)
+- [Original PseudoTV](https://github.com/Jasonra/XBMC-PseudoTV)
+
+### Related Forks
+- [PseudoTV Live](https://github.com/PseudoTV/PseudoTV_Live) (Lunatixz)
+- [fnord12 Fork](https://github.com/fnord12/script.pseudotv)
+
+### Documentation
+- Kodi 17.6 (Krypton) API Documentation
+- Python 2.7 Documentation
+
+---
+
+*Last Updated: [Date]*
+*Version: 1.0*

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.paragontv" version="2.4.4" name="Paragon TV" provider-name="Aryez">
+    <requires>
+        <import addon="xbmc.python" version="2.14.0"/>
+        <import addon="script.module.pil" version="1.1.7"/>
+    </requires>
+    <extension point="xbmc.python.script" defaultresolution="720p" library="default.py"/>
+    <extension point="xbmc.service" library="service.py" start="startup"/>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="en">Channel surfing for your video library</summary>
+        <summary lang="pt_BR">Crie Canais de TV fictícios sua biblioteca de vídeo</summary>
+        <description lang="en">Paragon TV acts similar to normal broadcast or cable TV, complete with multiple preset and user-defined channels and an EPG.</description>
+        <description lang="pt_BR">Paragon TV atua semelhante a um transmissão normal de TV a cabo, com pré-ajuste múltiplo e canais definidos pelo usuário.</description>
+        <source>https://github.com/Aryez/script.paragontv</source>
+        <website>https://github.com/Aryez/script.paragontv</website>
+        <license>GNU GENERAL PUBLIC LICENSE Version 3</license>
+        <forum/>
+        <news>Added option to enable/disable channel logo's in the epg grid.[CR]New Default Skin (Estuary based).[CR]Added default font.</news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>resources/screenshots/screenshot-01.png</screenshot>
+            <screenshot>resources/screenshots/screenshot-02.png</screenshot>
+            <screenshot>resources/screenshots/screenshot-03.png</screenshot>
+            <screenshot>resources/screenshots/screenshot-04.png</screenshot>
+        </assets>
+    </extension>
+</addon>
