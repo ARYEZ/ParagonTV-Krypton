@@ -82,7 +82,7 @@ def Start():
     """Start Paragon TV main interface"""
     # Check if we're in Autopilot Mode
     if ADDON.getSetting("AutopilotEnabled") == "true":
-        xbmc.log("Paragon TV - Running in Autopilot Mode (slave)", xbmc.LOGNOTICE)
+        xbmc.log("Paragon TV - Running in Autopilot Mode (satellite)", xbmc.LOGNOTICE)
         
         # Show status notification
         master_ip = ADDON.getSetting("AutopilotMasterIP")

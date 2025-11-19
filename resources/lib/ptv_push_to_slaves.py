@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Paragon TV Push to Slaves - Standalone script for pushing after rebuild
+Paragon TV Push to Satellites - Standalone script for pushing after rebuild
 """
 
 import os
@@ -15,30 +15,30 @@ ADDON_ID = 'script.paragontv'
 ADDON = xbmcaddon.Addon(ADDON_ID)
 
 def log(msg, level=xbmc.LOGDEBUG):
-    xbmc.log("[PTV Push to Slaves] " + str(msg), level)
+    xbmc.log("[PTV Push to Satellites] " + str(msg), level)
 
 def notify(msg, title="PTV Push"):
     xbmc.executebuiltin("Notification({}, {}, 5000)".format(title, msg))
 
-def push_to_slaves():
-    """Push settings and cache to configured slave systems"""
-    log("Starting push to slave systems")
+def push_to_satellites():
+    """Push settings and cache to configured satellite systems"""
+    log("Starting push to satellite systems")
     
     # Check if master push is enabled
     if ADDON.getSetting("EnableMasterPush") != "true":
         log("Master push disabled")
         return False
         
-    # Get slave IPs from settings
-    slave_ips = []
-    for i in range(1, 6):  # Support up to 5 slaves
-        slave_ip = ADDON.getSetting("SlaveIP{}".format(i))
-        if slave_ip:
-            slave_ips.append(slave_ip)
+    # Get satelliteIPs from settings
+    satellite_ips = []
+    for i in range(1, 6):  # Support up to 5 satellites
+        satellite_ip = ADDON.getSetting("SlaveIP{}".format(i))
+        if satellite_ip:
+            satellite_ips.append(satellite_ip)
     
-    if not slave_ips:
-        log("No slave systems configured")
-        notify("No slaves configured")
+    if not satellite_ips:
+        log("No satellite systems configured")
+        notify("No satellites configured")
         return False
         
     # Source paths
@@ -57,39 +57,39 @@ def push_to_slaves():
         notify("cache folder not found", "Error")
         return False
         
-    notify("Pushing to {} slave(s)".format(len(slave_ips)))
+    notify("Pushing to {} satellite(s)".format(len(satellite_ips)))
     success_count = 0
     
-    for slave_ip in slave_ips:
+    for satellite_ip in satellite_ips:
         try:
-            log("Pushing to slave: {}".format(slave_ip))
+            log("Pushing to satellite: {}".format(satellite_ip))
             
             # Test connection first
             test_cmd = ['ssh', '-o', 'ConnectTimeout=5', '-o', 'BatchMode=yes', 
-                       'root@{}'.format(slave_ip), 'echo "connected"']
+                       'root@{}'.format(satellite_ip), 'echo "connected"']
             result = subprocess.call(test_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
             if result != 0:
-                log("Cannot connect to slave {}".format(slave_ip), xbmc.LOGWARNING)
+                log("Cannot connect to satellite{}".format(satellite_ip), xbmc.LOGWARNING)
                 continue
                 
             # Create target directory if needed
-            mkdir_cmd = ['ssh', 'root@{}'.format(slave_ip), 
+            mkdir_cmd = ['ssh', 'root@{}'.format(satellite_ip), 
                         'mkdir -p /storage/.kodi/userdata/addon_data/script.paragontv/cache']
             subprocess.call(mkdir_cmd)
             
             # Push settings2.xml
-            log("Pushing settings2.xml to {}".format(slave_ip))
+            log("Pushing settings2.xml to {}".format(satellite_ip))
             scp_cmd = ['scp', '-o', 'ConnectTimeout=10', settings2_path,
-                      'root@{}:/storage/.kodi/userdata/addon_data/script.paragontv/'.format(slave_ip)]
+                      'root@{}:/storage/.kodi/userdata/addon_data/script.paragontv/'.format(satellite_ip)]
             result = subprocess.call(scp_cmd)
             
             if result != 0:
-                log("Failed to push settings2.xml to {}".format(slave_ip), xbmc.LOGERROR)
+                log("Failed to push settings2.xml to {}".format(satellite_ip), xbmc.LOGERROR)
                 continue
                 
             # Push cache folder
-            log("Pushing cache folder to {}".format(slave_ip))
+            log("Pushing cache folder to {}".format(satellite_ip))
             
             # Check if rsync is available
             rsync_check = subprocess.call(['which', 'rsync'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -97,32 +97,32 @@ def push_to_slaves():
             if rsync_check == 0:
                 # Use rsync
                 rsync_cmd = ['rsync', '-az', '--delete', cache_path,
-                           'root@{}:/storage/.kodi/userdata/addon_data/script.paragontv/'.format(slave_ip)]
+                           'root@{}:/storage/.kodi/userdata/addon_data/script.paragontv/'.format(satellite_ip)]
                 result = subprocess.call(rsync_cmd)
             else:
                 # Use scp as fallback
                 scp_cmd = ['scp', '-r', '-o', 'ConnectTimeout=10', cache_path,
-                          'root@{}:/storage/.kodi/userdata/addon_data/script.paragontv/'.format(slave_ip)]
+                          'root@{}:/storage/.kodi/userdata/addon_data/script.paragontv/'.format(satellite_ip)]
                 result = subprocess.call(scp_cmd)
                 
             if result == 0:
-                log("Successfully pushed to {}".format(slave_ip))
+                log("Successfully pushed to {}".format(satellite_ip))
                 success_count += 1
             else:
-                log("Failed to push cache to {}".format(slave_ip), xbmc.LOGERROR)
+                log("Failed to push cache to {}".format(satellite_ip), xbmc.LOGERROR)
                 
         except Exception as e:
-            log("Error pushing to {}: {}".format(slave_ip, str(e)), xbmc.LOGERROR)
+            log("Error pushing to {}: {}".format(satellite_ip, str(e)), xbmc.LOGERROR)
             
-    log("Push completed. {} of {} slaves updated".format(success_count, len(slave_ips)))
+    log("Push completed. {} of {} satellites updated".format(success_count, len(satellite_ips)))
     
     if success_count > 0:
-        notify("Updated {} slave(s)".format(success_count), "Push Complete")
+        notify("Updated {} satellite(s)".format(success_count), "Push Complete")
     else:
-        notify("Failed to update slaves", "Push Failed")
+        notify("Failed to update satellites", "Push Failed")
         
     return success_count > 0
 
 # Main execution
 if __name__ == "__main__":
-    push_to_slaves()
+    push_to_satellites()

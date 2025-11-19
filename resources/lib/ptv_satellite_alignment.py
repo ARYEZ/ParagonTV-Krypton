@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Paragon TV Satellite Alignment - Push entire addon to slave systems
+Paragon TV Satellite Alignment - Push entire addon to satellite systems
 """
 
 import os
@@ -22,7 +22,7 @@ def notify(msg, title="Satellite Alignment"):
     xbmc.executebuiltin("Notification({}, {}, 5000)".format(title, msg))
 
 def satellite_alignment():
-    """Push entire addon to configured slave systems"""
+    """Push entire addon to configured satellite systems"""
     log("Starting satellite alignment")
     
     # Check if satellite alignment is enabled
@@ -30,15 +30,15 @@ def satellite_alignment():
         log("Satellite alignment disabled")
         return False
         
-    # Get slave IPs from settings
-    slave_ips = []
-    for i in range(1, 6):  # Support up to 5 slaves
-        slave_ip = ADDON.getSetting("SlaveIP{}".format(i))
-        if slave_ip:
-            slave_ips.append(slave_ip)
+    # Get satellite IPs from settings
+    satellite_ips = []
+    for i in range(1, 6):  # Support up to 5 satellites
+        satellite_ip = ADDON.getSetting("SlaveIP{}".format(i))
+        if satellite_ip:
+            satellite_ips.append(satellite_ip)
     
-    if not slave_ips:
-        log("No slave systems configured")
+    if not satellite_ips:
+        log("No satellite systems configured")
         notify("No satellites configured")
         return False
         
@@ -48,24 +48,24 @@ def satellite_alignment():
         notify("Addon path not found", "Error")
         return False
         
-    notify("Aligning {} satellite(s)".format(len(slave_ips)))
+    notify("Aligning {} satellite(s)".format(len(satellite_ips)))
     success_count = 0
     
-    for slave_ip in slave_ips:
+    for satellite_ip in satellite_ips:
         try:
-            log("Aligning satellite: {}".format(slave_ip))
+            log("Aligning satellite: {}".format(satellite_ip))
             
             # Test connection first
             test_cmd = ['ssh', '-o', 'ConnectTimeout=5', '-o', 'BatchMode=yes', 
-                       'root@{}'.format(slave_ip), 'echo "connected"']
+                       'root@{}'.format(satellite_ip), 'echo "connected"']
             result = subprocess.call(test_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
             if result != 0:
-                log("Cannot connect to satellite {}".format(slave_ip), xbmc.LOGWARNING)
+                log("Cannot connect to satellite {}".format(satellite_ip), xbmc.LOGWARNING)
                 continue
                 
             # Push entire addon folder
-            log("Pushing addon to {}".format(slave_ip))
+            log("Pushing addon to {}".format(satellite_ip))
             
             # Check if rsync is available
             rsync_check = subprocess.call(['which', 'rsync'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -73,42 +73,42 @@ def satellite_alignment():
             if rsync_check == 0:
                 # Use rsync - delete files on destination that don't exist in source
                 rsync_cmd = ['rsync', '-az', '--delete', ADDON_PATH,
-                           'root@{}:/storage/.kodi/addons/'.format(slave_ip)]
+                           'root@{}:/storage/.kodi/addons/'.format(satellite_ip)]
                 result = subprocess.call(rsync_cmd)
             else:
                 # Use scp as fallback (recursive copy)
-                # First, remove the old addon folder on the slave
-                rm_cmd = ['ssh', 'root@{}'.format(slave_ip), 
+                # First, remove the old addon folder on the satellite
+                rm_cmd = ['ssh', 'root@{}'.format(satellite_ip), 
                          'rm -rf /storage/.kodi/addons/script.paragontv']
                 subprocess.call(rm_cmd)
                 
                 # Then copy the new one
                 scp_cmd = ['scp', '-r', '-o', 'ConnectTimeout=10', ADDON_PATH,
-                          'root@{}:/storage/.kodi/addons/'.format(slave_ip)]
+                          'root@{}:/storage/.kodi/addons/'.format(satellite_ip)]
                 result = subprocess.call(scp_cmd)
                 
             if result == 0:
-                log("Successfully aligned {}".format(slave_ip))
+                log("Successfully aligned {}".format(satellite_ip))
                 success_count += 1
                 
-                # Send notification to the slave box
-                notify_cmd = ['ssh', 'root@{}'.format(slave_ip),
+                # Send notification to the satellite box
+                notify_cmd = ['ssh', 'root@{}'.format(satellite_ip),
                             'kodi-send --action="Notification(Satellite Alignment,Satellites Realigned. Reset in 10 seconds.,10000)"']
                 subprocess.call(notify_cmd)
                 
-                # Schedule Kodi restart on slave after 10 seconds
-                restart_cmd = ['ssh', 'root@{}'.format(slave_ip),
+                # Schedule Kodi restart on satellite after 10 seconds
+                restart_cmd = ['ssh', 'root@{}'.format(satellite_ip),
                              'nohup sh -c "sleep 10 && killall -9 kodi.bin" > /dev/null 2>&1 &']
                 subprocess.call(restart_cmd)
                 
-                log("Scheduled restart for {} in 10 seconds".format(slave_ip))
+                log("Scheduled restart for {} in 10 seconds".format(satellite_ip))
             else:
-                log("Failed to align {}".format(slave_ip), xbmc.LOGERROR)
+                log("Failed to align {}".format(satellite_ip), xbmc.LOGERROR)
                 
         except Exception as e:
-            log("Error aligning {}: {}".format(slave_ip, str(e)), xbmc.LOGERROR)
+            log("Error aligning {}: {}".format(satellite_ip, str(e)), xbmc.LOGERROR)
             
-    log("Alignment completed. {} of {} satellites aligned".format(success_count, len(slave_ips)))
+    log("Alignment completed. {} of {} satellites aligned".format(success_count, len(satellite_ips)))
     
     if success_count > 0:
         notify("Alignment complete. Updated {} satellite(s)".format(success_count))

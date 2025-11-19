@@ -3,7 +3,7 @@
 """
 Paragon TV Preset Refresh Timer - 9-Phase Macro System
 Consolidated system with built-in maintenance and startup functionality
-Phase 4: Push to Slaves
+Phase 4: Push to Satellites
 Phase 9: Evening Startup (Final Phase)
 """
 
@@ -45,7 +45,7 @@ class PresetRefreshTimer:
     def __init__(self):
         self.running = True
         self.last_phase_trigger = {}
-        self.preset_names = ["Alpha", "Omega", "Delta", "Epsilon", "Gamma", "Sigma", "Omicron"]
+        self.preset_names = ["Alpha", "Omega", "Delta", "Epsilon", "Gamma", "Sigma", "Omicron", "Theta", "Lambda"]
         log("PTV Preset Refresh Timer (9-Phase Consolidated System) initialized", xbmc.LOGNOTICE)
 
     def get_todays_preset(self):
@@ -80,7 +80,7 @@ class PresetRefreshTimer:
         if preset_value == 0:
             log("No preset scheduled for {}".format(day_names[weekday]))
             return None
-        elif preset_value <= 7:
+        elif preset_value <= 9:
             preset_name = self.preset_names[preset_value - 1]
             log("Today's preset for {}: {} (index={})".format(day_names[weekday], preset_name, preset_value - 1), xbmc.LOGNOTICE)
             return preset_name
@@ -98,8 +98,8 @@ class PresetRefreshTimer:
             "description": REAL_SETTINGS.getSetting("{}Description".format(preset_name)) or preset_name,
         }
 
-        # For Sigma and Omicron presets, skip Phase 1 (no maintenance)
-        if preset_name not in ["Sigma", "Omicron"]:
+        # For satellite presets (Sigma, Omicron, Theta, Lambda), skip Phase 1 (no maintenance)
+        if preset_name not in ["Sigma", "Omicron", "Theta", "Lambda"]:
             config["phase1"] = {
                 "time": REAL_SETTINGS.getSetting("{}Phase1Time".format(preset_name)),
                 "nfo_bumpers": REAL_SETTINGS.getSetting("{}Phase1NFOBumpers".format(preset_name)) == "true",
@@ -114,7 +114,7 @@ class PresetRefreshTimer:
                 "reload_config": REAL_SETTINGS.getSetting("{}Phase1ReloadConfig".format(preset_name)) == "true",
             }
 
-        # Phases 2-9 are the same for all presets including Sigma
+        # Phases 2-9 are the same for all presets including satellite presets
         config["phase2"] = {
             "time": REAL_SETTINGS.getSetting("{}Phase2Time".format(preset_name)),
             "enable_channel": REAL_SETTINGS.getSetting("{}Phase2EnableChannel".format(preset_name)) == "true",
@@ -370,26 +370,26 @@ class PresetRefreshTimer:
         log("Phase 1 maintenance completed for preset {}".format(config["name"]), xbmc.LOGERROR)
 
     def execute_phase4_push(self, config):
-        """Execute Phase 4 - Push to Slaves"""
-        log("Executing Phase 4 (Push to Slaves) for preset: {}".format(config["name"]), xbmc.LOGERROR)
+        """Execute Phase 4 - Push to Satellites"""
+        log("Executing Phase 4 (Push to Satellites) for preset: {}".format(config["name"]), xbmc.LOGERROR)
         
-        # Sigma and Omicron presets always skip Phase 4 (they're for slave systems only)
-        if config["name"] in ["Sigma", "Omicron"]:
-            log("Phase 4 skipped for {} preset (slave-only preset)".format(config["name"]), xbmc.LOGNOTICE)
+        # Satellite presets always skip Phase 4 (they're for satellite systems only)
+        if config["name"] in ["Sigma", "Omicron", "Theta", "Lambda"]:
+            log("Phase 4 skipped for {} preset (satellite-only preset)".format(config["name"]), xbmc.LOGNOTICE)
             return
         
         if not config["phase4"]["enable"]:
             log("Phase 4 disabled for preset {}".format(config["name"]))
             return
         
-        notify("Phase 4: Pushing to slaves - {}".format(config["name"]), "PTV Preset Timer")
+        notify("Phase 4: Pushing to satellites - {}".format(config["name"]), "PTV Preset Timer")
         
         push_script = os.path.join(ADDON_PATH, "resources", "lib", "ptv_push_to_slaves.py")
         
         if os.path.exists(push_script):
             try:
                 xbmc.executebuiltin("RunScript({})".format(push_script))
-                log("Launched push to slaves script", xbmc.LOGERROR)
+                log("Launched push to satellites script", xbmc.LOGERROR)
             except Exception as e:
                 log("Error launching push script: {}".format(e), xbmc.LOGERROR)
                 notify("Failed to launch push script", "PTV Preset Timer")
@@ -404,7 +404,7 @@ class PresetRefreshTimer:
         notify("Phase {}: {} - {}".format(phase_num, phase_name, config["name"]), "PTV Preset Timer")
 
         # Check if ForceChannelReset is enabled (from phase 1)
-        # For Sigma preset, since there's no Phase 1, ForceChannelReset won't be set
+        # For satellite presets, since there's no Phase 1, ForceChannelReset won't be set
         force_reset = REAL_SETTINGS.getSetting("ForceChannelReset") == "true" if phase_num == 2 else False
 
         if force_reset:
@@ -483,11 +483,11 @@ class PresetRefreshTimer:
                 log("Failed to get config for preset: {}".format(preset_name))
                 return
 
-            # Check Phase 1 only if preset has it (not Sigma)
+            # Check Phase 1 only if preset has it (not satellite presets)
             if "phase1" in config and self.check_phase_trigger(preset_name, 1, config["phase1"]["time"]):
                 self.execute_phase1_maintenance(config)
 
-            # Check remaining phases (2-9) - all presets including Sigma have these
+            # Check remaining phases (2-9) - all presets including satellite presets have these
             if self.check_phase_trigger(preset_name, 2, config["phase2"]["time"]):
                 self.execute_startup_phase(config, 2, config["phase2"], "First Startup")
 

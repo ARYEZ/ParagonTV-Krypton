@@ -47,7 +47,7 @@ class SidebarWindow(xbmcgui.WindowXMLDialog):
             ("Favorites", "favorites"),
             ("On Demand", "browse"),
             ("Playback", "settings"),
-            ("Forecast", "weather"),
+            ("Video Info", "codecinfo"),
             ("Blackout", "blackout"),
             ("Flashback", "lastchannel"),
             ("Silence", "mute"),

@@ -435,7 +435,8 @@ class InterleaveChannel(BaseRule):
             chan = 0
             minint = 0
             maxint = 0
-            startingep = 1  # Hardcoded to always start from the beginning
+            # Use global bumper position instead of always starting at 1
+            startingep = channelList.globalBumperPosition
             curchan = channelList.runningActionChannel
             curruleid = channelList.runningActionId
             self.validate()
@@ -504,7 +505,19 @@ class InterleaveChannel(BaseRule):
                 newfilelist.append(filelist[startindex])
                 startindex += 1
 
-            # No longer saving the starting episode since it's always 1
+            # Update global bumper position for next channel
+            bumperChannelSize = channelList.channels[chan - 1].Playlist.size()
+            if bumperChannelSize > 0:
+                # Wrap around if we've exceeded the bumper channel size
+                channelList.globalBumperPosition = ((startingep - 1) % bumperChannelSize) + 1
+                # Save to settings for persistence
+                try:
+                    from Globals import ADDON_SETTINGS
+                    ADDON_SETTINGS.setSetting("GlobalBumperPosition", str(channelList.globalBumperPosition))
+                    self.log("Updated global bumper position to: " + str(channelList.globalBumperPosition))
+                except Exception as e:
+                    self.log("Error saving global bumper position: " + str(e))
+
             self.log("Done interleaving, new length is " + str(len(newfilelist)))
             return newfilelist
 
