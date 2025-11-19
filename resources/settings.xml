@@ -634,7 +634,7 @@
         <setting label="Timer Services" type="lsep"/>
         <setting type="action" label="Start Preset Timer Service" action="RunScript($CWD/resources/lib/ptv_preset_timer.py)"/>
         <setting type="action" label="Start Shutdown Timer Service" action="RunScript($CWD/resources/lib/ptv_shutdown_timer.py)"/>
-        <setting type="action" label="Push to Satellites (Manual)" action="RunScript($CWD/resources/lib/ptv_push_to_slaves.py)"/>
+        <setting type="action" label="Push to Satellites (Manual)" action="RunScript($CWD/resources/lib/ptv_push_to_satellites.py)"/>
 		<setting id="EnableSatelliteAlignment" type="bool" label="Enable Satellite Alignment" default="false"/>
         <setting type="action" label="Satellite Alignment (Manual)" action="RunScript($CWD/resources/lib/ptv_satellite_alignment.py)" enable="eq(-1,true)"/>
         <setting type="sep"/>
