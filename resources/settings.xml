@@ -120,22 +120,22 @@
         <setting id="EnablePresetSystem" type="bool" label="Enable Preset Refresh System" default="false"/>
         <setting type="sep"/>
         <setting label="Weekly Preset Schedule" type="lsep"/>
-        <setting id="MondayPreset" type="enum" label="Monday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="1"/>
-		<setting id="TuesdayPreset" type="enum" label="Tuesday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="1"/>
-		<setting id="WednesdayPreset" type="enum" label="Wednesday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="1"/>
-		<setting id="ThursdayPreset" type="enum" label="Thursday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
-		<setting id="FridayPreset" type="enum" label="Friday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
-		<setting id="SaturdayPreset" type="enum" label="Saturday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
-		<setting id="SundayPreset" type="enum" label="Sunday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron" default="2"/>
+        <setting id="MondayPreset" type="enum" label="Monday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron|Theta|Lambda" default="1"/>
+		<setting id="TuesdayPreset" type="enum" label="Tuesday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron|Theta|Lambda" default="1"/>
+		<setting id="WednesdayPreset" type="enum" label="Wednesday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron|Theta|Lambda" default="1"/>
+		<setting id="ThursdayPreset" type="enum" label="Thursday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron|Theta|Lambda" default="2"/>
+		<setting id="FridayPreset" type="enum" label="Friday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron|Theta|Lambda" default="2"/>
+		<setting id="SaturdayPreset" type="enum" label="Saturday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron|Theta|Lambda" default="2"/>
+		<setting id="SundayPreset" type="enum" label="Sunday" values="None|Alpha|Omega|Delta|Epsilon|Gamma|Sigma|Omicron|Theta|Lambda" default="2"/>
         <setting type="sep"/>
         <setting label="NFO Renamer Directories (for Phase 1 Maintenance)" type="lsep"/>
         <setting id="NFOBumpersPath" type="folder" label="Bumpers Directory" source="auto" default=""/>
         <setting id="NFOMoviesPath" type="folder" label="Movies Directory" source="auto" default=""/>
         <setting id="NFOTelevisionPath" type="folder" label="TV Shows Directory" source="auto" default=""/>
         <setting type="sep"/>
-        <setting label="ALPHA Preset - Heavy Maintenance" type="lsep"/>
+        <setting label="[COLOR FFCC5500]ALPHA[/COLOR] Preset - Heavy Maintenance" type="lsep"/>
         <setting id="AlphaDescription" type="text" label="Description" default="Full maintenance with all tasks" enable="false"/>
-        <setting label="Alpha Phase 1: Maintenance" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 1: Maintenance" type="lsep"/>
         <setting id="AlphaPhase1Time" type="time" label="Time" default="03:50"/>
         <setting id="AlphaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="true"/>
         <setting id="AlphaPhase1NFOMovies" type="bool" label="Rename Movies" default="true"/>
@@ -147,42 +147,42 @@
         <setting id="AlphaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
         <setting id="AlphaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
         <setting id="AlphaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
-        <setting label="Alpha Phase 2: First Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 2: First Startup" type="lsep"/>
         <setting id="AlphaPhase2Time" type="time" label="Time" default="04:20"/>
         <setting id="AlphaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
         <setting id="AlphaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="AlphaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Alpha Phase 3: First Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 3: First Shutdown" type="lsep"/>
         <setting id="AlphaPhase3Time" type="time" label="Time" default="04:40"/>
         <setting id="AlphaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Alpha Phase 4: Push to Slaves" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
         <setting id="AlphaPhase4Time" type="time" label="Time" default="04:50"/>
-        <setting id="AlphaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
-        <setting label="Alpha Phase 5: First Wake" type="lsep"/>
+        <setting id="AlphaPhase4Enable" type="bool" label="Enable Push to Satellites" default="true" enable="!isempty(-1)"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 5: First Wake" type="lsep"/>
         <setting id="AlphaPhase5Time" type="time" label="Time" default="04:55"/>
         <setting id="AlphaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="AlphaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
         <setting id="AlphaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Alpha Phase 6: Second Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
         <setting id="AlphaPhase6Time" type="time" label="Time" default="07:00"/>
         <setting id="AlphaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Alpha Phase 7: Second Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 7: Second Startup" type="lsep"/>
         <setting id="AlphaPhase7Time" type="time" label="Time" default="16:00"/>
         <setting id="AlphaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="AlphaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="AlphaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Alpha Phase 8: Third Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
         <setting id="AlphaPhase8Time" type="time" label="Time" default="17:15"/>
         <setting id="AlphaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Alpha Phase 9: Evening Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Alpha[/COLOR] Phase 9: Evening Startup" type="lsep"/>
         <setting id="AlphaPhase9Time" type="time" label="Time" default="17:55"/>
         <setting id="AlphaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="AlphaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="AlphaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
         <setting type="sep"/>
-        <setting label="OMEGA Preset - Quick Refresh" type="lsep"/>
+        <setting label="[COLOR FFCC5500]OMEGA[/COLOR] Preset - Quick Refresh" type="lsep"/>
         <setting id="OmegaDescription" type="text" label="Description" default="Light refresh, library updates only" enable="false"/>
-        <setting label="Omega Phase 1: Maintenance" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 1: Maintenance" type="lsep"/>
         <setting id="OmegaPhase1Time" type="time" label="Time" default="05:50"/>
         <setting id="OmegaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="true"/>
         <setting id="OmegaPhase1NFOMovies" type="bool" label="Rename Movies" default="true"/>
@@ -194,42 +194,42 @@
         <setting id="OmegaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
         <setting id="OmegaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
         <setting id="OmegaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
-        <setting label="Omega Phase 2: First Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 2: First Startup" type="lsep"/>
         <setting id="OmegaPhase2Time" type="time" label="Time" default="06:20"/>
         <setting id="OmegaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
         <setting id="OmegaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="OmegaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Omega Phase 3: First Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 3: First Shutdown" type="lsep"/>
         <setting id="OmegaPhase3Time" type="time" label="Time" default="06:40"/>
         <setting id="OmegaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Omega Phase 4: Push to Slaves" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
         <setting id="OmegaPhase4Time" type="time" label="Time" default="06:50"/>
-        <setting id="OmegaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
-        <setting label="Omega Phase 5: First Wake" type="lsep"/>
+        <setting id="OmegaPhase4Enable" type="bool" label="Enable Push to Satellites" default="true" enable="!isempty(-1)"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 5: First Wake" type="lsep"/>
         <setting id="OmegaPhase5Time" type="time" label="Time" default="06:55"/>
         <setting id="OmegaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="OmegaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
         <setting id="OmegaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Omega Phase 6: Second Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
         <setting id="OmegaPhase6Time" type="time" label="Time" default="09:00"/>
         <setting id="OmegaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Omega Phase 7: Second Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 7: Second Startup" type="lsep"/>
         <setting id="OmegaPhase7Time" type="time" label="Time" default="18:15"/>
         <setting id="OmegaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="OmegaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="OmegaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Omega Phase 8: Third Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
         <setting id="OmegaPhase8Time" type="time" label="Time" default="18:45"/>
         <setting id="OmegaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Omega Phase 9: Evening Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Omega[/COLOR] Phase 9: Evening Startup" type="lsep"/>
         <setting id="OmegaPhase9Time" type="time" label="Time" default="20:00"/>
         <setting id="OmegaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="OmegaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="OmegaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
         <setting type="sep"/>
-        <setting label="DELTA" type="lsep"/>
+        <setting label="[COLOR FFCC5500]DELTA[/COLOR]" type="lsep"/>
         <setting id="DeltaDescription" type="text" label="Description" default="Normal Day Off" enable="false"/>
-        <setting label="Delta Phase 1: Maintenance" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 1: Maintenance" type="lsep"/>
         <setting id="DeltaPhase1Time" type="time" label="Time" default="05:50"/>
         <setting id="DeltaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="false"/>
         <setting id="DeltaPhase1NFOMovies" type="bool" label="Rename Movies" default="false"/>
@@ -241,42 +241,42 @@
         <setting id="DeltaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
         <setting id="DeltaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
         <setting id="DeltaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
-        <setting label="Delta Phase 2: First Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 2: First Startup" type="lsep"/>
         <setting id="DeltaPhase2Time" type="time" label="Time" default="06:20"/>
         <setting id="DeltaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
         <setting id="DeltaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="DeltaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Delta Phase 3: First Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 3: First Shutdown" type="lsep"/>
         <setting id="DeltaPhase3Time" type="time" label="Time" default="06:40"/>
         <setting id="DeltaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Delta Phase 4: Push to Slaves" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
         <setting id="DeltaPhase4Time" type="time" label="Time" default="06:50"/>
-        <setting id="DeltaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
-        <setting label="Delta Phase 5: First Wake" type="lsep"/>
+        <setting id="DeltaPhase4Enable" type="bool" label="Enable Push to Satellites" default="true" enable="!isempty(-1)"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 5: First Wake" type="lsep"/>
         <setting id="DeltaPhase5Time" type="time" label="Time" default="06:55"/>
         <setting id="DeltaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="DeltaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
         <setting id="DeltaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Delta Phase 6: Second Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
         <setting id="DeltaPhase6Time" type="time" label="Time" default="12:15"/>
         <setting id="DeltaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Delta Phase 7: Second Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 7: Second Startup" type="lsep"/>
         <setting id="DeltaPhase7Time" type="time" label="Time" default="13:45"/>
         <setting id="DeltaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="DeltaPhase7StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
         <setting id="DeltaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Delta Phase 8: Third Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
         <setting id="DeltaPhase8Time" type="time" label="Time" default="17:15"/>
         <setting id="DeltaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Delta Phase 9: Evening Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Delta[/COLOR] Phase 9: Evening Startup" type="lsep"/>
         <setting id="DeltaPhase9Time" type="time" label="Time" default="17:55"/>
         <setting id="DeltaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="DeltaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="DeltaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
         <setting type="sep"/>
-        <setting label="EPSILON Preset - Slaves Early Start" type="lsep"/>
+        <setting label="[COLOR FFCC5500]EPSILON[/COLOR] Preset - Satellites Early Start" type="lsep"/>
         <setting id="EpsilonDescription" type="text" label="Description" default="Minimal - channel reset only" enable="false"/>
-        <setting label="Epsilon Phase 1: Maintenance" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 1: Maintenance" type="lsep"/>
         <setting id="EpsilonPhase1Time" type="time" label="Time" default="05:50"/>
         <setting id="EpsilonPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="false"/>
         <setting id="EpsilonPhase1NFOMovies" type="bool" label="Rename Movies" default="false"/>
@@ -288,42 +288,42 @@
         <setting id="EpsilonPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
         <setting id="EpsilonPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
         <setting id="EpsilonPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
-        <setting label="Epsilon Phase 2: First Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 2: First Startup" type="lsep"/>
         <setting id="EpsilonPhase2Time" type="time" label="Time" default="06:20"/>
         <setting id="EpsilonPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
         <setting id="EpsilonPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="EpsilonPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Epsilon Phase 3: First Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 3: First Shutdown" type="lsep"/>
         <setting id="EpsilonPhase3Time" type="time" label="Time" default="06:40"/>
         <setting id="EpsilonPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Epsilon Phase 4: Push to Slaves" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
         <setting id="EpsilonPhase4Time" type="time" label="Time" default="06:50"/>
-        <setting id="EpsilonPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
-        <setting label="Epsilon Phase 5: First Wake" type="lsep"/>
+        <setting id="EpsilonPhase4Enable" type="bool" label="Enable Push to Satellites" default="true" enable="!isempty(-1)"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 5: First Wake" type="lsep"/>
         <setting id="EpsilonPhase5Time" type="time" label="Time" default="06:55"/>
         <setting id="EpsilonPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="EpsilonPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
         <setting id="EpsilonPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Epsilon Phase 6: Second Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
         <setting id="EpsilonPhase6Time" type="time" label="Time" default="12:15"/>
         <setting id="EpsilonPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Epsilon Phase 7: Second Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 7: Second Startup" type="lsep"/>
         <setting id="EpsilonPhase7Time" type="time" label="Time" default="13:45"/>
         <setting id="EpsilonPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="EpsilonPhase7StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
         <setting id="EpsilonPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Epsilon Phase 8: Third Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
         <setting id="EpsilonPhase8Time" type="time" label="Time" default="17:15"/>
         <setting id="EpsilonPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Epsilon Phase 9: Evening Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Epsilon[/COLOR] Phase 9: Evening Startup" type="lsep"/>
         <setting id="EpsilonPhase9Time" type="time" label="Time" default="17:55"/>
         <setting id="EpsilonPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="EpsilonPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="EpsilonPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
         <setting type="sep"/>
-        <setting label="GAMMA Preset - Weekend Special" type="lsep"/>
+        <setting label="[COLOR FFCC5500]GAMMA[/COLOR] Preset - Weekend Special" type="lsep"/>
         <setting id="GammaDescription" type="text" label="Description" default="Weekend configuration" enable="false"/>
-        <setting label="Gamma Phase 1: Maintenance" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 1: Maintenance" type="lsep"/>
         <setting id="GammaPhase1Time" type="time" label="Time" default="05:50"/>
         <setting id="GammaPhase1NFOBumpers" type="bool" label="Rename Bumpers" default="false"/>
         <setting id="GammaPhase1NFOMovies" type="bool" label="Rename Movies" default="false"/>
@@ -335,119 +335,191 @@
         <setting id="GammaPhase1ForceReset" type="bool" label="Force Channel Reset" default="true"/>
         <setting id="GammaPhase1OrganizeChannels" type="bool" label="Organize Channels" default="false"/>
         <setting id="GammaPhase1ReloadConfig" type="bool" label="Reload Config" default="false"/>
-        <setting label="Gamma Phase 2: First Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 2: First Startup" type="lsep"/>
         <setting id="GammaPhase2Time" type="time" label="Time" default="06:20"/>
         <setting id="GammaPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
         <setting id="GammaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="GammaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Gamma Phase 3: First Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 3: First Shutdown" type="lsep"/>
         <setting id="GammaPhase3Time" type="time" label="Time" default="06:40"/>
         <setting id="GammaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Gamma Phase 4: Push to Slaves" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
         <setting id="GammaPhase4Time" type="time" label="Time" default="06:50"/>
-        <setting id="GammaPhase4Enable" type="bool" label="Enable Push to Slaves" default="true" enable="!isempty(-1)"/>
-        <setting label="Gamma Phase 5: First Wake" type="lsep"/>
+        <setting id="GammaPhase4Enable" type="bool" label="Enable Push to Satellites" default="true" enable="!isempty(-1)"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 5: First Wake" type="lsep"/>
         <setting id="GammaPhase5Time" type="time" label="Time" default="06:55"/>
         <setting id="GammaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="GammaPhase5StartChannel" type="number" label="Channel Number" default="3" visible="eq(-1,true)"/>
         <setting id="GammaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Gamma Phase 6: Second Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
         <setting id="GammaPhase6Time" type="time" label="Time" default="12:15"/>
         <setting id="GammaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Gamma Phase 7: Second Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 7: Second Startup" type="lsep"/>
         <setting id="GammaPhase7Time" type="time" label="Time" default="13:45"/>
         <setting id="GammaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="GammaPhase7StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
         <setting id="GammaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-        <setting label="Gamma Phase 8: Third Shutdown" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
         <setting id="GammaPhase8Time" type="time" label="Time" default="17:15"/>
         <setting id="GammaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-        <setting label="Gamma Phase 9: Evening Startup" type="lsep"/>
+        <setting label="[COLOR FFCC5500]Gamma[/COLOR] Phase 9: Evening Startup" type="lsep"/>
         <setting id="GammaPhase9Time" type="time" label="Time" default="17:55"/>
         <setting id="GammaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
         <setting id="GammaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
         <setting id="GammaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
 		<setting type="sep"/>
-		<setting label="SIGMA Preset - No Maintenance Mode" type="lsep"/>
-		<setting id="SigmaDescription" type="text" label="Description" default="Slave system preset - no maintenance, no push" enable="false"/>
-		<setting label="Sigma Phase 2: First Startup" type="lsep"/>
+		<setting label="[COLOR FFCC5500]SIGMA[/COLOR] Preset - No Maintenance Mode" type="lsep"/>
+		<setting id="SigmaDescription" type="text" label="Description" default="Satellite system preset - no maintenance, no push" enable="false"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 2: First Startup" type="lsep"/>
 		<setting id="SigmaPhase2Time" type="time" label="Time" default="06:00"/>
 		<setting id="SigmaPhase2EnableChannel" type="bool" label="Tune to Channel" default="true"/>
 		<setting id="SigmaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
 		<setting id="SigmaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-		<setting label="Sigma Phase 3: First Shutdown" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 3: First Shutdown" type="lsep"/>
 		<setting id="SigmaPhase3Time" type="time" label="Time" default="09:00"/>
 		<setting id="SigmaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-		<setting label="Sigma Phase 4: Push to Slaves" type="lsep"/>
-		<setting type="lsep" label="[COLOR red]Phase 4 is automatically disabled for Sigma (slave-only preset)[/COLOR]"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
+		<setting type="lsep" label="[COLOR red]Phase 4: Disabled[/COLOR]"/>
 		<setting id="SigmaPhase4Time" type="time" label="Time" default="09:10" enable="false"/>
-		<setting id="SigmaPhase4Enable" type="bool" label="Enable Push to Slaves" default="false" enable="false"/>
-		<setting label="Sigma Phase 5: First Wake" type="lsep"/>
+		<setting id="SigmaPhase4Enable" type="bool" label="Enable Push to Satellites" default="false" enable="false"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 5: First Wake" type="lsep"/>
 		<setting id="SigmaPhase5Time" type="time" label="Time" default="12:00"/>
 		<setting id="SigmaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
 		<setting id="SigmaPhase5StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
 		<setting id="SigmaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-		<setting label="Sigma Phase 6: Second Shutdown" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
 		<setting id="SigmaPhase6Time" type="time" label="Time" default="14:00"/>
 		<setting id="SigmaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-		<setting label="Sigma Phase 7: Second Startup" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 7: Second Startup" type="lsep"/>
 		<setting id="SigmaPhase7Time" type="time" label="Time" default="16:00"/>
 		<setting id="SigmaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
 		<setting id="SigmaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
 		<setting id="SigmaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-		<setting label="Sigma Phase 8: Third Shutdown" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
 		<setting id="SigmaPhase8Time" type="time" label="Time" default="18:00"/>
 		<setting id="SigmaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-		<setting label="Sigma Phase 9: Evening Startup" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Sigma[/COLOR] Phase 9: Evening Startup" type="lsep"/>
 		<setting id="SigmaPhase9Time" type="time" label="Time" default="19:00"/>
 		<setting id="SigmaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
 		<setting id="SigmaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
 		<setting id="SigmaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
 		<setting type="sep"/>
-		<setting label="OMICRON" type="lsep"/>
-		<setting id="OmicronDescription" type="text" label="Description" default="Slave Late Start" enable="false"/>
-		<setting label="Omicron Phase 2: First Startup" type="lsep"/>
+		<setting label="[COLOR FFCC5500]OMICRON[/COLOR]" type="lsep"/>
+		<setting id="OmicronDescription" type="text" label="Description" default="SatelliteLate Start" enable="false"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 2: First Startup" type="lsep"/>
 		<setting id="OmicronPhase2Time" type="time" label="Time" default="06:45"/>
 		<setting id="OmicronPhase2EnableChannel" type="bool" label="Tune to Channel" default="false"/>
 		<setting id="OmicronPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
 		<setting id="OmicronPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-		<setting label="Omicron Phase 3: First Shutdown" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 3: First Shutdown" type="lsep"/>
 		<setting id="OmicronPhase3Time" type="time" label="Time" default="06:50"/>
 		<setting id="OmicronPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-		<setting label="Omicron Phase 4: Push to Slaves" type="lsep"/>
-		<setting type="lsep" label="[COLOR red]Phase 4 is automatically disabled for Omicron (slave-only preset)[/COLOR]"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
+		<setting type="lsep" label="[COLOR red]Phase 4: Disabled[/COLOR]"/>
 		<setting id="OmicronPhase4Time" type="time" label="Time" default="10:10" enable="false"/>
-		<setting id="OmicronPhase4Enable" type="bool" label="Enable Push to Slaves" default="false" enable="false"/>
-		<setting label="Omicron Phase 5: First Wake" type="lsep"/>
+		<setting id="OmicronPhase4Enable" type="bool" label="Enable Push to Satellites" default="false" enable="false"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 5: First Wake" type="lsep"/>
 		<setting id="OmicronPhase5Time" type="time" label="Time" default="06:55"/>
 		<setting id="OmicronPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
 		<setting id="OmicronPhase5StartChannel" type="number" label="Channel Number" default="4" visible="eq(-1,true)"/>
 		<setting id="OmicronPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-		<setting label="Omicron Phase 6: Second Shutdown" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
 		<setting id="OmicronPhase6Time" type="time" label="Time" default="09:00"/>
 		<setting id="OmicronPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-		<setting label="Omicron Phase 7: Second Startup" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 7: Second Startup" type="lsep"/>
 		<setting id="OmicronPhase7Time" type="time" label="Time" default="16:00"/>
 		<setting id="OmicronPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
 		<setting id="OmicronPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
 		<setting id="OmicronPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
-		<setting label="Omicron Phase 8: Third Shutdown" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
 		<setting id="OmicronPhase8Time" type="time" label="Time" default="17:55"/>
 		<setting id="OmicronPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
-		<setting label="Omicron Phase 9: Evening Startup" type="lsep"/>
+		<setting label="[COLOR FFCC5500]Omicron[/COLOR] Phase 9: Evening Startup" type="lsep"/>
 		<setting id="OmicronPhase9Time" type="time" label="Time" default="20:55"/>
 		<setting id="OmicronPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
 		<setting id="OmicronPhase9StartChannel" type="number" label="Channel Number" default="2" visible="eq(-1,true)"/>
 		<setting id="OmicronPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
 		<setting type="sep"/>
+		<setting label="[COLOR FFCC5500]THETA[/COLOR] Preset - Satellite System" type="lsep"/>
+		<setting id="ThetaDescription" type="text" label="Description" default="Satellite system preset - no maintenance, no push" enable="false"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 2: First Startup" type="lsep"/>
+		<setting id="ThetaPhase2Time" type="time" label="Time" default="06:00"/>
+		<setting id="ThetaPhase2EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="ThetaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="ThetaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 3: First Shutdown" type="lsep"/>
+		<setting id="ThetaPhase3Time" type="time" label="Time" default="09:00"/>
+		<setting id="ThetaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
+		<setting type="lsep" label="[COLOR red]Phase 4: Disabled[/COLOR]"/>
+		<setting id="ThetaPhase4Time" type="time" label="Time" default="09:10" enable="false"/>
+		<setting id="ThetaPhase4Enable" type="bool" label="Enable Push to Satellites" default="false" enable="false"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 5: First Wake" type="lsep"/>
+		<setting id="ThetaPhase5Time" type="time" label="Time" default="12:00"/>
+		<setting id="ThetaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="ThetaPhase5StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="ThetaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
+		<setting id="ThetaPhase6Time" type="time" label="Time" default="14:00"/>
+		<setting id="ThetaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 7: Second Startup" type="lsep"/>
+		<setting id="ThetaPhase7Time" type="time" label="Time" default="16:00"/>
+		<setting id="ThetaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="ThetaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="ThetaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
+		<setting id="ThetaPhase8Time" type="time" label="Time" default="18:00"/>
+		<setting id="ThetaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="[COLOR FFCC5500]Theta[/COLOR] Phase 9: Evening Startup" type="lsep"/>
+		<setting id="ThetaPhase9Time" type="time" label="Time" default="19:00"/>
+		<setting id="ThetaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="ThetaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="ThetaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+		<setting type="sep"/>
+		<setting label="[COLOR FFCC5500]LAMBDA[/COLOR] Preset - Satellite System" type="lsep"/>
+		<setting id="LambdaDescription" type="text" label="Description" default="Satellite system preset - no maintenance, no push" enable="false"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 2: First Startup" type="lsep"/>
+		<setting id="LambdaPhase2Time" type="time" label="Time" default="06:00"/>
+		<setting id="LambdaPhase2EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="LambdaPhase2StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="LambdaPhase2VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 3: First Shutdown" type="lsep"/>
+		<setting id="LambdaPhase3Time" type="time" label="Time" default="09:00"/>
+		<setting id="LambdaPhase3Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 4: Push to Satellites" type="lsep"/>
+		<setting type="lsep" label="[COLOR red]Phase 4: Disabled[/COLOR]"/>
+		<setting id="LambdaPhase4Time" type="time" label="Time" default="09:10" enable="false"/>
+		<setting id="LambdaPhase4Enable" type="bool" label="Enable Push to Satellites" default="false" enable="false"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 5: First Wake" type="lsep"/>
+		<setting id="LambdaPhase5Time" type="time" label="Time" default="12:00"/>
+		<setting id="LambdaPhase5EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="LambdaPhase5StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="LambdaPhase5VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 6: Second Shutdown" type="lsep"/>
+		<setting id="LambdaPhase6Time" type="time" label="Time" default="14:00"/>
+		<setting id="LambdaPhase6Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 7: Second Startup" type="lsep"/>
+		<setting id="LambdaPhase7Time" type="time" label="Time" default="16:00"/>
+		<setting id="LambdaPhase7EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="LambdaPhase7StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="LambdaPhase7VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="50"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 8: Third Shutdown" type="lsep"/>
+		<setting id="LambdaPhase8Time" type="time" label="Time" default="18:00"/>
+		<setting id="LambdaPhase8Action" type="enum" label="Shutdown Type" values="Blackout Exit|Normal Exit" default="1"/>
+		<setting label="[COLOR FFCC5500]Lambda[/COLOR] Phase 9: Evening Startup" type="lsep"/>
+		<setting id="LambdaPhase9Time" type="time" label="Time" default="19:00"/>
+		<setting id="LambdaPhase9EnableChannel" type="bool" label="Tune to Channel" default="true"/>
+		<setting id="LambdaPhase9StartChannel" type="number" label="Channel Number" default="1" visible="eq(-1,true)"/>
+		<setting id="LambdaPhase9VolumeLevel" type="slider" label="Volume (%)" range="0,5,100" option="int" default="70"/>
+		<setting type="sep"/>
         <setting type="lsep" label="Preset System Information:"/>
-        <setting type="lsep" label="• 7 configurable presets: Alpha, Omega, Delta, Epsilon, Gamma, Sigma, Omicron"/>
+        <setting type="lsep" label="• 9 configurable presets: Alpha, Omega, Delta, Epsilon, Gamma, Sigma, Omicron, Theta, Lambda"/>
         <setting type="lsep" label="• Assign any preset to any day of the week"/>
         <setting type="lsep" label="• Each preset has 9 independent phases with custom timing"/>
         <setting type="lsep" label="• Phase 1: Maintenance (NFO, Library, Reset, Organize)"/>
         <setting type="lsep" label="• Phases 2,5,7,9: Startup with channel tuning &amp; volume"/>
         <setting type="lsep" label="• Phases 3,6,8: Shutdown (Normal or Blackout)"/>
-        <setting type="lsep" label="• Phase 4: Automatically pushes to slave systems after rebuild"/>
+        <setting type="lsep" label="• Phase 4: Automatically pushes to satellite systems after rebuild"/>
         <setting type="lsep" label="• Perfect for multi-room synchronized viewing"/>
     </category>
     <category label="Shutdown Scheduler">
@@ -562,7 +634,7 @@
         <setting label="Timer Services" type="lsep"/>
         <setting type="action" label="Start Preset Timer Service" action="RunScript($CWD/resources/lib/ptv_preset_timer.py)"/>
         <setting type="action" label="Start Shutdown Timer Service" action="RunScript($CWD/resources/lib/ptv_shutdown_timer.py)"/>
-        <setting type="action" label="Push to Slaves (Manual)" action="RunScript($CWD/resources/lib/ptv_push_to_slaves.py)"/>
+        <setting type="action" label="Push to Satellites (Manual)" action="RunScript($CWD/resources/lib/ptv_push_to_satellites.py)"/>
 		<setting id="EnableSatelliteAlignment" type="bool" label="Enable Satellite Alignment" default="false"/>
         <setting type="action" label="Satellite Alignment (Manual)" action="RunScript($CWD/resources/lib/ptv_satellite_alignment.py)" enable="eq(-1,true)"/>
         <setting type="sep"/>
@@ -593,19 +665,19 @@
 	
     <category label="Multi-Room Sync">
         <setting type="lsep" label="[COLOR yellow]Master Systems:[/COLOR]"/>
-        <setting id="EnableMasterPush" type="bool" label="Enable Push to Slaves" default="false"/>
-        <setting type="lsep" label="Configure Slave Systems" enable="eq(-1,true)"/>
-        <setting id="SlaveIP1" type="text" label="Slave 1 IP Address" default="" enable="eq(-2,true)"/>
-        <setting id="SlaveIP2" type="text" label="Slave 2 IP Address" default="" enable="eq(-3,true)"/>
-        <setting id="SlaveIP3" type="text" label="Slave 3 IP Address" default="" enable="eq(-4,true)"/>
-        <setting id="SlaveIP4" type="text" label="Slave 4 IP Address" default="" enable="eq(-5,true)"/>
-        <setting id="SlaveIP5" type="text" label="Slave 5 IP Address" default="" enable="eq(-6,true)"/>
+        <setting id="EnableMasterPush" type="bool" label="Enable Push to Satellites" default="false"/>
+        <setting type="lsep" label="Configure SatelliteSystems" enable="eq(-1,true)"/>
+        <setting id="SlaveIP1" type="text" label="Satellite 1 IP Address" default="" enable="eq(-2,true)"/>
+        <setting id="SlaveIP2" type="text" label="Satellite 2 IP Address" default="" enable="eq(-3,true)"/>
+        <setting id="SlaveIP3" type="text" label="Satellite 3 IP Address" default="" enable="eq(-4,true)"/>
+        <setting id="SlaveIP4" type="text" label="Satellite 4 IP Address" default="" enable="eq(-5,true)"/>
+        <setting id="SlaveIP5" type="text" label="Satellite 5 IP Address" default="" enable="eq(-6,true)"/>
         <setting type="lsep" label="[COLOR yellow]Info:[/COLOR] Master pushes after channel rebuild" enable="eq(-7,true)"/>
-        <setting type="lsep" label="[COLOR yellow]Note:[/COLOR] SSH keys must be configured to all slaves" enable="eq(-8,true)"/>
-        <setting type="lsep" label="[COLOR yellow]Phase 4:[/COLOR] Presets push to slaves automatically" enable="eq(-9,true)"/>
+        <setting type="lsep" label="[COLOR yellow]Note:[/COLOR] SSH keys must be configured to all satellites" enable="eq(-8,true)"/>
+        <setting type="lsep" label="[COLOR yellow]Phase 4:[/COLOR] Presets push to satellites automatically" enable="eq(-9,true)"/>
         <setting type="sep"/>
-        <setting type="lsep" label="[COLOR yellow]Slave Systems:[/COLOR]"/>
-        <setting type="lsep" label="No configuration needed - slaves receive automatic updates"/>
+        <setting type="lsep" label="[COLOR yellow]SatelliteSystems:[/COLOR]"/>
+        <setting type="lsep" label="No configuration needed - satellites receive automatic updates"/>
         <setting type="lsep" label="from master after channel rebuilds"/>
     </category>
     <setting id="PresetRebuildMode" type="bool" label="Preset Rebuild Mode" default="false" visible="false"/>

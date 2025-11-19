@@ -52,6 +52,7 @@ class ChannelList:
         self.runningActionId = 0
         self.enteredChannelCount = 0
         self.background = True
+        self.globalBumperPosition = 1  # Shared bumper position across all channels
         random.seed()
 
     def readConfig(self):
@@ -80,6 +81,16 @@ class ChannelList:
             self.lastExitTime = int(ADDON_SETTINGS.getSetting("LastExitTime"))
         except:
             self.lastExitTime = int(time.time())
+
+        # Load global bumper position
+        try:
+            self.globalBumperPosition = int(ADDON_SETTINGS.getSetting("GlobalBumperPosition"))
+            if self.globalBumperPosition < 1:
+                self.globalBumperPosition = 1
+        except:
+            self.globalBumperPosition = 1
+
+        self.log("Global Bumper Position loaded: " + str(self.globalBumperPosition))
 
     def setupList(self):
         self.readConfig()

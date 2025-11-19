@@ -1229,6 +1229,8 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         width = self.channelButtons[self.focusRow][self.focusIndex].getWidth()
         left = left - basex + (width / 2)
         starttime = self.shownTime + (left / (basew / 5400.0))
+
+        # Calculate which channel was selected
         chnoffset = self.focusRow - 2
         newchan = self.centerChannel
 
@@ -1246,6 +1248,31 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             self.log(
                 "Unable to find the proper playlist to set from EPG", xbmc.LOGERROR
             )
+            return
+
+        # Get the program title for notification purposes
+        programTitle = self.MyOverlayWindow.channels[newchan - 1].getItemTitle(plpos)
+
+        # Calculate the end time of the selected program
+        # Using the button's left position (before adjustment) to get accurate start/end times
+        buttonLeft, _ = self.channelButtons[self.focusRow][self.focusIndex].getPosition()
+        buttonWidth = self.channelButtons[self.focusRow][self.focusIndex].getWidth()
+        programStartTime = self.shownTime + ((buttonLeft - basex) / (basew / 5400.0))
+        programEndTime = self.shownTime + ((buttonLeft - basex + buttonWidth) / (basew / 5400.0))
+
+        # Check if the selected program is currently playing (live TV restriction)
+        currentTime = time.time()
+        if not (currentTime >= programStartTime and currentTime <= programEndTime):
+            self.log("selectShow: Program not currently playing - selection blocked")
+            # Get the program's landscape artwork (same as shown in EPG)
+            programArtwork = self.getShowArtwork(newchan - 1, plpos)
+            # Fall back to Paragon TV icon if no artwork found
+            if not programArtwork:
+                programArtwork = os.path.join(ADDON_SETTINGS.getAddonInfo('path'), 'icon.png')
+            # Format the start time for display
+            startDateTime = datetime.datetime.fromtimestamp(programStartTime)
+            startTimeStr = startDateTime.strftime('%I:%M %p').lstrip('0')  # e.g., "3:45 PM"
+            xbmc.executebuiltin('Notification(Paragon TV, Tune in at %s for %s, 7000, %s)' % (startTimeStr, programTitle, programArtwork))
             return
 
         timedif = (

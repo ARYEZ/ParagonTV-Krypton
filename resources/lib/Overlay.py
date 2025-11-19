@@ -2202,8 +2202,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         self.preemptChannelWithShow(selected)
             elif action == "settings":
                 xbmc.executebuiltin("ActivateWindow(videoosd)")
-            elif action == "weather":
-                self.showWeatherOverlay()
+            elif action == "codecinfo":
+                xbmc.executebuiltin("ActivateWindow(playerprocessinfo)")
             elif action == "blackout":
                 self.toggleBlackout()
             elif action == "lastchannel":
@@ -7154,10 +7154,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.handleNumberAction(action)
         elif action == ACTION_OSD:
             xbmc.executebuiltin("ActivateWindow(videoosd)")
+        # Disable fast forward action (F key)
+        elif action == 77:  # ACTION_PLAYER_FORWARD (F key)
+            icon = os.path.join(CWD, 'icon.png')
+            xbmc.executebuiltin('Notification(Paragon TV, Cannot fast forward on live TV, 3000, %s)' % icon)
+            self.log("Fast forward action (77) disabled - live TV mode")
         # Menu triggers
-        elif action == 117:  # Context menu (C key)
+        elif action == 109:  # M key (moved from action 77 which conflicts with forward)
             self.showSidebar()
-        elif action == 77 or action == 109:  # M key
+        elif action == 117:  # Context menu (C key)
             self.showSidebar()
         elif action == 83 or action == 115:  # S key
             self.showSidebar()
@@ -7201,7 +7206,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.infoOffset += 1
             self.showInfo(10.0)
         else:
-            xbmc.executebuiltin("Seek(" + str(self.seekForward) + ")")
+            # Disabled for live TV experience - cannot skip forward on live TV
+            icon = os.path.join(CWD, 'icon.png')
+            xbmc.executebuiltin('Notification(Paragon TV, Cannot skip forward on live TV, 3000, %s)' % icon)
+            self.log("Skip forward disabled - live TV mode")
 
     def handleBackAction(self):
         """Handle back/escape key"""
@@ -7330,6 +7338,37 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.lastPlayTime = int(self.Player.getTime())
             self.lastPlaylistPosition = xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
             self.notPlayingCount = 0
+
+            # Monitor playback speed to prevent fast forward (live TV mode)
+            try:
+                # Get active player ID
+                result = xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Player.GetActivePlayers","id":1}')
+                result_dict = json.loads(result)
+
+                if 'result' in result_dict and len(result_dict['result']) > 0:
+                    player_id = result_dict['result'][0]['playerid']
+
+                    # Get player speed
+                    speed_query = '{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":%d,"properties":["speed"]},"id":1}' % player_id
+                    speed_result = xbmc.executeJSONRPC(speed_query)
+                    speed_dict = json.loads(speed_result)
+
+                    if 'result' in speed_dict and 'speed' in speed_dict['result']:
+                        current_speed = speed_dict['result']['speed']
+
+                        # If speed is greater than normal (fast forward), reset it
+                        if current_speed > 1:
+                            self.log("Detected fast forward playback speed: %d - resetting to normal" % current_speed)
+
+                            # Reset speed to normal
+                            reset_query = '{"jsonrpc":"2.0","method":"Player.SetSpeed","params":{"playerid":%d,"speed":1},"id":1}' % player_id
+                            xbmc.executeJSONRPC(reset_query)
+
+                            # Show notification
+                            icon = os.path.join(CWD, 'icon.png')
+                            xbmc.executebuiltin('Notification(Paragon TV, Cannot fast forward on live TV, 3000, %s)' % icon)
+            except Exception as e:
+                self.log("Error monitoring playback speed: " + str(e))
         else:
             self.notPlayingCount += 1
             self.log("Adding to notPlayingCount")

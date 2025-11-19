@@ -164,7 +164,7 @@ class Service(object):
     def startTimers(self):
         """Start all scheduler services"""
         try:
-            # Check if we're in Autopilot Mode (slave)
+            # Check if we're in Autopilot Mode (satellite)
             autopilot_enabled = REAL_SETTINGS.getSetting("AutopilotEnabled") == "true"
             
             if autopilot_enabled:
