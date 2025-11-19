@@ -758,6 +758,7 @@ class ChannelList:
     def spaceEpisodes(self, episode_list, minimum_spacing=3):
         """
         Rearranges episodes to ensure episodes from the same show don't appear too close together.
+        STRICTLY enforces minimum spacing with graceful fallback.
 
         Args:
             episode_list: List of episode strings
@@ -767,7 +768,7 @@ class ChannelList:
             Rearranged episode list
         """
         self.log(
-            "spaceEpisodes: Spacing episodes with minimum gap of %d" % minimum_spacing
+            "spaceEpisodes: STRICT spacing enforcement - minimum gap of %d" % minimum_spacing
         )
 
         if len(episode_list) <= 1:
@@ -790,51 +791,85 @@ class ChannelList:
         if len(show_episodes) <= 1:
             return episode_list
 
-        # Build spaced list
+        # Build spaced list with STRICT enforcement
         spaced_list = []
         last_show_positions = {}
         remaining_episodes = {}
+        spacing_violations = 0
 
         # Initialize remaining episodes
         for show, eps in show_episodes.items():
             remaining_episodes[show] = [ep for ep in eps]
 
         while any(remaining_episodes.values()):
-            best_show = None
-            best_score = -1
+            valid_shows = []
+            fallback_shows = []
 
-            # Find the best show to place next
+            # Phase 1: Find shows that meet STRICT spacing requirement
             for show, eps in remaining_episodes.items():
                 if not eps:
                     continue
 
-                # Calculate score based on spacing and remaining episodes
                 if show in last_show_positions:
-                    spacing = len(spaced_list) - last_show_positions[show]
+                    spacing = len(spaced_list) - last_show_positions[show] - 1
                 else:
-                    spacing = len(spaced_list)  # Never placed before
+                    spacing = float('inf')  # Never placed before - always valid
 
-                # Prioritize shows that haven't been placed recently
-                score = spacing
+                # Check if this show meets strict spacing requirement
+                if spacing >= minimum_spacing:
+                    valid_shows.append((show, spacing, len(eps)))
+                else:
+                    # Track as fallback option with actual spacing
+                    fallback_shows.append((show, spacing, len(eps)))
 
-                # Bonus for shows with more remaining episodes
-                score += len(eps) * 0.1
+            # Phase 2: Select from valid shows (strict enforcement)
+            if valid_shows:
+                # Sort by: 1) Never placed (inf spacing), 2) Most spacing, 3) Most remaining episodes
+                valid_shows.sort(key=lambda x: (x[1], x[2]), reverse=True)
+                selected_show = valid_shows[0][0]
+                actual_spacing = valid_shows[0][1]
 
-                if score > best_score:
-                    best_score = score
-                    best_show = show
+                if actual_spacing != float('inf'):
+                    self.log(
+                        "  Placed %s with spacing=%d (strict)" % (selected_show, actual_spacing)
+                    )
 
-            if best_show is None:
+            # Phase 3: FALLBACK - No valid shows, find best effort
+            elif fallback_shows:
+                # Sort by maximum possible spacing (best effort)
+                fallback_shows.sort(key=lambda x: (x[1], x[2]), reverse=True)
+                selected_show = fallback_shows[0][0]
+                actual_spacing = fallback_shows[0][1]
+
+                spacing_violations += 1
+                self.log(
+                    "  WARNING: Spacing violation #%d - Placed %s with spacing=%d (minimum=%d)"
+                    % (spacing_violations, selected_show, actual_spacing, minimum_spacing),
+                    xbmc.LOGWARNING
+                )
+
+            else:
+                # Should never happen, but safety check
                 break
 
-            # Add episode from best show
-            episode = remaining_episodes[best_show].pop(0)
+            # Add episode from selected show
+            episode = remaining_episodes[selected_show].pop(0)
             spaced_list.append(episode[1])
-            last_show_positions[best_show] = len(spaced_list) - 1
+            last_show_positions[selected_show] = len(spaced_list) - 1
 
             # Remove empty shows
-            if not remaining_episodes[best_show]:
-                del remaining_episodes[best_show]
+            if not remaining_episodes[selected_show]:
+                del remaining_episodes[selected_show]
+
+        # Final summary
+        if spacing_violations > 0:
+            self.log(
+                "spaceEpisodes: Completed with %d spacing violations (%.1f%%)"
+                % (spacing_violations, 100.0 * spacing_violations / len(spaced_list)),
+                xbmc.LOGWARNING
+            )
+        else:
+            self.log("spaceEpisodes: Completed - PERFECT spacing maintained for all %d episodes" % len(spaced_list))
 
         return spaced_list
 
