@@ -34,9 +34,10 @@ class EpisodeHistory:
 
     def __init__(self, channel_number):
         self.channel_number = channel_number
-        self.history_dir = os.path.join(CHANNELS_LOC, "history")
-        self.history_file = os.path.join(
-            self.history_dir, "channel_{}_history.json".format(channel_number)
+        # Translate Kodi special:// paths to real filesystem paths
+        self.history_dir = xbmc.translatePath(os.path.join(CHANNELS_LOC, "history"))
+        self.history_file = xbmc.translatePath(
+            os.path.join(self.history_dir, "channel_{}_history.json".format(channel_number))
         )
         self.data = {
             "channel": channel_number,
@@ -257,7 +258,8 @@ class EpisodeHistory:
     @staticmethod
     def reset_all_channels():
         """Reset episode history for all channels (class method)"""
-        history_dir = os.path.join(CHANNELS_LOC, "history")
+        # Translate Kodi special:// paths to real filesystem paths
+        history_dir = xbmc.translatePath(os.path.join(CHANNELS_LOC, "history"))
 
         if not os.path.exists(history_dir):
             log("EpisodeHistory: No history directory found")
