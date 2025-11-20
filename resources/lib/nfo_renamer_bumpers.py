@@ -504,7 +504,7 @@ def create_extended_filename(metadata, original_ext):
     return sanitize_filename(filename)
 
 
-def rename_files(directory, dry_run=False, recursive=False, progress_callback=None, depth=0):
+def rename_files(directory, dry_run=False, recursive=False, progress_callback=None, depth=0, progress_state=None):
     """
     Process directory and rename files according to extended format
 
@@ -547,31 +547,30 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
         "halloween_episodes": 0,
     }
 
-    # Count total NFO files for progress tracking (only at root level)
-    if depth == 0 and progress_callback:
-        total_nfos = 0
-        for filename in files:
-            if filename.lower().endswith(".nfo") and filename.lower() != "tvshow.nfo":
-                total_nfos += 1
-        if recursive:
-            for dirname in dirs:
-                dir_path = os.path.join(directory, dirname)
-                try:
-                    subdirs, subfiles = xbmcvfs.listdir(dir_path)
-                    for subfile in subfiles:
-                        if subfile.lower().endswith(".nfo") and subfile.lower() != "tvshow.nfo":
-                            total_nfos += 1
-                except:
-                    pass
-        # Store total for progress calculation
-        stats["total_nfos"] = total_nfos
-        stats["current_nfo"] = 0
+    # Initialize progress state at root level (depth 0)
+    if depth == 0 and progress_callback and progress_state is None:
+        progress_state = {"total_nfos": 0, "current_nfo": 0}
+        # Count total NFO files recursively
+        def count_nfos(dir_path):
+            count = 0
+            try:
+                subdirs, subfiles = xbmcvfs.listdir(dir_path)
+                for f in subfiles:
+                    if f.lower().endswith(".nfo") and f.lower() != "tvshow.nfo":
+                        count += 1
+                if recursive:
+                    for d in subdirs:
+                        count += count_nfos(os.path.join(dir_path, d))
+            except:
+                pass
+            return count
+        progress_state["total_nfos"] = count_nfos(directory)
 
     # Process directories first if recursive
     if recursive:
         for dirname in dirs:
             dir_path = os.path.join(directory, dirname)
-            sub_stats = rename_files(dir_path, dry_run, recursive, progress_callback, depth + 1)
+            sub_stats = rename_files(dir_path, dry_run, recursive, progress_callback, depth + 1, progress_state)
             if sub_stats:
                 for key in stats:
                     if key in sub_stats:
@@ -585,14 +584,14 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
         if filename.lower().endswith(".nfo") and filename.lower() != "tvshow.nfo":
             stats["processed"] += 1
 
-            # Update progress if callback provided (only at root level)
-            if depth == 0 and progress_callback and "total_nfos" in stats:
-                stats["current_nfo"] += 1
-                percent = int((stats["current_nfo"] * 100) / stats["total_nfos"]) if stats["total_nfos"] > 0 else 0
+            # Update progress if callback provided (use shared progress_state)
+            if progress_callback and progress_state:
+                progress_state["current_nfo"] += 1
+                percent = int((progress_state["current_nfo"] * 100) / progress_state["total_nfos"]) if progress_state["total_nfos"] > 0 else 0
                 # Get shortened filename for display
                 display_name = filename if len(filename) <= 40 else filename[:37] + "..."
                 progress_callback(percent, "Processing: {} ({}/{})".format(
-                    display_name, stats["current_nfo"], stats["total_nfos"]
+                    display_name, progress_state["current_nfo"], progress_state["total_nfos"]
                 ))
 
             # Get base name without extension
