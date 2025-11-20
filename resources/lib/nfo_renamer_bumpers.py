@@ -34,6 +34,7 @@ import xbmcvfs  # Add this import
 try:
     import xbmc
     import xbmcgui
+    import xbmcaddon
     IN_KODI = True
 except ImportError:
     IN_KODI = False
@@ -749,40 +750,31 @@ def main():
     """Main function to parse arguments and initiate renaming"""
     # Check if running in Kodi
     if IN_KODI:
-        # Running from Kodi settings - use dialog to select directory
+        # Running from Kodi settings - use configured directory from settings
         dialog = xbmcgui.Dialog()
+        addon = xbmcaddon.Addon(id="script.paragontv")
 
-        # Ask user to select directory
-        directory = dialog.browse(
-            0,  # 0 = ShowAndGetDirectory
-            "Select Directory with Bumper NFO Files",
-            "files"
-        )
+        # Get the configured Bumpers directory from settings
+        directory = addon.getSetting("NFOBumpersPath")
 
         if not directory:
-            xbmcgui.Dialog().notification(
-                "NFO Renamer",
-                "No directory selected",
-                xbmcgui.NOTIFICATION_INFO,
-                3000
+            dialog.ok(
+                "NFO Renamer - Bumpers",
+                "Bumpers Directory is not configured.",
+                "Please configure the 'Bumpers Directory' setting",
+                "in Paragon TV Settings > Preset Refresh Configuration."
             )
             return 1
 
-        # Ask if recursive
-        recursive = dialog.yesno(
-            "NFO Renamer - Bumpers",
-            "Process subdirectories recursively?"
-        )
+        # Always process recursively (standard behavior)
+        recursive = True
 
-        # Ask if dry run
-        dry_run = dialog.yesno(
-            "NFO Renamer - Bumpers",
-            "Dry run mode (preview changes without modifying files)?"
-        )
+        # Always run in live mode (no dry-run)
+        dry_run = False
 
         # Show progress dialog
         progress = xbmcgui.DialogProgress()
-        progress.create("NFO Renamer - Bumpers", "Processing files...")
+        progress.create("NFO Renamer - Bumpers", "Processing files in: {}".format(directory))
 
         try:
             result = run_renamer(directory, dry_run, recursive)
