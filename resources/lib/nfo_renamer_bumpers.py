@@ -504,7 +504,7 @@ def create_extended_filename(metadata, original_ext):
     return sanitize_filename(filename)
 
 
-def rename_files(directory, dry_run=False, recursive=False):
+def rename_files(directory, dry_run=False, recursive=False, progress_callback=None, depth=0):
     """
     Process directory and rename files according to extended format
 
@@ -547,11 +547,31 @@ def rename_files(directory, dry_run=False, recursive=False):
         "halloween_episodes": 0,
     }
 
+    # Count total NFO files for progress tracking (only at root level)
+    if depth == 0 and progress_callback:
+        total_nfos = 0
+        for filename in files:
+            if filename.lower().endswith(".nfo") and filename.lower() != "tvshow.nfo":
+                total_nfos += 1
+        if recursive:
+            for dirname in dirs:
+                dir_path = os.path.join(directory, dirname)
+                try:
+                    subdirs, subfiles = xbmcvfs.listdir(dir_path)
+                    for subfile in subfiles:
+                        if subfile.lower().endswith(".nfo") and subfile.lower() != "tvshow.nfo":
+                            total_nfos += 1
+                except:
+                    pass
+        # Store total for progress calculation
+        stats["total_nfos"] = total_nfos
+        stats["current_nfo"] = 0
+
     # Process directories first if recursive
     if recursive:
         for dirname in dirs:
             dir_path = os.path.join(directory, dirname)
-            sub_stats = rename_files(dir_path, dry_run, recursive)
+            sub_stats = rename_files(dir_path, dry_run, recursive, progress_callback, depth + 1)
             if sub_stats:
                 for key in stats:
                     if key in sub_stats:
@@ -564,6 +584,16 @@ def rename_files(directory, dry_run=False, recursive=False):
         # Check if this is an NFO file for an episode (not tvshow.nfo)
         if filename.lower().endswith(".nfo") and filename.lower() != "tvshow.nfo":
             stats["processed"] += 1
+
+            # Update progress if callback provided (only at root level)
+            if depth == 0 and progress_callback and "total_nfos" in stats:
+                stats["current_nfo"] += 1
+                percent = int((stats["current_nfo"] * 100) / stats["total_nfos"]) if stats["total_nfos"] > 0 else 0
+                # Get shortened filename for display
+                display_name = filename if len(filename) <= 40 else filename[:37] + "..."
+                progress_callback(percent, "Processing: {} ({}/{})".format(
+                    display_name, stats["current_nfo"], stats["total_nfos"]
+                ))
 
             # Get base name without extension
             base_name = os.path.splitext(filename)[0]
@@ -715,7 +745,7 @@ def rename_files(directory, dry_run=False, recursive=False):
     return stats
 
 
-def run_renamer(directory, dry_run=False, recursive=False):
+def run_renamer(directory, dry_run=False, recursive=False, progress_callback=None):
     """Run the renamer with specified parameters"""
     print("nfo renamer bumpers")
     print("Processing directory: {}".format(directory))
@@ -727,7 +757,7 @@ def run_renamer(directory, dry_run=False, recursive=False):
         print("*** DRY RUN MODE - NO FILES WILL BE MODIFIED ***")
 
     try:
-        stats = rename_files(directory, dry_run, recursive)
+        stats = rename_files(directory, dry_run, recursive, progress_callback)
         if stats:
             print("\nOperation completed successfully.")
             print("Files processed: {}".format(stats["processed"]))
@@ -785,10 +815,16 @@ def main():
 
         # Show progress dialog
         progress = xbmcgui.DialogProgress()
-        progress.create("NFO Renamer - Bumpers", "Processing files in: {}".format(directory))
+        progress.create("NFO Renamer - Bumpers", "Scanning files...")
+
+        # Create progress callback that updates the dialog
+        def progress_callback(percent, message):
+            progress.update(percent, message)
 
         try:
-            result = run_renamer(directory, dry_run, recursive)
+            result = run_renamer(directory, dry_run, recursive, progress_callback)
+            progress.update(100, "Complete!")
+            xbmc.sleep(500)  # Brief pause to show completion
             progress.close()
 
             if result == 0:
