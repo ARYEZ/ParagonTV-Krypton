@@ -4,9 +4,13 @@ from __future__ import print_function, unicode_literals
 
 import sys
 
-# Set default encoding to UTF-8
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# Try to import Kodi modules, but provide fallbacks for CLI usage
+try:
+    import xbmc
+    import xbmcgui
+    IN_KODI = True
+except ImportError:
+    IN_KODI = False
 
 """
 NFO Renamer Television
@@ -834,30 +838,90 @@ def run_renamer(directory, dry_run=False, recursive=False):
 
 def main():
     """Main function to parse arguments and initiate renaming"""
-    parser = argparse.ArgumentParser(
-        description="Rename video files to extended format based on NFO metadata"
-    )
+    # Check if running in Kodi
+    if IN_KODI:
+        # Running from Kodi settings - use dialog to select directory
+        dialog = xbmcgui.Dialog()
 
-    parser.add_argument(
-        "directory", help="Directory containing NFO and video files to process"
-    )
+        # Ask user to select directory
+        directory = dialog.browse(
+            0,  # 0 = ShowAndGetDirectory
+            "Select Directory with TV Show NFO Files",
+            "files"
+        )
 
-    parser.add_argument(
-        "--recursive",
-        "-r",
-        action="store_true",
-        help="Process subdirectories recursively",
-    )
+        if not directory:
+            xbmcgui.Dialog().notification(
+                "NFO Renamer",
+                "No directory selected",
+                xbmcgui.NOTIFICATION_INFO,
+                3000
+            )
+            return 1
 
-    parser.add_argument(
-        "--dry-run",
-        "-d",
-        action="store_true",
-        help="Show what would be renamed without making changes",
-    )
+        # Ask if recursive
+        recursive = dialog.yesno(
+            "NFO Renamer - TV Shows",
+            "Process subdirectories recursively?"
+        )
 
-    args = parser.parse_args()
-    return run_renamer(args.directory, args.dry_run, args.recursive)
+        # Ask if dry run
+        dry_run = dialog.yesno(
+            "NFO Renamer - TV Shows",
+            "Dry run mode (preview changes without modifying files)?"
+        )
+
+        # Show progress dialog
+        progress = xbmcgui.DialogProgress()
+        progress.create("NFO Renamer - TV Shows", "Processing files...")
+
+        try:
+            result = run_renamer(directory, dry_run, recursive)
+            progress.close()
+
+            if result == 0:
+                dialog.ok(
+                    "NFO Renamer Complete",
+                    "TV show files have been processed successfully!",
+                    "Check the Kodi log for details."
+                )
+            else:
+                dialog.ok(
+                    "NFO Renamer Error",
+                    "An error occurred while processing files.",
+                    "Check the Kodi log for details."
+                )
+            return result
+        except Exception as e:
+            progress.close()
+            dialog.ok("Error", "Failed to process files:", str(e))
+            return 1
+    else:
+        # Running from command line - use argparse
+        parser = argparse.ArgumentParser(
+            description="Rename video files to extended format based on NFO metadata"
+        )
+
+        parser.add_argument(
+            "directory", help="Directory containing NFO and video files to process"
+        )
+
+        parser.add_argument(
+            "--recursive",
+            "-r",
+            action="store_true",
+            help="Process subdirectories recursively",
+        )
+
+        parser.add_argument(
+            "--dry-run",
+            "-d",
+            action="store_true",
+            help="Show what would be renamed without making changes",
+        )
+
+        args = parser.parse_args()
+        return run_renamer(args.directory, args.dry_run, args.recursive)
 
 
 if __name__ == "__main__":
