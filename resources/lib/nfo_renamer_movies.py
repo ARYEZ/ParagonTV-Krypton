@@ -4,6 +4,13 @@ from __future__ import print_function, unicode_literals
 
 import sys
 
+# Python 2/3 compatibility for Unicode handling
+if sys.version_info[0] == 2:
+    # Python 2: Set default encoding to UTF-8
+    if sys.getdefaultencoding() != 'utf-8':
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
+
 # Try to import Kodi modules, but provide fallbacks for CLI usage
 try:
     import xbmc
@@ -1148,6 +1155,10 @@ def main():
 
         # Get the configured Movies directory from settings
         directory = addon.getSetting("NFOMoviesPath")
+
+        # Translate Kodi special:// paths and handle Unicode properly
+        if directory:
+            directory = xbmc.translatePath(directory)
 
         if not directory:
             dialog.ok(
