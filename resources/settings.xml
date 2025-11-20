@@ -642,6 +642,17 @@
         <setting type="text" label="They will stop when Kodi closes" enable="false"/>
         <setting type="text" label="Use service.py for auto-start" enable="false"/>
     </category>
+    <category label="Advanced Channel Behavior">
+        <setting label="Episode Management" type="lsep"/>
+        <setting id="EpisodeHistory_Enabled" type="bool" label="Enable Episode History Tracking" default="true"/>
+        <setting type="text" label="Applies to: TV Genre channels (Type 3)" enable="false" visible="eq(-1,true)"/>
+        <setting type="text" label="Prevents episode repeats until show exhausted" enable="false" visible="eq(-2,true)"/>
+        <setting type="text" label="Each show cycles independently" enable="false" visible="eq(-3,true)"/>
+        <setting type="sep"/>
+        <setting label="Reset Options" type="lsep" visible="eq(-5,true)"/>
+        <setting type="action" label="Reset All Channel Histories" action="RunScript($CWD/resources/lib/ptv_reset_history.py)" visible="eq(-6,true)"/>
+        <setting type="text" label="Warning: Resets episode tracking for all channels" enable="false" visible="eq(-7,true)"/>
+    </category>
     <category label="Favorite Shows">
         <setting id="EnableFavoriteShows" type="bool" label="Enable Favorite Show Notifications" default="true"/>
         <setting id="FavoriteShowsList" type="text" label="Favorite Shows (comma separated)" default="" enable="eq(-1,true)" visible="false"/>

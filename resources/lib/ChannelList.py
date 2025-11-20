@@ -32,6 +32,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 from Channel import Channel
+from EpisodeHistory import EpisodeHistory
 from FileAccess import FileAccess, FileLock
 from GlobalRulesHandler import GlobalRulesHandler
 from Globals import *
@@ -586,13 +587,14 @@ class ChannelList:
 
     def applySmartDistribution(self, fileList, limit, channel):
         """
-        Applies smart distribution WITHOUT episode tracking.
+        Applies smart distribution WITH episode history tracking.
 
         Features:
         - Every show gets at least 1 episode
         - Hard cap of 5% (max 5 episodes per 100 total)
         - Exception: channels with <10 shows get no hard cap
         - Weighted selection favors smaller shows
+        - Episode history tracking (per-show exhaustion)
 
         Args:
             fileList: List of all available episodes (episode strings)
@@ -609,6 +611,17 @@ class ChannelList:
 
         if len(fileList) == 0:
             return []
+
+        # Check if episode history tracking is enabled
+        history_enabled = ADDON_SETTINGS.getSetting("EpisodeHistory_Enabled") == "true"
+        episode_history = None
+
+        if history_enabled:
+            episode_history = EpisodeHistory(channel)
+            episode_history.load()
+            self.log("applySmartDistribution: Episode history tracking ENABLED")
+        else:
+            self.log("applySmartDistribution: Episode history tracking DISABLED")
 
         # Parse fileList to group episodes by show
         episodes_by_show = {}
@@ -633,6 +646,28 @@ class ChannelList:
                     xbmc.LOGWARNING,
                 )
                 continue
+
+        # Apply episode history filtering if enabled
+        if history_enabled and episode_history:
+            original_count = sum(len(eps) for eps in episodes_by_show.values())
+
+            for show_name in list(episodes_by_show.keys()):
+                all_episodes = episodes_by_show[show_name]
+                available_episodes = episode_history.get_available_episodes(show_name, all_episodes)
+                episodes_by_show[show_name] = available_episodes
+
+                filtered_count = len(all_episodes) - len(available_episodes)
+                if filtered_count > 0:
+                    self.log(
+                        "  %s: Filtered %d played episodes, %d available"
+                        % (show_name, filtered_count, len(available_episodes))
+                    )
+
+            filtered_total = sum(len(eps) for eps in episodes_by_show.values())
+            self.log(
+                "applySmartDistribution: History filter: %d -> %d episodes"
+                % (original_count, filtered_total)
+            )
 
         # Count unique shows
         num_shows = len(episodes_by_show)
@@ -748,6 +783,12 @@ class ChannelList:
 
         for show, count in sorted(show_counts.items()):
             self.log("  %s: %d episodes" % (show, count))
+
+        # Save episode history if enabled
+        if history_enabled and episode_history:
+            episode_history.mark_episodes_played(distributed_list)
+            episode_history.save()
+            self.log("applySmartDistribution: Episode history saved")
 
         self.log(
             "applySmartDistribution: Completed - returning %d episodes"
