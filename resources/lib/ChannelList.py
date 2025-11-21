@@ -1074,7 +1074,7 @@ class ChannelList:
         """
         try:
             # Get stats directory
-            settings_folder = ADDON_SETTINGS.getAddonInfo("profile")
+            settings_folder = ADDON.getAddonInfo("profile")
             cache_loc = xbmc.translatePath(os.path.join(settings_folder, "cache"))
             stats_dir = xbmc.translatePath(os.path.join(cache_loc, "distribution_stats"))
 
