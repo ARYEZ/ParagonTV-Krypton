@@ -139,6 +139,15 @@ class EpisodeHistory:
         if not self.loaded:
             self.load()
 
+        # Update total_available to track maximum library size seen
+        shows = self.data.get("shows", {})
+        if show_name in shows:
+            current_total = shows[show_name].get("total_available", 0)
+            new_total = len(all_episodes)
+            # Never decrease total, always track the maximum we've seen
+            shows[show_name]["total_available"] = max(current_total, new_total)
+            self.data["shows"] = shows
+
         played = self.get_played_episodes(show_name)
         available = [ep for ep in all_episodes if ep not in played]
 
