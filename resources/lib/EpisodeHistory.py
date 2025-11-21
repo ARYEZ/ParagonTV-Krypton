@@ -177,15 +177,19 @@ class EpisodeHistory:
 
         self.data["shows"] = shows
 
-    def mark_episodes_played(self, episode_list):
+    def mark_episodes_played(self, episode_list, show_totals=None):
         """
         Mark episodes as played from distributed episode list.
 
         Args:
             episode_list: List of episode strings (format: "duration,show//episode//desc\nfilepath")
+            show_totals: Optional dict mapping show names to total episode counts
         """
         if not self.loaded:
             self.load()
+
+        if show_totals is None:
+            show_totals = {}
 
         shows = self.data.get("shows", {})
 
@@ -201,14 +205,20 @@ class EpisodeHistory:
                         show_info = info_parts[1].split("//")
                         show_name = show_info[0] if show_info else "Unknown"
 
+                        # Get total available episodes for this show
+                        total_available = show_totals.get(show_name, 0)
+
                         # Initialize show if not exists
                         if show_name not in shows:
                             shows[show_name] = {
                                 "played_episodes": [],
-                                "total_available": 0,
+                                "total_available": total_available,
                                 "current_cycle_start": datetime.now().isoformat(),
                                 "times_cycled": 0,
                             }
+                        else:
+                            # Update total_available in case library has grown
+                            shows[show_name]["total_available"] = total_available
 
                         # Add to played list if not already there
                         if filepath not in shows[show_name]["played_episodes"]:

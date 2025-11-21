@@ -648,11 +648,15 @@ class ChannelList:
                 continue
 
         # Apply episode history filtering if enabled
+        # Also track total episode counts for each show
+        show_totals = {}
         if history_enabled and episode_history:
             original_count = sum(len(eps) for eps in episodes_by_show.values())
 
             for show_name in list(episodes_by_show.keys()):
                 all_episodes = episodes_by_show[show_name]
+                # Store total count before filtering
+                show_totals[show_name] = len(all_episodes)
                 available_episodes = episode_history.get_available_episodes(show_name, all_episodes)
                 episodes_by_show[show_name] = available_episodes
 
@@ -668,6 +672,10 @@ class ChannelList:
                 "applySmartDistribution: History filter: %d -> %d episodes"
                 % (original_count, filtered_total)
             )
+        else:
+            # If history not enabled, still capture totals for potential future use
+            for show_name in episodes_by_show.keys():
+                show_totals[show_name] = len(episodes_by_show[show_name])
 
         # Count unique shows
         num_shows = len(episodes_by_show)
@@ -786,7 +794,7 @@ class ChannelList:
 
         # Save episode history if enabled
         if history_enabled and episode_history:
-            episode_history.mark_episodes_played(distributed_list)
+            episode_history.mark_episodes_played(distributed_list, show_totals)
             episode_history.save()
             self.log("applySmartDistribution: Episode history saved")
 
