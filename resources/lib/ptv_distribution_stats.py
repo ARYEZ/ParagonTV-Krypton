@@ -119,14 +119,14 @@ class DistributionStatsDashboard:
             # Add status indicators
             if num_shows >= 10:
                 if cap_violations == 0:
-                    label += " [COLOR green]✓[/COLOR]"
+                    label += " [COLOR green][OK][/COLOR]"
                 else:
-                    label += " [COLOR red]✗ {} cap[/COLOR]".format(cap_violations)
+                    label += " [COLOR red][X] {} cap[/COLOR]".format(cap_violations)
 
             if spacing_violations == 0:
-                label += " [COLOR green]✓[/COLOR]"
+                label += " [COLOR green][OK][/COLOR]"
             else:
-                label += " [COLOR yellow]⚠ {} space[/COLOR]".format(spacing_violations)
+                label += " [COLOR yellow][!] {} space[/COLOR]".format(spacing_violations)
 
             label += " - {}".format(timestamp)
 
@@ -179,26 +179,26 @@ class DistributionStatsDashboard:
         # Hard cap status
         if num_shows >= 10:
             if cap_violations == 0:
-                items.append("[COLOR green]✓[/COLOR] No show exceeds 5% cap (max {})".format(hard_cap))
+                items.append("[COLOR green][OK][/COLOR] No show exceeds 5% cap (max {})".format(hard_cap))
             else:
-                items.append("[COLOR red]✗[/COLOR] {} show(s) exceed 5% cap".format(cap_violations))
+                items.append("[COLOR red][X][/COLOR] {} show(s) exceed 5% cap".format(cap_violations))
         else:
-            items.append("[COLOR cyan]○[/COLOR] Hard cap disabled ({} shows)".format(num_shows))
+            items.append("[COLOR cyan][-][/COLOR] Hard cap disabled ({} shows)".format(num_shows))
 
         # Spacing status
         if spacing_violations == 0:
-            items.append("[COLOR green]✓[/COLOR] Perfect spacing maintained")
+            items.append("[COLOR green][OK][/COLOR] Perfect spacing maintained")
         else:
             if num_shows <= 2:
-                items.append("[COLOR yellow]⚠[/COLOR] {} spacing violations (unavoidable with {} show{})".format(
+                items.append("[COLOR yellow][!][/COLOR] {} spacing violations (unavoidable with {} show{})".format(
                     spacing_violations, num_shows, "" if num_shows == 1 else "s"
                 ))
             else:
-                items.append("[COLOR yellow]⚠[/COLOR] {} spacing violations".format(spacing_violations))
+                items.append("[COLOR yellow][!][/COLOR] {} spacing violations".format(spacing_violations))
 
         # Average spacing
         if avg_spacing > 0:
-            items.append("[COLOR cyan]○[/COLOR] Average spacing: {:.1f} episodes".format(avg_spacing))
+            items.append("[COLOR cyan][-][/COLOR] Average spacing: {:.1f} episodes".format(avg_spacing))
 
         items.append("")
 

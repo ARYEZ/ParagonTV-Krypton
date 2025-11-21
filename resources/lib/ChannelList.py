@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #   Copyright (C) 2025 Aryez
 #
 #
@@ -1026,29 +1027,29 @@ class ChannelList:
         # Hard cap status
         if stats["num_shows"] >= 10:
             if stats["cap_violations"] == 0:
-                lines.append("[COLOR green]✓[/COLOR] No show exceeds 5% cap (max %d)" % stats["hard_cap"])
+                lines.append("[COLOR green][OK][/COLOR] No show exceeds 5% cap (max %d)" % stats["hard_cap"])
             else:
-                lines.append("[COLOR red]✗[/COLOR] %d show(s) exceed 5%% cap" % stats["cap_violations"])
+                lines.append("[COLOR red][X][/COLOR] %d show(s) exceed 5%% cap" % stats["cap_violations"])
         else:
-            lines.append("[COLOR cyan]○[/COLOR] Hard cap disabled (%d shows)" % stats["num_shows"])
+            lines.append("[COLOR cyan][-][/COLOR] Hard cap disabled (%d shows)" % stats["num_shows"])
 
         # Spacing status
         if stats["spacing_violations"] == 0:
-            lines.append("[COLOR green]✓[/COLOR] Perfect spacing maintained")
+            lines.append("[COLOR green][OK][/COLOR] Perfect spacing maintained")
         else:
             # Check if violations are unavoidable (very few shows)
             if stats["num_shows"] <= 2:
-                lines.append("[COLOR yellow]⚠[/COLOR] %d spacing violations (unavoidable with %d show%s)" % (
+                lines.append("[COLOR yellow][!][/COLOR] %d spacing violations (unavoidable with %d show%s)" % (
                     stats["spacing_violations"],
                     stats["num_shows"],
                     "" if stats["num_shows"] == 1 else "s"
                 ))
             else:
-                lines.append("[COLOR yellow]⚠[/COLOR] %d spacing violations" % stats["spacing_violations"])
+                lines.append("[COLOR yellow][!][/COLOR] %d spacing violations" % stats["spacing_violations"])
 
         # Average spacing
         if stats["average_spacing"] > 0:
-            lines.append("[COLOR cyan]○[/COLOR] Average spacing: %.1f episodes" % stats["average_spacing"])
+            lines.append("[COLOR cyan][-][/COLOR] Average spacing: %.1f episodes" % stats["average_spacing"])
 
         # Show dialog
         message = "\n".join(lines)
