@@ -161,9 +161,10 @@ class HistoryDashboard:
         for show_name in show_names:
             show_data = shows[show_name]
             played = len(show_data.get("played_episodes", []))
+            total = show_data.get("total_available", 0)
             cycles = show_data.get("times_cycled", 0)
 
-            label = "{} - {} played".format(show_name, played)
+            label = "{} - {}/{} played".format(show_name, played, total)
             if cycles > 0:
                 label += " - Cycle {}".format(cycles)
 
@@ -200,6 +201,7 @@ class HistoryDashboard:
     def show_show_detail(self, channel_hist, show_name, show_data):
         """Show detailed view for a specific show"""
         played_episodes = show_data.get("played_episodes", [])
+        total_available = show_data.get("total_available", 0)
         cycles = show_data.get("times_cycled", 0)
         cycle_start = self.format_datetime(show_data.get("current_cycle_start", "Never"))
 
@@ -208,7 +210,7 @@ class HistoryDashboard:
             "Show: {}".format(show_name),
             "Channel: {}".format(channel_hist["channel"]),
             "",
-            "Episodes Played: {}".format(len(played_episodes)),
+            "Episodes Played: {}/{}".format(len(played_episodes), total_available),
             "Times Cycled: {}".format(cycles),
             "Current Cycle Started: {}".format(cycle_start),
         ]
