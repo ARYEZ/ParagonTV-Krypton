@@ -649,9 +649,12 @@
         <setting type="text" label="Prevents episode repeats until show exhausted" enable="false" visible="eq(-2,true)"/>
         <setting type="text" label="Each show cycles independently" enable="false" visible="eq(-3,true)"/>
         <setting type="sep"/>
-        <setting label="Reset Options" type="lsep" visible="eq(-5,true)"/>
-        <setting type="action" label="Reset All Channel Histories" action="RunScript($CWD/resources/lib/ptv_reset_history.py)" visible="eq(-6,true)"/>
-        <setting type="text" label="Warning: Resets episode tracking for all channels" enable="false" visible="eq(-7,true)"/>
+        <setting label="History Management" type="lsep" visible="eq(-5,true)"/>
+        <setting type="action" label="View Episode History Dashboard" action="RunScript($CWD/resources/lib/ptv_history_dashboard.py)" visible="eq(-6,true)"/>
+        <setting type="text" label="View tracking stats, manage history per channel/show" enable="false" visible="eq(-7,true)"/>
+        <setting type="sep" visible="eq(-8,true)"/>
+        <setting type="action" label="Reset All Channel Histories" action="RunScript($CWD/resources/lib/ptv_reset_history.py)" visible="eq(-9,true)"/>
+        <setting type="text" label="Warning: Resets episode tracking for all channels" enable="false" visible="eq(-10,true)"/>
     </category>
     <category label="Favorite Shows">
         <setting id="EnableFavoriteShows" type="bool" label="Enable Favorite Show Notifications" default="true"/>
