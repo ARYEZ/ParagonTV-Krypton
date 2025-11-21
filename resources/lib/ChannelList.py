@@ -799,23 +799,29 @@ class ChannelList:
             episode_history.save()
             self.log("applySmartDistribution: Episode history saved")
 
-        # Calculate distribution statistics
-        stats = self.calculateDistributionStats(distributed_list, limit, minimum_spacing=3)
+        # Check if distribution statistics tracking is enabled
+        stats_enabled = ADDON_SETTINGS.getSetting("DistributionStats_Enabled") == "true"
 
-        # Log statistics
-        self.log("applySmartDistribution: Distribution Statistics:")
-        self.log("  Shows: %d" % stats["num_shows"])
-        self.log("  Hard cap violations: %d" % stats["cap_violations"])
-        self.log("  Spacing violations: %d" % stats["spacing_violations"])
-        self.log("  Average spacing: %.1f episodes" % stats["average_spacing"])
+        if stats_enabled:
+            # Calculate distribution statistics
+            stats = self.calculateDistributionStats(distributed_list, limit, minimum_spacing=3)
 
-        # Save statistics to file for dashboard
-        self.saveDistributionStats(channel, stats)
+            # Log statistics
+            self.log("applySmartDistribution: Distribution Statistics:")
+            self.log("  Shows: %d" % stats["num_shows"])
+            self.log("  Hard cap violations: %d" % stats["cap_violations"])
+            self.log("  Spacing violations: %d" % stats["spacing_violations"])
+            self.log("  Average spacing: %.1f episodes" % stats["average_spacing"])
 
-        # Show statistics dashboard if enabled
-        show_stats = ADDON_SETTINGS.getSetting("ShowDistributionStats") == "true"
-        if show_stats:
-            self.showDistributionStatsDashboard(channel)
+            # Save statistics to file for dashboard
+            self.saveDistributionStats(channel, stats)
+
+            # Show statistics dashboard if auto-show enabled
+            show_stats = ADDON_SETTINGS.getSetting("ShowDistributionStats") == "true"
+            if show_stats:
+                self.showDistributionStatsDashboard(channel)
+        else:
+            self.log("applySmartDistribution: Distribution statistics tracking DISABLED")
 
         self.log(
             "applySmartDistribution: Completed - returning %d episodes"
