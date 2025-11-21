@@ -808,10 +808,13 @@ class ChannelList:
         self.log("  Spacing violations: %d" % stats["spacing_violations"])
         self.log("  Average spacing: %.1f episodes" % stats["average_spacing"])
 
-        # Show statistics dialog if enabled
+        # Save statistics to file for dashboard
+        self.saveDistributionStats(channel, stats)
+
+        # Show statistics dashboard if enabled
         show_stats = ADDON_SETTINGS.getSetting("ShowDistributionStats") == "true"
         if show_stats:
-            self.showDistributionStats(stats, channel)
+            self.showDistributionStatsDashboard(channel)
 
         self.log(
             "applySmartDistribution: Completed - returning %d episodes"
@@ -1053,6 +1056,57 @@ class ChannelList:
             "Channel %d - Distribution Statistics" % channel,
             message
         )
+
+    def saveDistributionStats(self, channel, stats):
+        """
+        Save distribution statistics to JSON file for dashboard viewing.
+
+        Args:
+            channel: Channel number
+            stats: Statistics dictionary from calculateDistributionStats
+        """
+        try:
+            # Get stats directory
+            settings_folder = ADDON_SETTINGS.getAddonInfo("profile")
+            cache_loc = xbmc.translatePath(os.path.join(settings_folder, "cache"))
+            stats_dir = xbmc.translatePath(os.path.join(cache_loc, "distribution_stats"))
+
+            # Create directory if needed
+            if not os.path.exists(stats_dir):
+                os.makedirs(stats_dir)
+
+            # Add timestamp
+            stats["timestamp"] = datetime.datetime.now().isoformat()
+
+            # Save to file
+            stats_file = os.path.join(stats_dir, "channel_{}_stats.json".format(channel))
+            with open(stats_file, "w") as f:
+                json.dump(stats, f, indent=2)
+
+            self.log("Saved distribution stats for channel {}".format(channel))
+
+        except Exception as e:
+            self.log("Failed to save distribution stats: {}".format(str(e)), xbmc.LOGERROR)
+
+    def showDistributionStatsDashboard(self, channel):
+        """
+        Launch the distribution statistics dashboard.
+
+        Args:
+            channel: Channel number (for context, dashboard shows all channels)
+        """
+        try:
+            import ptv_distribution_stats
+            dashboard = ptv_distribution_stats.DistributionStatsDashboard()
+            dashboard.show_main_dashboard()
+        except Exception as e:
+            self.log("Failed to show distribution dashboard: {}".format(str(e)), xbmc.LOGERROR)
+            # Fallback to simple dialog
+            xbmcgui.Dialog().ok(
+                "Distribution Statistics",
+                "Unable to load dashboard.",
+                "Check log for details."
+            )
 
     def makeChannelList(self, channel, chtype, setting1, setting2, append=False):
         self.log("makeChannelList " + str(channel))

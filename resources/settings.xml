@@ -657,8 +657,11 @@
         <setting type="text" label="Warning: Resets episode tracking for all channels" enable="false" visible="eq(-10,true)"/>
         <setting type="sep"/>
         <setting label="Smart Distribution" type="lsep"/>
-        <setting id="ShowDistributionStats" type="bool" label="Show Distribution Statistics" default="false"/>
-        <setting type="text" label="Display statistics after manual channel rebuilds" enable="false" visible="eq(-1,true)"/>
+        <setting type="action" label="View Distribution Statistics" action="RunScript($CWD/resources/lib/ptv_distribution_stats.py)"/>
+        <setting type="text" label="View distribution quality metrics per channel" enable="false"/>
+        <setting type="sep"/>
+        <setting id="ShowDistributionStats" type="bool" label="Auto-Show After Channel Build" default="false"/>
+        <setting type="text" label="Display statistics dashboard after manual rebuilds" enable="false" visible="eq(-1,true)"/>
         <setting type="text" label="Shows 5% cap compliance, spacing violations, etc." enable="false" visible="eq(-2,true)"/>
     </category>
     <category label="Favorite Shows">
