@@ -22,6 +22,7 @@ import time
 from datetime import datetime
 
 import xbmc
+import xbmcvfs
 from FileAccess import FileAccess
 from Globals import CHANNELS_LOC, log
 
@@ -52,10 +53,10 @@ class EpisodeHistory:
 
     def ensure_history_dir(self):
         """Create history directory if it doesn't exist"""
-        if not os.path.exists(self.history_dir):
+        if not xbmcvfs.exists(self.history_dir):
             try:
-                os.makedirs(self.history_dir)
-                self.log("Created history directory: {}".format(self.history_dir))
+                xbmcvfs.mkdirs(self.history_dir)
+                self.log("Created history directory: {}".format(self.history_dir), xbmc.LOGNOTICE)
             except Exception as e:
                 self.log("Failed to create history directory: {}".format(str(e)), xbmc.LOGERROR)
                 return False
@@ -69,7 +70,7 @@ class EpisodeHistory:
         if not self.ensure_history_dir():
             return False
 
-        if not os.path.exists(self.history_file):
+        if not xbmcvfs.exists(self.history_file):
             self.log("No history file found, starting fresh")
             self.loaded = True
             return True
