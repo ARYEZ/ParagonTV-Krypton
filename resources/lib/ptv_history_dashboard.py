@@ -12,18 +12,13 @@ Shows summary statistics and allows granular reset options.
 """
 
 import os
-import sys
 import json
 from datetime import datetime
 
 import xbmc
 import xbmcgui
 import xbmcaddon
-
-# Import EpisodeHistory class
-sys.path.insert(0, os.path.join(xbmcaddon.Addon(id="script.paragontv").getAddonInfo("path"), "resources", "lib"))
-from EpisodeHistory import EpisodeHistory
-from Globals import CHANNELS_LOC
+import xbmcvfs
 
 
 class HistoryDashboard:
@@ -31,7 +26,11 @@ class HistoryDashboard:
 
     def __init__(self):
         self.addon = xbmcaddon.Addon(id="script.paragontv")
-        self.history_dir = xbmc.translatePath(os.path.join(CHANNELS_LOC, "history"))
+
+        # Get CHANNELS_LOC from addon settings (avoid circular import)
+        settings_folder = self.addon.getAddonInfo("profile")
+        channels_loc = xbmc.translatePath(os.path.join(settings_folder, "cache"))
+        self.history_dir = xbmc.translatePath(os.path.join(channels_loc, "history"))
 
     def log(self, msg, level=xbmc.LOGDEBUG):
         xbmc.log("PTV-HistoryDashboard: {}".format(msg), level)
@@ -245,11 +244,28 @@ class HistoryDashboard:
             return
 
         try:
-            # Load the history, reset the show, and save
-            episode_history = EpisodeHistory(channel_hist["channel"])
-            episode_history.load()
-            episode_history.reset_show(show_name)
-            episode_history.save()
+            # Load the history JSON, reset the show, and save
+            history_file = os.path.join(
+                self.history_dir,
+                "channel_{}_history.json".format(channel_hist["channel"])
+            )
+
+            with open(history_file, "r") as f:
+                data = json.load(f)
+
+            # Reset this show's history
+            if show_name in data.get("shows", {}):
+                data["shows"][show_name] = {
+                    "played_episodes": [],
+                    "times_cycled": 0,
+                    "total_available": 0,
+                    "current_cycle_start": datetime.now().isoformat()
+                }
+                data["last_updated"] = datetime.now().isoformat()
+
+            # Save back to file
+            with open(history_file, "w") as f:
+                json.dump(data, f, indent=2)
 
             xbmcgui.Dialog().notification(
                 "History Reset",
@@ -290,9 +306,14 @@ class HistoryDashboard:
             return
 
         try:
-            episode_history = EpisodeHistory(channel_hist["channel"])
-            episode_history.reset_all()
-            episode_history.save()
+            # Delete the channel history file
+            history_file = os.path.join(
+                self.history_dir,
+                "channel_{}_history.json".format(channel_hist["channel"])
+            )
+
+            if os.path.exists(history_file):
+                os.remove(history_file)
 
             xbmcgui.Dialog().notification(
                 "History Reset",
@@ -333,7 +354,15 @@ class HistoryDashboard:
             return
 
         try:
-            count = EpisodeHistory.reset_all_channels()
+            # Delete all history files
+            count = 0
+            if os.path.exists(self.history_dir):
+                files = os.listdir(self.history_dir)
+                for filename in files:
+                    if filename.startswith("channel_") and filename.endswith("_history.json"):
+                        filepath = os.path.join(self.history_dir, filename)
+                        os.remove(filepath)
+                        count += 1
 
             xbmcgui.Dialog().ok(
                 "All Histories Reset",
