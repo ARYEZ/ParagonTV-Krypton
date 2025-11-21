@@ -217,12 +217,19 @@ class EpisodeHistory:
                                 "times_cycled": 0,
                             }
                         else:
-                            # Update total_available in case library has grown
-                            shows[show_name]["total_available"] = total_available
+                            # Update total_available only if library has grown (never decrease)
+                            current_total = shows[show_name].get("total_available", 0)
+                            shows[show_name]["total_available"] = max(current_total, total_available)
 
                         # Add to played list if not already there
                         if filepath not in shows[show_name]["played_episodes"]:
                             shows[show_name]["played_episodes"].append(filepath)
+
+                        # Ensure total_available is at least the number we've played
+                        # (handles case where we've seen more episodes over time than in any single rebuild)
+                        played_count = len(shows[show_name]["played_episodes"])
+                        if shows[show_name]["total_available"] < played_count:
+                            shows[show_name]["total_available"] = played_count
 
             except Exception as e:
                 self.log("Error parsing episode for history: {}".format(str(e)), xbmc.LOGWARNING)
