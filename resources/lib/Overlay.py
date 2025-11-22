@@ -7479,11 +7479,11 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         """Display exit image during shutdown"""
         try:
             # Path to exit image
-            exitImagePath = os.path.join(ADDON_PATH, "resources", "skins", "default", "media", "exit.png")
+            exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
 
             # Check if custom exit image exists, otherwise use logo
             if not xbmcvfs.exists(exitImagePath):
-                exitImagePath = os.path.join(ADDON_PATH, "resources", "skins", "default", "media", "ptv_logo.png")
+                exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "ptv_logo.png")
 
             # Set window property to show exit image in skin (use Window 10000 = Home)
             homeWindow = xbmcgui.Window(10000)
