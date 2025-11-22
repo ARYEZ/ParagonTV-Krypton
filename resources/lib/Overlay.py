@@ -7475,6 +7475,24 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         del dlg
         self.end()
 
+    def showExitImage(self):
+        """Display exit image during shutdown"""
+        try:
+            # Path to exit image
+            exitImagePath = os.path.join(ADDON_PATH, "resources", "skins", "default", "media", "exit.png")
+
+            # Check if custom exit image exists, otherwise use logo
+            if not xbmcvfs.exists(exitImagePath):
+                exitImagePath = os.path.join(ADDON_PATH, "resources", "skins", "default", "media", "ptv_logo.png")
+
+            # Set window property to show exit image in skin
+            self.setProperty("PTV.ExitImage", exitImagePath)
+            self.setProperty("PTV.ShowExitImage", "true")
+
+            self.log("Exit image displayed: " + exitImagePath)
+        except Exception as e:
+            self.log("Error displaying exit image: " + str(e), xbmc.LOGERROR)
+
     def end(self):
         """Cleanup and exit"""
         self.log("end")
@@ -7675,6 +7693,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Show busy dialog while shutting down
         xbmc.executebuiltin("ActivateWindow(busydialog)")
 
+        # Display exit image
+        self.showExitImage()
+
         # Clear player reference to prevent callbacks
         if self.Player:
             self.Player.overlay = None
@@ -7847,6 +7868,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.MySQLStats", "false")
             self.setProperty("PTV.KodiBoxStats", "false")  # ADD THIS LINE
             self.setProperty("PTV.Weather", "false")
+            self.setProperty("PTV.ShowExitImage", "false")
+            self.setProperty("PTV.ExitImage", "")
         except:
             pass
         # Close the window last
