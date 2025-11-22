@@ -7485,9 +7485,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             if not xbmcvfs.exists(exitImagePath):
                 exitImagePath = os.path.join(ADDON_PATH, "resources", "skins", "default", "media", "ptv_logo.png")
 
-            # Set window property to show exit image in skin
-            self.setProperty("PTV.ExitImage", exitImagePath)
-            self.setProperty("PTV.ShowExitImage", "true")
+            # Set window property to show exit image in skin (use Window 10000 = Home)
+            homeWindow = xbmcgui.Window(10000)
+            homeWindow.setProperty("PTV.ExitImage", exitImagePath)
+            homeWindow.setProperty("PTV.ShowExitImage", "true")
 
             self.log("Exit image displayed: " + exitImagePath)
         except Exception as e:
@@ -7690,11 +7691,11 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             import traceback
             self.log("end - Traceback: " + traceback.format_exc(), xbmc.LOGERROR)
 
-        # Show busy dialog while shutting down
-        xbmc.executebuiltin("ActivateWindow(busydialog)")
-
-        # Display exit image
+        # Display exit image first (before busy dialog)
         self.showExitImage()
+
+        # Give the exit image a moment to display
+        xbmc.sleep(500)
 
         # Clear player reference to prevent callbacks
         if self.Player:
