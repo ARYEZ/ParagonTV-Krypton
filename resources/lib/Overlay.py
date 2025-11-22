@@ -7691,12 +7691,6 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             import traceback
             self.log("end - Traceback: " + traceback.format_exc(), xbmc.LOGERROR)
 
-        # Display exit image first (before busy dialog)
-        self.showExitImage()
-
-        # Give the exit image a moment to display
-        xbmc.sleep(500)
-
         # Clear player reference to prevent callbacks
         if self.Player:
             self.Player.overlay = None
@@ -7869,10 +7863,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.MySQLStats", "false")
             self.setProperty("PTV.KodiBoxStats", "false")  # ADD THIS LINE
             self.setProperty("PTV.Weather", "false")
-            self.setProperty("PTV.ShowExitImage", "false")
-            self.setProperty("PTV.ExitImage", "")
+            # Don't clear exit image properties - we want them visible
         except:
             pass
+
+        # Display exit image AFTER all dialogs are closed
+        self.showExitImage()
+
+        # Keep window open to display exit image
+        self.log("end - Displaying exit image")
+        xbmc.sleep(2000)  # Show exit image for 2 seconds
+
         # Close the window last
         self.log("end - closing window")
         self.close()
