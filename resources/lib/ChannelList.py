@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #   Copyright (C) 2025 Aryez
 #
 #
@@ -18,6 +19,7 @@
 
 import base64
 import datetime
+import json
 import os
 import random
 import re
@@ -32,6 +34,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 from Channel import Channel
+from EpisodeHistory import EpisodeHistory
 from FileAccess import FileAccess, FileLock
 from GlobalRulesHandler import GlobalRulesHandler
 from Globals import *
@@ -586,13 +589,14 @@ class ChannelList:
 
     def applySmartDistribution(self, fileList, limit, channel):
         """
-        Applies smart distribution WITHOUT episode tracking.
+        Applies smart distribution WITH episode history tracking.
 
         Features:
         - Every show gets at least 1 episode
         - Hard cap of 5% (max 5 episodes per 100 total)
         - Exception: channels with <10 shows get no hard cap
         - Weighted selection favors smaller shows
+        - Episode history tracking (per-show exhaustion)
 
         Args:
             fileList: List of all available episodes (episode strings)
@@ -609,6 +613,17 @@ class ChannelList:
 
         if len(fileList) == 0:
             return []
+
+        # Check if episode history tracking is enabled
+        history_enabled = ADDON_SETTINGS.getSetting("EpisodeHistory_Enabled") == "true"
+        episode_history = None
+
+        if history_enabled:
+            episode_history = EpisodeHistory(channel)
+            episode_history.load()
+            self.log("applySmartDistribution: Episode history tracking ENABLED")
+        else:
+            self.log("applySmartDistribution: Episode history tracking DISABLED")
 
         # Parse fileList to group episodes by show
         episodes_by_show = {}
@@ -633,6 +648,36 @@ class ChannelList:
                     xbmc.LOGWARNING,
                 )
                 continue
+
+        # Apply episode history filtering if enabled
+        # Also track total episode counts for each show
+        show_totals = {}
+        if history_enabled and episode_history:
+            original_count = sum(len(eps) for eps in episodes_by_show.values())
+
+            for show_name in list(episodes_by_show.keys()):
+                all_episodes = episodes_by_show[show_name]
+                # Store total count before filtering
+                show_totals[show_name] = len(all_episodes)
+                available_episodes = episode_history.get_available_episodes(show_name, all_episodes)
+                episodes_by_show[show_name] = available_episodes
+
+                filtered_count = len(all_episodes) - len(available_episodes)
+                if filtered_count > 0:
+                    self.log(
+                        "  %s: Filtered %d played episodes, %d available"
+                        % (show_name, filtered_count, len(available_episodes))
+                    )
+
+            filtered_total = sum(len(eps) for eps in episodes_by_show.values())
+            self.log(
+                "applySmartDistribution: History filter: %d -> %d episodes"
+                % (original_count, filtered_total)
+            )
+        else:
+            # If history not enabled, still capture totals for potential future use
+            for show_name in episodes_by_show.keys():
+                show_totals[show_name] = len(episodes_by_show[show_name])
 
         # Count unique shows
         num_shows = len(episodes_by_show)
@@ -748,6 +793,36 @@ class ChannelList:
 
         for show, count in sorted(show_counts.items()):
             self.log("  %s: %d episodes" % (show, count))
+
+        # Save episode history if enabled
+        if history_enabled and episode_history:
+            episode_history.mark_episodes_played(distributed_list, show_totals)
+            episode_history.save()
+            self.log("applySmartDistribution: Episode history saved")
+
+        # Check if distribution statistics tracking is enabled
+        stats_enabled = ADDON_SETTINGS.getSetting("DistributionStats_Enabled") == "true"
+
+        if stats_enabled:
+            # Calculate distribution statistics
+            stats = self.calculateDistributionStats(distributed_list, limit, minimum_spacing=3)
+
+            # Log statistics
+            self.log("applySmartDistribution: Distribution Statistics:")
+            self.log("  Shows: %d" % stats["num_shows"])
+            self.log("  Hard cap violations: %d" % stats["cap_violations"])
+            self.log("  Spacing violations: %d" % stats["spacing_violations"])
+            self.log("  Average spacing: %.1f episodes" % stats["average_spacing"])
+
+            # Save statistics to file for dashboard
+            self.saveDistributionStats(channel, stats)
+
+            # Show statistics dashboard if auto-show enabled
+            show_stats = ADDON_SETTINGS.getSetting("ShowDistributionStats") == "true"
+            if show_stats:
+                self.showDistributionStatsDashboard(channel)
+        else:
+            self.log("applySmartDistribution: Distribution statistics tracking DISABLED")
 
         self.log(
             "applySmartDistribution: Completed - returning %d episodes"
@@ -872,6 +947,174 @@ class ChannelList:
             self.log("spaceEpisodes: Completed - PERFECT spacing maintained for all %d episodes" % len(spaced_list))
 
         return spaced_list
+
+    def calculateDistributionStats(self, distributed_list, limit, minimum_spacing=3):
+        """
+        Calculate statistics about the distributed episode list.
+
+        Args:
+            distributed_list: Final distributed episode list
+            limit: Total number of episodes in the list
+            minimum_spacing: Minimum spacing that was enforced
+
+        Returns:
+            Dictionary with statistics
+        """
+        if len(distributed_list) == 0:
+            return {
+                "cap_violations": 0,
+                "spacing_violations": 0,
+                "average_spacing": 0,
+                "num_shows": 0,
+                "show_counts": {}
+            }
+
+        # Parse episodes to count shows and check distribution
+        show_counts = {}
+        show_positions = {}  # Track positions of each show's episodes
+
+        for idx, episode_str in enumerate(distributed_list):
+            try:
+                parts = episode_str.split("\n")[0].split(",", 1)
+                if len(parts) >= 2:
+                    show_name = parts[1].split("//")[0]
+                    show_counts[show_name] = show_counts.get(show_name, 0) + 1
+
+                    if show_name not in show_positions:
+                        show_positions[show_name] = []
+                    show_positions[show_name].append(idx)
+            except:
+                pass
+
+        # Check for 5% hard cap violations
+        hard_cap = max(1, int(limit * 0.05))
+        cap_violations = 0
+        for show, count in show_counts.items():
+            if count > hard_cap and len(show_counts) >= 10:  # Only applies with 10+ shows
+                cap_violations += 1
+
+        # Calculate spacing violations and average spacing
+        spacing_violations = 0
+        total_spacings = 0
+        spacing_sum = 0
+
+        for show, positions in show_positions.items():
+            if len(positions) > 1:
+                for i in range(len(positions) - 1):
+                    spacing = positions[i + 1] - positions[i] - 1
+                    spacing_sum += spacing
+                    total_spacings += 1
+
+                    if spacing < minimum_spacing:
+                        spacing_violations += 1
+
+        average_spacing = spacing_sum / total_spacings if total_spacings > 0 else 0
+
+        return {
+            "cap_violations": cap_violations,
+            "spacing_violations": spacing_violations,
+            "average_spacing": average_spacing,
+            "num_shows": len(show_counts),
+            "show_counts": show_counts,
+            "hard_cap": hard_cap,
+            "minimum_spacing": minimum_spacing
+        }
+
+    def showDistributionStats(self, stats, channel):
+        """
+        Display distribution statistics in a notification.
+
+        Args:
+            stats: Statistics dictionary from calculateDistributionStats
+            channel: Channel number
+        """
+        # Build message lines
+        lines = []
+
+        # Hard cap status
+        if stats["num_shows"] >= 10:
+            if stats["cap_violations"] == 0:
+                lines.append("[COLOR green][OK][/COLOR] No show exceeds 5% cap (max %d)" % stats["hard_cap"])
+            else:
+                lines.append("[COLOR red][X][/COLOR] %d show(s) exceed 5%% cap" % stats["cap_violations"])
+        else:
+            lines.append("[COLOR cyan][-][/COLOR] Hard cap disabled (%d shows)" % stats["num_shows"])
+
+        # Spacing status
+        if stats["spacing_violations"] == 0:
+            lines.append("[COLOR green][OK][/COLOR] Perfect spacing maintained")
+        else:
+            # Check if violations are unavoidable (very few shows)
+            if stats["num_shows"] <= 2:
+                lines.append("[COLOR yellow][!][/COLOR] %d spacing violations (unavoidable with %d show%s)" % (
+                    stats["spacing_violations"],
+                    stats["num_shows"],
+                    "" if stats["num_shows"] == 1 else "s"
+                ))
+            else:
+                lines.append("[COLOR yellow][!][/COLOR] %d spacing violations" % stats["spacing_violations"])
+
+        # Average spacing
+        if stats["average_spacing"] > 0:
+            lines.append("[COLOR cyan][-][/COLOR] Average spacing: %.1f episodes" % stats["average_spacing"])
+
+        # Show dialog
+        message = "\n".join(lines)
+        xbmcgui.Dialog().ok(
+            "Channel %d - Distribution Statistics" % channel,
+            message
+        )
+
+    def saveDistributionStats(self, channel, stats):
+        """
+        Save distribution statistics to JSON file for dashboard viewing.
+
+        Args:
+            channel: Channel number
+            stats: Statistics dictionary from calculateDistributionStats
+        """
+        try:
+            # Get stats directory
+            settings_folder = ADDON.getAddonInfo("profile")
+            cache_loc = xbmc.translatePath(os.path.join(settings_folder, "cache"))
+            stats_dir = xbmc.translatePath(os.path.join(cache_loc, "distribution_stats"))
+
+            # Create directory if needed
+            if not os.path.exists(stats_dir):
+                os.makedirs(stats_dir)
+
+            # Add timestamp
+            stats["timestamp"] = datetime.datetime.now().isoformat()
+
+            # Save to file
+            stats_file = os.path.join(stats_dir, "channel_{}_stats.json".format(channel))
+            with open(stats_file, "w") as f:
+                json.dump(stats, f, indent=2)
+
+            self.log("Saved distribution stats for channel {}".format(channel))
+
+        except Exception as e:
+            self.log("Failed to save distribution stats: {}".format(str(e)), xbmc.LOGERROR)
+
+    def showDistributionStatsDashboard(self, channel):
+        """
+        Launch the distribution statistics dashboard.
+
+        Args:
+            channel: Channel number (for context, dashboard shows all channels)
+        """
+        try:
+            import ptv_distribution_stats
+            dashboard = ptv_distribution_stats.DistributionStatsDashboard()
+            dashboard.show_main_dashboard()
+        except Exception as e:
+            self.log("Failed to show distribution dashboard: {}".format(str(e)), xbmc.LOGERROR)
+            # Fallback to simple dialog
+            xbmcgui.Dialog().ok(
+                "Distribution Statistics",
+                "Unable to load dashboard.",
+                "Check log for details."
+            )
 
     def makeChannelList(self, channel, chtype, setting1, setting2, append=False):
         self.log("makeChannelList " + str(channel))

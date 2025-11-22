@@ -5506,47 +5506,47 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             
         except Exception as e:
             self.log("Error in updateServerStatsData: %s" % str(e), xbmc.LOGERROR)
-    
-        def fetchRandomWikipediaArticle(self):
-            """Fetch a random Wikipedia article from curated lists without repeating until all are viewed"""
-            try:
-                import random
-                
-                # Build flat list of all articles if not already done
-                if not self.wikipedia_all_articles:
-                    self.log("Building flat list of all Wikipedia articles...")
-                    for category_articles in WIKIPEDIA_ARTICLES.values():
-                        self.wikipedia_all_articles.extend(category_articles)
-                    self.log("Total Wikipedia articles available: %d" % len(self.wikipedia_all_articles))
-                
-                # If we've viewed all articles, reset the viewed list
-                if len(self.wikipedia_viewed_articles) >= len(self.wikipedia_all_articles):
-                    self.log("All Wikipedia articles viewed! Resetting viewed list.")
-                    self.wikipedia_viewed_articles = []
-                
-                # Get list of unviewed articles
-                unviewed_articles = [a for a in self.wikipedia_all_articles if a not in self.wikipedia_viewed_articles]
-                
-                # Pick random article from unviewed articles
-                article_title = random.choice(unviewed_articles)
-                self.log("Selected article: %s (viewed %d of %d)" % (
-                    article_title, 
-                    len(self.wikipedia_viewed_articles), 
-                    len(self.wikipedia_all_articles)
-                ))
-                
-                # Fetch article content from Kiwix
-                article_data = self.fetchWikipediaContent(article_title)
-                
-                if article_data:
-                    # Mark this article as viewed
-                    self.wikipedia_viewed_articles.append(article_title)
-                    
-                    self.knowledge_current_content = article_data
-                    self.updateKnowledgeDisplay()
-                    
-            except Exception as e:
-                self.log("Error fetching Wikipedia article: %s" % str(e))
+
+    def fetchRandomWikipediaArticle(self):
+        """Fetch a random Wikipedia article from curated lists without repeating until all are viewed"""
+        try:
+            import random
+
+            # Build flat list of all articles if not already done
+            if not self.wikipedia_all_articles:
+                self.log("Building flat list of all Wikipedia articles...")
+                for category_articles in WIKIPEDIA_ARTICLES.values():
+                    self.wikipedia_all_articles.extend(category_articles)
+                self.log("Total Wikipedia articles available: %d" % len(self.wikipedia_all_articles))
+
+            # If we've viewed all articles, reset the viewed list
+            if len(self.wikipedia_viewed_articles) >= len(self.wikipedia_all_articles):
+                self.log("All Wikipedia articles viewed! Resetting viewed list.")
+                self.wikipedia_viewed_articles = []
+
+            # Get list of unviewed articles
+            unviewed_articles = [a for a in self.wikipedia_all_articles if a not in self.wikipedia_viewed_articles]
+
+            # Pick random article from unviewed articles
+            article_title = random.choice(unviewed_articles)
+            self.log("Selected article: %s (viewed %d of %d)" % (
+                article_title,
+                len(self.wikipedia_viewed_articles),
+                len(self.wikipedia_all_articles)
+            ))
+
+            # Fetch article content from Kiwix
+            article_data = self.fetchWikipediaContent(article_title)
+
+            if article_data:
+                # Mark this article as viewed
+                self.wikipedia_viewed_articles.append(article_title)
+
+                self.knowledge_current_content = article_data
+                self.updateKnowledgeDisplay()
+
+        except Exception as e:
+            self.log("Error fetching Wikipedia article: %s" % str(e))
     
     def fetchRandomFunFact(self):
         """Fetch a random fun fact article"""

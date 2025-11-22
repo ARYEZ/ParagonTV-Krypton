@@ -4,9 +4,21 @@ from __future__ import print_function, unicode_literals
 
 import sys
 
-# Set default encoding to UTF-8
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# Python 2/3 compatibility for Unicode handling
+if sys.version_info[0] == 2:
+    # Python 2: Set default encoding to UTF-8
+    if sys.getdefaultencoding() != 'utf-8':
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
+
+# Try to import Kodi modules, but provide fallbacks for CLI usage
+try:
+    import xbmc
+    import xbmcgui
+    import xbmcaddon
+    IN_KODI = True
+except ImportError:
+    IN_KODI = False
 
 """
 NFO Renamer Television
@@ -550,7 +562,7 @@ def create_extended_filename(metadata, original_ext):
     return sanitize_filename(filename)
 
 
-def rename_files(directory, dry_run=False, recursive=False):
+def rename_files(directory, dry_run=False, recursive=False, progress_callback=None, depth=0, progress_state=None):
     """
     Process directory and rename files according to extended format
 
@@ -558,6 +570,9 @@ def rename_files(directory, dry_run=False, recursive=False):
         directory: The directory to process
         dry_run: If True, don't actually rename files, just show what would happen
         recursive: If True, process subdirectories recursively
+        progress_callback: Optional callback function for progress updates
+        depth: Current recursion depth
+        progress_state: Shared dict for tracking progress across recursive calls
     """
     print("Starting rename_files with directory: {}".format(directory))
     logger.info("Starting rename_files with directory: {}".format(directory))
@@ -609,11 +624,30 @@ def rename_files(directory, dry_run=False, recursive=False):
         "halloween_episodes": 0,
     }
 
+    # Initialize progress state at root level (depth 0)
+    if depth == 0 and progress_callback and progress_state is None:
+        progress_state = {"total_nfos": 0, "current_nfo": 0}
+        # Count total NFO files recursively
+        def count_nfos(dir_path):
+            count = 0
+            try:
+                subdirs, subfiles = xbmcvfs.listdir(dir_path)
+                for f in subfiles:
+                    if f.lower().endswith(".nfo") and f.lower() != "tvshow.nfo":
+                        count += 1
+                if recursive:
+                    for d in subdirs:
+                        count += count_nfos(os.path.join(dir_path, d))
+            except:
+                pass
+            return count
+        progress_state["total_nfos"] = count_nfos(directory)
+
     # Process directories first if recursive
     if recursive:
         for dirname in dirs:
             dir_path = os.path.join(directory, dirname)
-            sub_stats = rename_files(dir_path, dry_run, recursive)
+            sub_stats = rename_files(dir_path, dry_run, recursive, progress_callback, depth + 1, progress_state)
             if sub_stats:
                 for key in stats:
                     if key in sub_stats:
@@ -626,6 +660,16 @@ def rename_files(directory, dry_run=False, recursive=False):
         # Check if this is an NFO file for an episode (not tvshow.nfo)
         if filename.lower().endswith(".nfo") and filename.lower() != "tvshow.nfo":
             stats["processed"] += 1
+
+            # Update progress if callback provided (use shared progress_state)
+            if progress_callback and progress_state:
+                progress_state["current_nfo"] += 1
+                percent = int((progress_state["current_nfo"] * 100) / progress_state["total_nfos"]) if progress_state["total_nfos"] > 0 else 0
+                # Get shortened filename for display
+                display_name = filename if len(filename) <= 40 else filename[:37] + "..."
+                progress_callback(percent, "Processing: {} ({}/{})".format(
+                    display_name, progress_state["current_nfo"], progress_state["total_nfos"]
+                ))
 
             # Get base name without extension
             base_name = os.path.splitext(filename)[0]
@@ -795,7 +839,7 @@ def rename_files(directory, dry_run=False, recursive=False):
     return stats
 
 
-def run_renamer(directory, dry_run=False, recursive=False):
+def run_renamer(directory, dry_run=False, recursive=False, progress_callback=None):
     """Run the renamer with specified parameters"""
     print("nfo renamer television")
     print("Processing directory: {}".format(directory))
@@ -807,7 +851,7 @@ def run_renamer(directory, dry_run=False, recursive=False):
         print("*** DRY RUN MODE - NO FILES WILL BE MODIFIED ***")
 
     try:
-        stats = rename_files(directory, dry_run, recursive)
+        stats = rename_files(directory, dry_run, recursive, progress_callback)
         if stats:
             print("\nOperation completed successfully.")
             print("Files processed: {}".format(stats["processed"]))
@@ -834,30 +878,91 @@ def run_renamer(directory, dry_run=False, recursive=False):
 
 def main():
     """Main function to parse arguments and initiate renaming"""
-    parser = argparse.ArgumentParser(
-        description="Rename video files to extended format based on NFO metadata"
-    )
+    # Check if running in Kodi
+    if IN_KODI:
+        # Running from Kodi settings - use configured directory from settings
+        dialog = xbmcgui.Dialog()
+        addon = xbmcaddon.Addon(id="script.paragontv")
 
-    parser.add_argument(
-        "directory", help="Directory containing NFO and video files to process"
-    )
+        # Get the configured TV Shows directory from settings
+        directory = addon.getSetting("NFOTelevisionPath")
 
-    parser.add_argument(
-        "--recursive",
-        "-r",
-        action="store_true",
-        help="Process subdirectories recursively",
-    )
+        # Translate Kodi special:// paths and handle Unicode properly
+        if directory:
+            directory = xbmc.translatePath(directory)
 
-    parser.add_argument(
-        "--dry-run",
-        "-d",
-        action="store_true",
-        help="Show what would be renamed without making changes",
-    )
+        if not directory:
+            dialog.ok(
+                "NFO Renamer - TV Shows",
+                "TV Shows Directory is not configured.",
+                "Please configure the 'TV Shows Directory' setting",
+                "in Paragon TV Settings > Preset Refresh Configuration."
+            )
+            return 1
 
-    args = parser.parse_args()
-    return run_renamer(args.directory, args.dry_run, args.recursive)
+        # Always process recursively (standard behavior)
+        recursive = True
+
+        # Always run in live mode (no dry-run)
+        dry_run = False
+
+        # Show progress dialog
+        progress = xbmcgui.DialogProgress()
+        progress.create("NFO Renamer - TV Shows", "Scanning files...")
+
+        # Create progress callback that updates the dialog
+        def progress_callback(percent, message):
+            progress.update(percent, message)
+
+        try:
+            result = run_renamer(directory, dry_run, recursive, progress_callback)
+            progress.update(100, "Complete!")
+            xbmc.sleep(500)  # Brief pause to show completion
+            progress.close()
+
+            if result == 0:
+                dialog.ok(
+                    "NFO Renamer Complete",
+                    "TV show files have been processed successfully!",
+                    "Check the Kodi log for details."
+                )
+            else:
+                dialog.ok(
+                    "NFO Renamer Error",
+                    "An error occurred while processing files.",
+                    "Check the Kodi log for details."
+                )
+            return result
+        except Exception as e:
+            progress.close()
+            dialog.ok("Error", "Failed to process files:", str(e))
+            return 1
+    else:
+        # Running from command line - use argparse
+        parser = argparse.ArgumentParser(
+            description="Rename video files to extended format based on NFO metadata"
+        )
+
+        parser.add_argument(
+            "directory", help="Directory containing NFO and video files to process"
+        )
+
+        parser.add_argument(
+            "--recursive",
+            "-r",
+            action="store_true",
+            help="Process subdirectories recursively",
+        )
+
+        parser.add_argument(
+            "--dry-run",
+            "-d",
+            action="store_true",
+            help="Show what would be renamed without making changes",
+        )
+
+        args = parser.parse_args()
+        return run_renamer(args.directory, args.dry_run, args.recursive)
 
 
 if __name__ == "__main__":

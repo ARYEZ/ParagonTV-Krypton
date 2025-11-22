@@ -384,7 +384,7 @@ class PresetRefreshTimer:
         
         notify("Phase 4: Pushing to satellites - {}".format(config["name"]), "PTV Preset Timer")
         
-        push_script = os.path.join(ADDON_PATH, "resources", "lib", "ptv_push_to_slaves.py")
+        push_script = os.path.join(ADDON_PATH, "resources", "lib", "ptv_push_to_satellites.py")
         
         if os.path.exists(push_script):
             try:
