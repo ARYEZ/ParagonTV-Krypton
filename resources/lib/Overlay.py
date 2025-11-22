@@ -7726,18 +7726,31 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         except:
             pass
 
-        updateDialog = xbmcgui.DialogProgressBG()
-        updateDialog.create(ADDON_NAME, "")
+        # Check if we should show exit image instead of progress dialog
+        exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
+        showExitImage = xbmcvfs.exists(exitImagePath)
+
+        if showExitImage:
+            # Show exit image immediately instead of progress dialog
+            self.showExitImage()
+            self.log("end - Displaying exit image instead of progress dialog")
+            updateDialog = None  # Don't use progress dialog
+        else:
+            # Use normal progress dialog
+            updateDialog = xbmcgui.DialogProgressBG()
+            updateDialog.create(ADDON_NAME, "")
 
         # Clean up file locks
         if self.isMaster and CHANNEL_SHARING == True:
-            updateDialog.update(1, message="Exiting - Removing File Locks")
+            if updateDialog:
+                updateDialog.update(1, message="Exiting - Removing File Locks")
             GlobalFileLock.unlockFile("MasterLock")
 
         GlobalFileLock.close()
 
         # Stop all timers
-        updateDialog.update(2, message="Exiting - Stopping Threads")
+        if updateDialog:
+            updateDialog.update(2, message="Exiting - Stopping Threads")
         timers = [
             self.playerTimer,
             self.channelLabelTimer,
@@ -7759,7 +7772,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.kodiBoxStatsRefreshTimer,   # ADD THIS LINE
         ]
         for i, timer in enumerate(timers):
-            updateDialog.update(2 + i, message="Exiting - Stopping Threads")
+            if updateDialog:
+                updateDialog.update(2 + i, message="Exiting - Stopping Threads")
             try:
                 if timer and timer.isAlive():
                     timer.cancel()
@@ -7776,7 +7790,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             pass
 
         # Stop channel thread
-        updateDialog.update(7, message="Exiting - Stopping Channel Thread")
+        if updateDialog:
+            updateDialog.update(7, message="Exiting - Stopping Channel Thread")
         if self.channelThread.isAlive():
             try:
                 self.channelThread.stop()  # If the thread has a stop method
@@ -7797,7 +7812,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # Save channel times
         if self.timeStarted > 0 and self.isMaster:
-            updateDialog.update(40, message="Exiting - Saving Settings")
+            if updateDialog:
+                updateDialog.update(40, message="Exiting - Saving Settings")
             validcount = 0
 
             for i in range(self.maxChannels):
@@ -7808,7 +7824,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 incval = 60.0 / float(validcount)
 
                 for i in range(self.maxChannels):
-                    updateDialog.update(40 + int((incval * i)))
+                    if updateDialog:
+                        updateDialog.update(40 + int((incval * i)))
 
                     if self.channels[i].isValid:
                         if self.channels[i].mode & MODE_RESUME == 0:
@@ -7846,7 +7863,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
                 self.storeFiles()
 
-        updateDialog.close()
+        if updateDialog:
+            updateDialog.close()
 
         # Clear the playlist
         try:
@@ -7863,16 +7881,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.MySQLStats", "false")
             self.setProperty("PTV.KodiBoxStats", "false")  # ADD THIS LINE
             self.setProperty("PTV.Weather", "false")
-            # Don't clear exit image properties - we want them visible
+            # Don't clear exit image properties if we're showing exit image
+            if not showExitImage:
+                self.setProperty("PTV.ShowExitImage", "false")
+                self.setProperty("PTV.ExitImage", "")
         except:
             pass
 
-        # Display exit image AFTER all dialogs are closed
-        self.showExitImage()
-
-        # Keep window open to display exit image
-        self.log("end - Displaying exit image")
-        xbmc.sleep(2000)  # Show exit image for 2 seconds
+        # If showing exit image, keep window open to display it
+        if showExitImage:
+            self.log("end - Keeping window open for exit image display")
+            xbmc.sleep(2000)  # Show exit image for 2 seconds
 
         # Close the window last
         self.log("end - closing window")
