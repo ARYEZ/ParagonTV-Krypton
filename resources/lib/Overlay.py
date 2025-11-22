@@ -7499,6 +7499,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.log("end")
         # Set exit flag first
         self.isExiting = True
+
+        # IMMEDIATELY show exit image if it exists (before any cleanup)
+        exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
+        if xbmcvfs.exists(exitImagePath):
+            self.showExitImage()
+            self.log("end - Exit image displayed immediately")
+            # Give the UI a moment to render the exit image
+            xbmc.sleep(100)
+
         # CRITICAL: Force hide all overlays IMMEDIATELY before any other cleanup
         self.log("end - Forcing overlay cleanup")
         try:
@@ -7726,15 +7735,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         except:
             pass
 
-        # Check if we should show exit image instead of progress dialog
+        # Don't use progress dialog if exit image exists
         exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
-        showExitImage = xbmcvfs.exists(exitImagePath)
-
-        if showExitImage:
-            # Show exit image immediately instead of progress dialog
-            self.showExitImage()
-            self.log("end - Displaying exit image instead of progress dialog")
-            updateDialog = None  # Don't use progress dialog
+        if xbmcvfs.exists(exitImagePath):
+            updateDialog = None  # Don't use progress dialog when exit image is shown
         else:
             # Use normal progress dialog
             updateDialog = xbmcgui.DialogProgressBG()
