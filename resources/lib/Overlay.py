@@ -7502,7 +7502,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # IMMEDIATELY show exit image if it exists (before any cleanup)
         exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
-        if xbmcvfs.exists(exitImagePath):
+        showExitImage = xbmcvfs.exists(exitImagePath)
+        if showExitImage:
             self.showExitImage()
             self.log("end - Exit image displayed immediately")
             # Give the UI a moment to render the exit image
