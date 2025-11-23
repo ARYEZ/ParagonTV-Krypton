@@ -299,6 +299,15 @@
                 <align>left</align>
                 <autoscroll time="2000" delay="0" repeat="0">Skin.HasSetting(AutoScroll)</autoscroll>
             </control>
+            <control type="image">
+                <description>Show Channel Icon</description>
+                <posx>1610</posx>
+                <posy>20</posy>
+                <width>275</width>
+                <height>155</height>
+                <texture>$INFO[Window(Home).Property(PTV.FavoriteShow.ChannelLogo)]</texture>
+                <animation effect="fade" start="50" end="50" condition="True">Conditional</animation>
+            </control>
         </control>
         
         <!-- CALENDAR + WEATHER COMBINED OVERLAY -->
