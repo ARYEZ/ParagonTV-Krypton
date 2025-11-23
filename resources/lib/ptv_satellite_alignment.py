@@ -18,8 +18,10 @@ ADDON_PATH = '/storage/.kodi/addons/script.paragontv/'
 def log(msg, level=xbmc.LOGDEBUG):
     xbmc.log("[PTV Satellite Alignment] " + str(msg), level)
 
-def notify(msg, title="Satellite Alignment"):
-    xbmc.executebuiltin("Notification({}, {}, 5000)".format(title, msg))
+def notify(msg, title="Satellite Alignment", icon=None):
+    if icon is None:
+        icon = "special://home/addons/script.paragontv/icon.png"
+    xbmc.executebuiltin("Notification({}, {}, 5000, {})".format(title, msg, icon))
 
 def satellite_alignment():
     """Push entire addon to configured satellite systems"""
@@ -41,14 +43,15 @@ def satellite_alignment():
         log("No satellite systems configured")
         notify("No satellites configured")
         return False
-        
+
     # Check if source addon path exists
     if not os.path.exists(ADDON_PATH):
         log("Addon path not found: {}".format(ADDON_PATH), xbmc.LOGERROR)
         notify("Addon path not found", "Error")
         return False
-        
-    notify("Aligning {} satellite(s)".format(len(satellite_ips)))
+
+    icon_path = os.path.join(ADDON_PATH, "icon.png")
+    notify("Aligning {} satellite(s)".format(len(satellite_ips)), icon=icon_path)
     success_count = 0
     
     for satellite_ip in satellite_ips:
@@ -109,11 +112,11 @@ def satellite_alignment():
             log("Error aligning {}: {}".format(satellite_ip, str(e)), xbmc.LOGERROR)
             
     log("Alignment completed. {} of {} satellites aligned".format(success_count, len(satellite_ips)))
-    
+
     if success_count > 0:
-        notify("Alignment complete. Updated {} satellite(s)".format(success_count))
+        notify("Alignment complete. Updated {} satellite(s)".format(success_count), icon=icon_path)
     else:
-        notify("Alignment failed", "Error")
+        notify("Alignment failed", "Error", icon=icon_path)
         
     return success_count > 0
 
