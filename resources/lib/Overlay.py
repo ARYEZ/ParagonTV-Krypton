@@ -7497,7 +7497,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.end()
 
     def showExitImage(self):
-        """Display exit image sequence during shutdown with crossfade through 5 images"""
+        """Display exit image sequence during shutdown with crossfade through 6 images"""
         try:
             # Path to exit images
             mediaPath = os.path.join(CWD, "resources", "skins", "default", "media")
@@ -7506,6 +7506,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             exitImage3Path = os.path.join(mediaPath, "exit3.png")
             exitImage4Path = os.path.join(mediaPath, "exit4.png")
             exitImage5Path = os.path.join(mediaPath, "exit5.png")
+            exitImage6Path = os.path.join(mediaPath, "exit6.png")
             fallbackPath = os.path.join(mediaPath, "ptv_logo.png")
 
             # Check if exit images exist, use fallback if not
@@ -7519,17 +7520,20 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 exitImage4Path = fallbackPath
             if not xbmcvfs.exists(exitImage5Path):
                 exitImage5Path = fallbackPath
+            if not xbmcvfs.exists(exitImage6Path):
+                exitImage6Path = fallbackPath
 
-            # Set window properties for all 5 images (use Window 10000 = Home)
+            # Set window properties for all 6 images (use Window 10000 = Home)
             homeWindow = xbmcgui.Window(10000)
             homeWindow.setProperty("PTV.ExitImage1", exitImage1Path)
             homeWindow.setProperty("PTV.ExitImage2", exitImage2Path)
             homeWindow.setProperty("PTV.ExitImage3", exitImage3Path)
             homeWindow.setProperty("PTV.ExitImage4", exitImage4Path)
             homeWindow.setProperty("PTV.ExitImage5", exitImage5Path)
+            homeWindow.setProperty("PTV.ExitImage6", exitImage6Path)
             homeWindow.setProperty("PTV.ShowExitImage", "true")
 
-            self.log("Exit image sequence started: " + exitImage1Path + ", " + exitImage2Path + ", " + exitImage3Path + ", " + exitImage4Path + ", " + exitImage5Path)
+            self.log("Exit image sequence started: " + exitImage1Path + ", " + exitImage2Path + ", " + exitImage3Path + ", " + exitImage4Path + ", " + exitImage5Path + ", " + exitImage6Path)
         except Exception as e:
             self.log("Error displaying exit image sequence: " + str(e), xbmc.LOGERROR)
 
