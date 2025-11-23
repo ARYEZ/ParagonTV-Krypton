@@ -253,35 +253,33 @@
                 <aspectratio>keep</aspectratio>
                 <texture>faded.png</texture>
             </control>
-            <control type="image">
-                <left>0</left>
-                <top>-109</top>
-                <width>1920</width>
-                <height>1200</height>
-                <texture>channel.png</texture>
-            </control>
+            
             <control type="group">
-                <posx>104</posx>
-                <posy>855</posy>
+                <posx>-51</posx>
+                <posy>-680</posy>
                 <control type="label">
-                    <posx>445</posx>
-                    <posy>-38</posy>
-                    <width>280</width>
-                    <height>100</height>
-                    <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Channel)]</label>
-                    <font>fontsize_160</font>
+                    <top>714</top>
+                    <left>290r</left>
+                    <width>230</width>
+                    <height>120</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <wrapmultiline>true</wrapmultiline>
                     <textcolor>black</textcolor>
-                    <align>right</align>
+                    <font>fontsize_120</font>
+                    <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Channel)]</label>
                 </control>
                 <control type="label">
-                    <posx>450</posx>
-                    <posy>-43</posy>
-                    <width>280</width>
-                    <height>100</height>
-                    <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Channel)]</label>
-                    <font>fontsize_160</font>
+                    <top>710</top>
+                    <left>287r</left>
+                    <width>230</width>
+                    <height>120</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <wrapmultiline>true</wrapmultiline>
                     <textcolor>white</textcolor>
-                    <align>right</align>
+					<font>fontsize_120</font>
+                    <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Channel)]</label>
                 </control>
             </control>
             <control type="label">
