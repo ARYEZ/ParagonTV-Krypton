@@ -7543,6 +7543,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Set exit flag first
         self.isExiting = True
 
+        # Hide channel logo immediately on shutdown
+        try:
+            self.getControl(103).setVisible(False)
+            self.log("end - Hidden channel logo")
+        except:
+            pass
+
         # Use progress dialog for exit instead of image crossfade
         # (Exit image crossfade disabled - using progress dialog approach)
         showExitImage = False
