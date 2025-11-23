@@ -1410,6 +1410,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
     def onInit(self):
         self.log("onInit")
 
+        # Clear exit image properties from previous session
+        try:
+            homeWindow = xbmcgui.Window(10000)
+            homeWindow.clearProperty("PTV.ShowExitImage")
+            homeWindow.clearProperty("PTV.ExitImage")
+            self.log("Cleared exit image properties from previous session")
+        except Exception as e:
+            self.log("Error clearing exit image properties: " + str(e), xbmc.LOGERROR)
+
         # Create required directories
         if not self.createDirectories():
             return
