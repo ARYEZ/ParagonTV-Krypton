@@ -7543,14 +7543,16 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Set exit flag first
         self.isExiting = True
 
-        # IMMEDIATELY show exit image sequence if it exists (before any cleanup)
-        exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit1.png")
-        showExitImage = xbmcvfs.exists(exitImagePath)
-        if showExitImage:
-            self.showExitImage()
-            self.log("end - Exit image sequence started immediately")
-            # Give the UI a moment to render the exit images
-            xbmc.sleep(100)
+        # Use progress dialog for exit instead of image crossfade
+        # (Exit image crossfade disabled - using progress dialog approach)
+        showExitImage = False
+        # exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit1.png")
+        # showExitImage = xbmcvfs.exists(exitImagePath)
+        # if showExitImage:
+        #     self.showExitImage()
+        #     self.log("end - Exit image sequence started immediately")
+        #     # Give the UI a moment to render the exit images
+        #     xbmc.sleep(100)
 
         # CRITICAL: Force hide all overlays IMMEDIATELY before any other cleanup
         self.log("end - Forcing overlay cleanup")
@@ -7779,14 +7781,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         except:
             pass
 
-        # Don't use progress dialog if exit image exists
-        exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
-        if xbmcvfs.exists(exitImagePath):
-            updateDialog = None  # Don't use progress dialog when exit image is shown
-        else:
-            # Use normal progress dialog
-            updateDialog = xbmcgui.DialogProgressBG()
-            updateDialog.create(ADDON_NAME, "")
+        # Always use progress dialog for exit (image crossfade disabled)
+        updateDialog = xbmcgui.DialogProgressBG()
+        updateDialog.create(ADDON_NAME, "")
 
         # Clean up file locks
         if self.isMaster and CHANNEL_SHARING == True:
@@ -7938,10 +7935,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         except:
             pass
 
-        # If showing exit image, keep window open to display the full crossfade sequence
-        if showExitImage:
-            self.log("end - Keeping window open for exit image sequence")
-            xbmc.sleep(8000)  # Show exit image sequence for 8 seconds (crossfades through 5 images)
+        # Progress dialog approach doesn't need delay (exit image crossfade disabled)
+        # if showExitImage:
+        #     self.log("end - Keeping window open for exit image sequence")
+        #     xbmc.sleep(8000)  # Show exit image sequence for 8 seconds (crossfades through 5 images)
 
         # Close the window last
         self.log("end - closing window")
