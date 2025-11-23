@@ -382,7 +382,8 @@ class PresetRefreshTimer:
             log("Phase 4 disabled for preset {}".format(config["name"]))
             return
         
-        notify("Phase 4: Pushing to satellites - {}".format(config["name"]), "PTV Preset Timer")
+        icon_path = os.path.join(ADDON_PATH, "icon.png")
+        notify("Phase 4: Pushing to satellites - {}".format(config["name"]), "PTV Preset Timer", icon_path)
         
         push_script = os.path.join(ADDON_PATH, "resources", "lib", "ptv_push_to_satellites.py")
         

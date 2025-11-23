@@ -17,8 +17,10 @@ ADDON = xbmcaddon.Addon(ADDON_ID)
 def log(msg, level=xbmc.LOGDEBUG):
     xbmc.log("[PTV Push to Satellites] " + str(msg), level)
 
-def notify(msg, title="PTV Push"):
-    xbmc.executebuiltin("Notification({}, {}, 5000)".format(title, msg))
+def notify(msg, title="PTV Push", icon=None):
+    if icon is None:
+        icon = "special://home/addons/script.paragontv/icon.png"
+    xbmc.executebuiltin("Notification({}, {}, 5000, {})".format(title, msg, icon))
 
 def push_to_satellites():
     """Push settings and cache to configured satellite systems"""
