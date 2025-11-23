@@ -7497,13 +7497,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.end()
 
     def showExitImage(self):
-        """Display exit image sequence during shutdown with crossfade through 3 images"""
+        """Display exit image sequence during shutdown with crossfade through 5 images"""
         try:
             # Path to exit images
             mediaPath = os.path.join(CWD, "resources", "skins", "default", "media")
             exitImage1Path = os.path.join(mediaPath, "exit1.png")
             exitImage2Path = os.path.join(mediaPath, "exit2.png")
             exitImage3Path = os.path.join(mediaPath, "exit3.png")
+            exitImage4Path = os.path.join(mediaPath, "exit4.png")
+            exitImage5Path = os.path.join(mediaPath, "exit5.png")
             fallbackPath = os.path.join(mediaPath, "ptv_logo.png")
 
             # Check if exit images exist, use fallback if not
@@ -7513,15 +7515,21 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 exitImage2Path = fallbackPath
             if not xbmcvfs.exists(exitImage3Path):
                 exitImage3Path = fallbackPath
+            if not xbmcvfs.exists(exitImage4Path):
+                exitImage4Path = fallbackPath
+            if not xbmcvfs.exists(exitImage5Path):
+                exitImage5Path = fallbackPath
 
-            # Set window properties for all 3 images (use Window 10000 = Home)
+            # Set window properties for all 5 images (use Window 10000 = Home)
             homeWindow = xbmcgui.Window(10000)
             homeWindow.setProperty("PTV.ExitImage1", exitImage1Path)
             homeWindow.setProperty("PTV.ExitImage2", exitImage2Path)
             homeWindow.setProperty("PTV.ExitImage3", exitImage3Path)
+            homeWindow.setProperty("PTV.ExitImage4", exitImage4Path)
+            homeWindow.setProperty("PTV.ExitImage5", exitImage5Path)
             homeWindow.setProperty("PTV.ShowExitImage", "true")
 
-            self.log("Exit image sequence started: " + exitImage1Path + ", " + exitImage2Path + ", " + exitImage3Path)
+            self.log("Exit image sequence started: " + exitImage1Path + ", " + exitImage2Path + ", " + exitImage3Path + ", " + exitImage4Path + ", " + exitImage5Path)
         except Exception as e:
             self.log("Error displaying exit image sequence: " + str(e), xbmc.LOGERROR)
 
@@ -7929,7 +7937,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # If showing exit image, keep window open to display the full crossfade sequence
         if showExitImage:
             self.log("end - Keeping window open for exit image sequence")
-            xbmc.sleep(5000)  # Show exit image sequence for 5 seconds (crossfades through 3 images)
+            xbmc.sleep(8000)  # Show exit image sequence for 8 seconds (crossfades through 5 images)
 
         # Close the window last
         self.log("end - closing window")

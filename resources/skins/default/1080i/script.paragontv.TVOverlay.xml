@@ -3936,6 +3936,36 @@
             <aspectratio>scale</aspectratio>
             <visible>StringCompare(Window(Home).Property(PTV.ShowExitImage),true)</visible>
             <animation effect="fade" start="0" end="100" time="1000" delay="3000">Visible</animation>
+            <animation effect="fade" start="100" end="0" time="1000" delay="1500">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="300">Hidden</animation>
+        </control>
+
+        <!-- Exit Image 4 -->
+        <control type="image" id="9996">
+            <description>Exit Image 4</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>$INFO[Window(Home).Property(PTV.ExitImage4)]</texture>
+            <aspectratio>scale</aspectratio>
+            <visible>StringCompare(Window(Home).Property(PTV.ShowExitImage),true)</visible>
+            <animation effect="fade" start="0" end="100" time="1000" delay="4500">Visible</animation>
+            <animation effect="fade" start="100" end="0" time="1000" delay="1500">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="300">Hidden</animation>
+        </control>
+
+        <!-- Exit Image 5 -->
+        <control type="image" id="9995">
+            <description>Exit Image 5</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>$INFO[Window(Home).Property(PTV.ExitImage5)]</texture>
+            <aspectratio>scale</aspectratio>
+            <visible>StringCompare(Window(Home).Property(PTV.ShowExitImage),true)</visible>
+            <animation effect="fade" start="0" end="100" time="1000" delay="6000">Visible</animation>
             <animation effect="fade" start="100" end="0" time="300">Hidden</animation>
         </control>
     </controls>
