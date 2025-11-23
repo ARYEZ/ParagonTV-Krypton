@@ -2141,11 +2141,18 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if not FileAccess.exists(showImage):
                     showImage = ICON
 
+        # Get channel logo for the favorite show's channel
+        channelName = self.channels[channelNum - 1].name
+        channelLogo = self.channelLogos + ascii(channelName) + ".png"
+        if not FileAccess.exists(channelLogo):
+            channelLogo = ""
+
         # Set properties for the favorite show overlay
         self.setProperty("PTV.FavoriteShow", "true")
         self.setProperty("PTV.FavoriteShow.Title", fullTitle)
         self.setProperty("PTV.FavoriteShow.Channel", str(channelNum))
         self.setProperty("PTV.FavoriteShow.Image", showImage)
+        self.setProperty("PTV.FavoriteShow.ChannelLogo", channelLogo)
 
         self.log("showFavoriteShowNotification - Properties set:")
         self.log(
