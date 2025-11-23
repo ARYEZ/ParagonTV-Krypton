@@ -1239,7 +1239,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         try:
             homeWindow = xbmcgui.Window(10000)
             homeWindow.clearProperty("PTV.ShowExitImage")
-            homeWindow.clearProperty("PTV.ExitImage")
+            homeWindow.clearProperty("PTV.ExitImage1")
+            homeWindow.clearProperty("PTV.ExitImage2")
+            homeWindow.clearProperty("PTV.ExitImage3")
         except:
             pass
 
@@ -1422,7 +1424,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         try:
             homeWindow = xbmcgui.Window(10000)
             homeWindow.clearProperty("PTV.ShowExitImage")
-            homeWindow.clearProperty("PTV.ExitImage")
+            homeWindow.clearProperty("PTV.ExitImage1")
+            homeWindow.clearProperty("PTV.ExitImage2")
+            homeWindow.clearProperty("PTV.ExitImage3")
             self.log("Cleared exit image properties from previous session")
         except Exception as e:
             self.log("Error clearing exit image properties: " + str(e), xbmc.LOGERROR)
@@ -7493,23 +7497,33 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.end()
 
     def showExitImage(self):
-        """Display exit image during shutdown"""
+        """Display exit image sequence during shutdown with crossfade through 3 images"""
         try:
-            # Path to exit image
-            exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
+            # Path to exit images
+            mediaPath = os.path.join(CWD, "resources", "skins", "default", "media")
+            exitImage1Path = os.path.join(mediaPath, "exit1.png")
+            exitImage2Path = os.path.join(mediaPath, "exit2.png")
+            exitImage3Path = os.path.join(mediaPath, "exit3.png")
+            fallbackPath = os.path.join(mediaPath, "ptv_logo.png")
 
-            # Check if custom exit image exists, otherwise use logo
-            if not xbmcvfs.exists(exitImagePath):
-                exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "ptv_logo.png")
+            # Check if exit images exist, use fallback if not
+            if not xbmcvfs.exists(exitImage1Path):
+                exitImage1Path = fallbackPath
+            if not xbmcvfs.exists(exitImage2Path):
+                exitImage2Path = fallbackPath
+            if not xbmcvfs.exists(exitImage3Path):
+                exitImage3Path = fallbackPath
 
-            # Set window property to show exit image in skin (use Window 10000 = Home)
+            # Set window properties for all 3 images (use Window 10000 = Home)
             homeWindow = xbmcgui.Window(10000)
-            homeWindow.setProperty("PTV.ExitImage", exitImagePath)
+            homeWindow.setProperty("PTV.ExitImage1", exitImage1Path)
+            homeWindow.setProperty("PTV.ExitImage2", exitImage2Path)
+            homeWindow.setProperty("PTV.ExitImage3", exitImage3Path)
             homeWindow.setProperty("PTV.ShowExitImage", "true")
 
-            self.log("Exit image displayed: " + exitImagePath)
+            self.log("Exit image sequence started: " + exitImage1Path + ", " + exitImage2Path + ", " + exitImage3Path)
         except Exception as e:
-            self.log("Error displaying exit image: " + str(e), xbmc.LOGERROR)
+            self.log("Error displaying exit image sequence: " + str(e), xbmc.LOGERROR)
 
     def end(self):
         """Cleanup and exit"""
@@ -7517,13 +7531,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Set exit flag first
         self.isExiting = True
 
-        # IMMEDIATELY show exit image if it exists (before any cleanup)
-        exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit.png")
+        # IMMEDIATELY show exit image sequence if it exists (before any cleanup)
+        exitImagePath = os.path.join(CWD, "resources", "skins", "default", "media", "exit1.png")
         showExitImage = xbmcvfs.exists(exitImagePath)
         if showExitImage:
             self.showExitImage()
-            self.log("end - Exit image displayed immediately")
-            # Give the UI a moment to render the exit image
+            self.log("end - Exit image sequence started immediately")
+            # Give the UI a moment to render the exit images
             xbmc.sleep(100)
 
         # CRITICAL: Force hide all overlays IMMEDIATELY before any other cleanup
@@ -7906,14 +7920,16 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Don't clear exit image properties if we're showing exit image
             if not showExitImage:
                 self.setProperty("PTV.ShowExitImage", "false")
-                self.setProperty("PTV.ExitImage", "")
+                self.setProperty("PTV.ExitImage1", "")
+                self.setProperty("PTV.ExitImage2", "")
+                self.setProperty("PTV.ExitImage3", "")
         except:
             pass
 
-        # If showing exit image, keep window open to display it
+        # If showing exit image, keep window open to display the full crossfade sequence
         if showExitImage:
-            self.log("end - Keeping window open for exit image display")
-            xbmc.sleep(2000)  # Show exit image for 2 seconds
+            self.log("end - Keeping window open for exit image sequence")
+            xbmc.sleep(5000)  # Show exit image sequence for 5 seconds (crossfades through 3 images)
 
         # Close the window last
         self.log("end - closing window")
