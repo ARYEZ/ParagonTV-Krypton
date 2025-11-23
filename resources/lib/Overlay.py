@@ -1235,6 +1235,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
         self.log("__init__")
 
+        # Clear exit image properties immediately to prevent display on window init
+        try:
+            homeWindow = xbmcgui.Window(10000)
+            homeWindow.clearProperty("PTV.ShowExitImage")
+            homeWindow.clearProperty("PTV.ExitImage")
+        except:
+            pass
+
         # Core components
         self.channels = []
         self.Player = MyPlayer()
