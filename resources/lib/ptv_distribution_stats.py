@@ -85,7 +85,7 @@ class DistributionStatsDashboard:
         try:
             dt = datetime.fromisoformat(iso_string)
             return dt.strftime("%Y-%m-%d %H:%M")
-        except:
+        except Exception as e:
             return iso_string
 
     def show_main_dashboard(self):

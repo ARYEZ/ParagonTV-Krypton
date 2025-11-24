@@ -124,7 +124,7 @@ def cleanup_old_files():
             log("Error checking old restart marker: {}".format(e))
             try:
                 os.remove(RESTART_MARKER)
-            except:
+            except Exception as e:
                 pass
     
     # Check for kill script
@@ -142,7 +142,7 @@ def cleanup_old_files():
             log("Error removing old kill script: {}".format(e))
             try:
                 os.remove(KILL_SCRIPT)
-            except:
+            except Exception as e:
                 pass
 
 def check_recently_restarted():
@@ -244,7 +244,7 @@ if __name__ == "__main__":
         try:
             action = int(sys.argv[1])
             log("Using action from command line: {}".format(action))
-        except:
+        except Exception as e:
             log("Failed to parse action parameter, defaulting to Blackout Exit")
     
     # Check if we recently restarted - if so, exit early to avoid infinite loop

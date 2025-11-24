@@ -53,7 +53,7 @@ class MP4Parser:
 
         try:
             self.File = FileAccess.open(filename, "rb", None)
-        except:
+        except Exception as e:
             self.log("Unable to open the file")
             return
 
@@ -72,7 +72,7 @@ class MP4Parser:
         # Skip past the file header
         try:
             self.File.seek(data.size, 1)
-        except:
+        except Exception as e:
             self.log("Error while seeking")
             return 0
 
@@ -81,7 +81,7 @@ class MP4Parser:
         while data.boxtype != "moov" and data.size > 0:
             try:
                 self.File.seek(data.size, 1)
-            except:
+            except Exception as e:
                 self.log("Error while seeking")
                 return 0
 
@@ -92,7 +92,7 @@ class MP4Parser:
         while data.boxtype != "mvhd" and data.size > 0:
             try:
                 self.File.seek(data.size, 1)
-            except:
+            except Exception as e:
                 self.log("Error while seeking")
                 return 0
 
@@ -119,7 +119,7 @@ class MP4Parser:
             self.MovieHeader.modified = data[1]
             self.MovieHeader.scale = data[2]
             self.MovieHeader.duration = data[3]
-        except:
+        except Exception as e:
             self.MovieHeader.duration = 0
 
     def readBlock(self):
@@ -139,7 +139,7 @@ class MP4Parser:
             if box.boxtype == "uuid":
                 box.boxtype = self.File.read(16)
                 box.size -= 16
-        except:
+        except Exception as e:
             pass
 
         return box

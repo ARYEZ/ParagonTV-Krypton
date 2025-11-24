@@ -94,13 +94,15 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         for i in range(8):  # Hide controls 120-127
             try:
                 self.getControl(120 + i).setVisible(False)
-            except:
+            except (RuntimeError, AttributeError) as e:
+                # Control doesn't exist in this skin - expected, ignore
                 pass
 
         # Also hide Music Genre control
         try:
             self.getControl(128).setVisible(False)
-        except:
+        except (RuntimeError, AttributeError) as e:
+            # Control doesn't exist in this skin - expected, ignore
             pass
 
         migratemaster = Migrate()
@@ -125,7 +127,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         action = act.getId()
 
         if action in ACTION_PREVIOUS_MENU:
-            if self.showingList == False:
+            if not self.showingList:
                 self.cancelChan()
                 self.hideChanDetails()
             else:
@@ -146,7 +148,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         elif act.getButtonCode() == 61575:  # Delete button
             curchan = self.listcontrol.getSelectedPosition() + 1
 
-            if (self.showingList == True) and (
+            if (self.showingList) and (
                 ADDON_SETTINGS.getSetting("Channel_" + str(curchan) + "_type") != "9999"
             ):
                 dlg = xbmcgui.Dialog()
@@ -167,8 +169,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         try:
             chantype = int(ADDON_SETTINGS.getSetting("Channel_" + chan + "_type"))
-        except:
-            self.log("Unable to get channel type")
+        except (ValueError, TypeError) as e:
+            self.log("Unable to get channel type: {}".format(str(e)))
 
         setting1 = "Channel_" + chan + "_1"
         setting2 = "Channel_" + chan + "_2"
@@ -195,8 +197,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         try:
             set1 = ADDON_SETTINGS.getSetting(setting1)
             set2 = ADDON_SETTINGS.getSetting(setting2)
-        except:
-            pass
+        except Exception as e:
+            self.log("Unable to get settings {}/{}: {}".format(setting1, setting2, str(e)), xbmc.LOGWARNING)
 
         if (
             chantype != self.channel_type
@@ -222,13 +224,15 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         for i in range(NUMBER_CHANNEL_TYPES):
             try:
                 self.getControl(120 + i).setVisible(False)
-            except:
+            except (RuntimeError, AttributeError):
+                # Control doesn't exist in this skin - expected, ignore
                 pass
 
         # Special handling for Music Genre control
         try:
             self.getControl(128).setVisible(False)
-        except:
+        except (RuntimeError, AttributeError):
+            # Control doesn't exist in this skin - expected, ignore
             pass
 
         self.setFocusId(102)
@@ -253,7 +257,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         elif controlId == 111:  # Change channel type right
             self.changeChanType(self.channel, 1)
         elif controlId == 112:  # Ok button
-            if self.showingList == False:
+            if not self.showingList:
                 self.saveSettings()
                 self.hideChanDetails()
             else:
@@ -266,7 +270,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
                         )
                 self.close()
         elif controlId == 113:  # Cancel button
-            if self.showingList == False:
+            if not self.showingList:
                 self.cancelChan()
                 self.hideChanDetails()
             else:
@@ -275,7 +279,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             self.myRules.ruleList = self.ruleList
             self.myRules.doModal()
 
-            if self.myRules.wasSaved == True:
+            if self.myRules.wasSaved:
                 self.ruleList = self.myRules.ruleList
                 self.savedRules = True
         elif controlId == 130:  # Playlist-type channel, playlist button
@@ -315,7 +319,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         found = False
         index = 0
 
-        if len(thelist) == 0:
+        if not thelist:
             self.getControl(controlid).setLabel("")
             self.log("changeListData return Empty list")
             return
@@ -327,7 +331,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
             index += 1
 
-        if found == True:
+        if found:
             index += val
 
         while index < 0:
@@ -345,15 +349,15 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         try:
             xml = FileAccess.open(fle, "r")
-        except:
-            self.log("Unable to open smart playlist")
+        except IOError as e:
+            self.log("Unable to open smart playlist: {}".format(str(e)))
             return ""
 
         try:
             dom = parse(xml)
-        except:
+        except Exception as e:
             xml.close()
-            self.log("getSmartPlaylistName return unable to parse")
+            self.log("getSmartPlaylistName return unable to parse: {}".format(str(e)))
             return ""
 
         xml.close()
@@ -362,8 +366,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             plname = dom.getElementsByTagName("name")
             self.log("getSmartPlaylistName return " + plname[0].childNodes[0].nodeValue)
             return plname[0].childNodes[0].nodeValue
-        except:
-            self.playlisy("Unable to find element name")
+        except (IndexError, AttributeError) as e:
+            self.log("Unable to find element name: {}".format(str(e)))
 
         self.log("getSmartPlaylistName return")
 
@@ -375,8 +379,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             chantype = int(
                 ADDON_SETTINGS.getSetting("Channel_" + str(channel) + "_type")
             )
-        except:
-            self.log("Unable to get channel type")
+        except Exception as e:
+            self.log("Unable to get channel type: {}".format(str(e)))
 
         if val != 0:
             chantype += val
@@ -412,20 +416,22 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
                 self.setting2 = ADDON_SETTINGS.getSetting(
                     "Channel_" + str(channel) + "_2"
                 )
-            except:
-                pass
+            except Exception as e:
+                self.log("Error getting channel settings: {}".format(str(e)), xbmc.LOGWARNING)
 
         # Hide all channel type controls first
         for i in range(8):  # Normal channel types (0-7)
             try:
                 self.getControl(120 + i).setVisible(False)
-            except:
+            except Exception:
+                # Control doesn't exist in this skin
                 pass
 
         # Also hide Music Genre control
         try:
             self.getControl(128).setVisible(False)
-        except:
+        except Exception:
+            # Control doesn't exist in this skin
             pass
 
         # Now show the appropriate control
@@ -440,20 +446,20 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
                     self.getControl(111).controlDown(
                         self.getControl(120 + ((chantype + 1) * 10 + 1))
                     )
-                except:
+                except Exception:
                     self.getControl(111).controlDown(
                         self.getControl(120 + ((chantype + 1) * 10))
                     )
-            except:
-                pass
+            except Exception as e:
+                self.log("Error setting control visibility: {}".format(str(e)), xbmc.LOGWARNING)
         elif chantype == 12:
             # Music Genre
             try:
                 self.getControl(128).setVisible(True)
                 self.getControl(110).controlDown(self.getControl(210))
                 self.getControl(111).controlDown(self.getControl(211))
-            except:
-                pass
+            except Exception as e:
+                self.log("Error setting music genre control: {}".format(str(e)), xbmc.LOGWARNING)
 
         self.fillInDetails(channel)
         self.log("changeChanType return")
@@ -471,14 +477,14 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             )
             chansetting1 = ADDON_SETTINGS.getSetting("Channel_" + str(channel) + "_1")
             chansetting2 = ADDON_SETTINGS.getSetting("Channel_" + str(channel) + "_2")
-        except:
-            self.log("Unable to get some setting")
+        except Exception as e:
+            self.log("Unable to get some setting: {}".format(str(e)))
 
         self.getControl(109).setLabel(self.getChanTypeLabel(chantype))
 
         if chantype == 0:
             plname = self.getSmartPlaylistName(chansetting1)
-            if len(plname) == 0:
+            if not plname:
                 chansetting1 = ""
             self.getControl(130).setLabel(
                 self.getSmartPlaylistName(chansetting1), label2=chansetting1
@@ -534,7 +540,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
                         foundrule = True
                         break
-        except:
+        except Exception as e:
+            self.log("Error loading rules: {}".format(str(e)), xbmc.LOGWARNING)
             self.ruleList = []
 
     def saveRules(self, channel):
@@ -571,7 +578,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             if loitem == i.lower():
                 return item
 
-        if len(thelist) > 0:
+        if thelist:
             return thelist[0]
 
         return ""
@@ -644,8 +651,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
                 )
                 chansetting1 = ADDON_SETTINGS.getSetting("Channel_" + str(i + 1) + "_1")
                 chansetting2 = ADDON_SETTINGS.getSetting("Channel_" + str(i + 1) + "_2")
-            except:
-                pass
+            except Exception as e:
+                self.log("Error getting channel {} settings: {}".format(i+1, str(e)), xbmc.LOGWARNING)
 
             if chantype == 0:
                 newlabel = self.getSmartPlaylistName(chansetting1)

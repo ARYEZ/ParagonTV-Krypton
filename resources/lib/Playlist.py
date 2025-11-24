@@ -126,7 +126,7 @@ class Playlist:
         # find and read the header
         try:
             lines = fle.readlines()
-        except:
+        except Exception as e:
             self.log("ERROR loading playlist: " + filename)
             self.log(traceback.format_exc(), xbmc.LOGERROR)
 
@@ -155,7 +155,7 @@ class Playlist:
 
             try:
                 line = uni(lines[realindex].rstrip())
-            except:
+            except Exception as e:
                 self.log("ERROR: Invalid line in playlist - " + filename)
                 self.log(traceback.format_exc(), xbmc.LOGERROR)
 
@@ -186,7 +186,7 @@ class Playlist:
 
         self.processingSemaphore.release()
 
-        if len(self.itemlist) == 0:
+        if not self.itemlist:
             return False
 
         return True
@@ -195,7 +195,7 @@ class Playlist:
         self.log("save " + filename)
         try:
             fle = FileAccess.open(filename, "w")
-        except:
+        except Exception as e:
             self.log("save Unable to open the smart playlist", xbmc.LOGERROR)
             return
 

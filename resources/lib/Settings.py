@@ -45,7 +45,7 @@ class Settings:
                 fle = FileAccess.open(self.logfile, "r")
                 curset = fle.readlines()
                 fle.close()
-            except:
+            except Exception as e:
                 self.log("Exception when reading settings: ")
                 self.log(traceback.format_exc(), xbmc.LOGERROR)
 
@@ -86,7 +86,7 @@ class Settings:
         try:
             val = Globals.ADDON.getSetting(name)
             return val
-        except:
+        except Exception as e:
             return ""
 
     def setSetting(self, name, value):
@@ -98,7 +98,7 @@ class Settings:
                 found = True
                 break
 
-        if found == False:
+        if not found:
             self.currentSettings.append([name, value])
 
         if self.alwaysWrite == 1:
@@ -107,7 +107,7 @@ class Settings:
     def writeSettings(self):
         try:
             fle = FileAccess.open(self.logfile, "w")
-        except:
+        except Exception as e:
             self.log("Unable to open the file for writing")
             return
 

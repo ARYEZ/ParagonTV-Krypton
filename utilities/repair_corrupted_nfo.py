@@ -20,13 +20,19 @@ try:
     try:
         ADDON = xbmcaddon.Addon('script.paragontv')
         ADDON_ID = 'script.paragontv'
-    except:
+    except Exception as e:
         ADDON = None
         ADDON_ID = "repair_corrupted_nfo"
 except ImportError:
     KODI_MODE = False
     ADDON = None
     ADDON_ID = "repair_corrupted_nfo"
+
+# Configuration: Default NFS server paths
+# Change these values to match your network setup
+DEFAULT_NFS_SERVER = "10.0.0.39"
+DEFAULT_TV_PATH = "nfs://{}/mnt/user/TELEVISION/".format(DEFAULT_NFS_SERVER)
+DEFAULT_FALLBACK_PATH = "/path/to/television/"
 
 # XML parsing
 try:
@@ -517,7 +523,7 @@ if __name__ == "__main__":
     else:
         # Default path
         if KODI_MODE:
-            base_path = "nfs://10.0.0.39/mnt/user/TELEVISION/"
+            base_path = DEFAULT_TV_PATH
         else:
             base_path = "/path/to/tv/shows/"
     

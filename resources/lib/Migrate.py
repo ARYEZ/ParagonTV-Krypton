@@ -37,9 +37,9 @@ class Migrate:
         try:
             curver = Globals.ADDON_SETTINGS.getSetting("Version")
 
-            if len(curver) == 0:
+            if not curver:
                 curver = "0.0.0"
-        except:
+        except Exception as e:
             curver = "0.0.0"
 
         if curver == Globals.VERSION:
@@ -74,7 +74,7 @@ class Migrate:
         mixedlist.sort(key=lambda x: x[1] + x[2], reverse=True)
 
         # Mixed genres
-        if len(mixedlist) > 0:
+        if mixedlist:
             added = 0.0
 
             for item in mixedlist:
@@ -113,7 +113,7 @@ class Migrate:
         return False
 
     def initialAddChannels(self, thelist, chantype, currentchan):
-        if len(thelist) > 0:
+        if thelist:
             counted = 0
             lastitem = 0
             curchancount = 1

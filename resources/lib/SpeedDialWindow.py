@@ -56,14 +56,14 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
         """Load saved speed dial settings from addon settings"""
         # Load show speed dials
         for i in range(1, 4):  # Only 3 shows now
-            showInfo = ADDON.getSetting("SpeedDialShow%d" % i)
+            showInfo = ADDON.getSetting("SpeedDialShow{}".format(i))
             if showInfo:
                 try:
                     # Try to parse as dictionary (new format)
                     import ast
 
                     self.speedDialShows[str(i)] = ast.literal_eval(showInfo)
-                except:
+                except Exception as e:
                     # Fall back to old format and convert
                     parts = showInfo.split("|")
                     if len(parts) >= 3:
@@ -75,7 +75,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
         
         # Load channel speed dials - THIS WAS MISSING!
         for i in range(1, 5):  # 4 channels in the window
-            channelNum = ADDON.getSetting("SpeedDialChannel%d" % i)
+            channelNum = ADDON.getSetting("SpeedDialChannel{}".format(i))
             if channelNum and channelNum != "0":
                 try:
                     self.speedDialChannels[i] = int(channelNum)
@@ -90,8 +90,8 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                 self.updateShowProperties(i, self.speedDialShows[str(i)])
             else:
                 # Clear properties for empty slots
-                self.setProperty("SpeedDial.Show%d.Image" % i, "")
-                self.setProperty("SpeedDial.Show%d.Name" % i, "")
+                self.setProperty("SpeedDial.Show{}.Image".format(i), "")
+                self.setProperty("SpeedDial.Show{}.Name".format(i), "")
 
         # Update channel properties
         for i in range(1, 5):
@@ -99,8 +99,8 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                 self.updateChannelProperties(i, self.speedDialChannels[i])
             else:
                 # Clear properties for empty slots
-                self.setProperty("SpeedDial.Channel%d.Image" % i, "")
-                self.setProperty("SpeedDial.Channel%d.Name" % i, "")
+                self.setProperty("SpeedDial.Channel{}.Image".format(i), "")
+                self.setProperty("SpeedDial.Channel{}.Name".format(i), "")
 
     def updateShowProperties(self, slot, showInfo):
         """Update window properties for a show slot"""
@@ -118,8 +118,8 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
             # Try to find landscape image for the show
             showImage = self.findShowLandscape(showName, showPath)
 
-            self.setProperty("SpeedDial.Show%d.Name" % slot, showName)
-            self.setProperty("SpeedDial.Show%d.Image" % slot, showImage or "")
+            self.setProperty("SpeedDial.Show{}.Name".format(slot), showName)
+            self.setProperty("SpeedDial.Show{}.Image".format(slot), showImage or "")
 
         except Exception as e:
             self.log("Error updating show properties: " + str(e))
@@ -134,10 +134,10 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
             channelImage = self.findChannelLandscape(channelName)
 
             self.setProperty(
-                "SpeedDial.Channel%d.Name" % slot,
+                "SpeedDial.Channel{}.Name".format(slot),
                 "Ch %d: %s" % (channelNum, channelName),
             )
-            self.setProperty("SpeedDial.Channel%d.Image" % slot, channelImage or "")
+            self.setProperty("SpeedDial.Channel{}.Image".format(slot), channelImage or "")
 
     def findShowLandscape(self, showName, showPath=None):
         """Find landscape image for a TV show"""
@@ -275,7 +275,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
         """Show menu for a show slot"""
         if str(slot) in self.speedDialShows:
             options = ["Play Show", "Change Assignment", "Remove Assignment"]
-            select = xbmcgui.Dialog().select("Show %d Action" % slot, options)
+            select = xbmcgui.Dialog().select("Show {} Action".format(slot), options)
 
             if select == 0:  # Play show
                 self.selectedAction = ("playshow", self.speedDialShows[str(slot)])
@@ -284,7 +284,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                 self.assignShow(slot)
             elif select == 2:  # Remove assignment
                 del self.speedDialShows[str(slot)]
-                ADDON.setSetting("SpeedDialShow%d" % slot, "")
+                ADDON.setSetting("SpeedDialShow{}".format(slot), "")
                 self.updateWindowProperties()
 
     def showChannelMenu(self, slot):
@@ -302,7 +302,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                 "Change Assignment", 
                 "Remove Assignment"
             ]
-            select = xbmcgui.Dialog().select("Channel %d Action" % slot, options)
+            select = xbmcgui.Dialog().select("Channel {} Action".format(slot), options)
             
             if select == 0:  # Jump to channel
                 self.selectedAction = ("channel", channel)
@@ -311,7 +311,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                 self.assignChannel(slot)
             elif select == 2:  # Remove assignment
                 del self.speedDialChannels[slot]
-                ADDON.setSetting("SpeedDialChannel%d" % slot, "0")
+                ADDON.setSetting("SpeedDialChannel{}".format(slot), "0")
                 self.updateWindowProperties()
 
     def assignShow(self, slot):
@@ -328,7 +328,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
 
         # Show selection dialog
         showNames = [show["name"] for show in showList]
-        select = xbmcgui.Dialog().select("Select Show for Slot %d" % slot, showNames)
+        select = xbmcgui.Dialog().select("Select Show for Slot {}".format(slot), showNames)
 
         if select >= 0:
             selectedShow = showList[select]
@@ -339,7 +339,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                 "channel": selectedShow.get("channel", 0),
             }
             self.speedDialShows[str(slot)] = showInfo
-            ADDON.setSetting("SpeedDialShow%d" % slot, str(showInfo))
+            ADDON.setSetting("SpeedDialShow{}".format(slot), str(showInfo))
             self.updateWindowProperties()
 
     def assignChannel(self, slot):
@@ -350,7 +350,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
         # Option 1: Assign current channel
         # Option 2: Select from list
         options = [
-            "Current Channel (%d)" % self.overlayWindow.currentChannel,
+            "Current Channel ({})".format(self.overlayWindow.currentChannel),
             "Select from List",
         ]
         select = xbmcgui.Dialog().select("Assign Channel", options)
@@ -358,7 +358,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
         if select == 0:  # Current channel
             channel = self.overlayWindow.currentChannel
             self.speedDialChannels[slot] = channel
-            ADDON.setSetting("SpeedDialChannel%d" % slot, str(channel))
+            ADDON.setSetting("SpeedDialChannel{}".format(slot), str(channel))
             self.updateWindowProperties()
 
         elif select == 1:  # Select from list
@@ -375,7 +375,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                     # Extract channel number
                     channel = int(channelList[channelSelect].split(" - ")[0])
                     self.speedDialChannels[slot] = channel
-                    ADDON.setSetting("SpeedDialChannel%d" % slot, str(channel))
+                    ADDON.setSetting("SpeedDialChannel{}".format(slot), str(channel))
                     self.updateWindowProperties()
 
     def getAllShows(self):
@@ -408,7 +408,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                         {
                             "name": show["title"],
                             "channel": 0,  # Not channel specific
-                            "path": "videodb://tvshows/titles/%d/" % show["tvshowid"],
+                            "path": "videodb://tvshows/titles/{}/".format(show)["tvshowid"],
                         }
                     )
 

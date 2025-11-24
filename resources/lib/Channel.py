@@ -79,7 +79,7 @@ class Channel:
 
                         self.log("Added rule - " + self.ruleList[-1].getTitle())
                         break
-        except:
+        except Exception as e:
             self.ruleList = []
 
     def setPaused(self, paused):

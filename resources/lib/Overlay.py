@@ -33,7 +33,6 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcvfs
-import re
 # Python 2/3 compatibility
 if sys.version_info[0] >= 3:
     unicode = str
@@ -69,7 +68,7 @@ try:
     from PIL import Image, ImageEnhance
 
     PIL_AVAILABLE = True
-except:
+except Exception as e:
     PIL_AVAILABLE = False
 
 ICON = ADDON.getAddonInfo("icon")
@@ -1169,7 +1168,7 @@ class LibraryMonitor(xbmc.Monitor):
                 # Trigger preemption with this file
                 self.overlay.preemptChannelWithShow(playingFile)
 
-            except:
+            except Exception as e:
                 self.log("Failed to get playing file info")
 
 
@@ -1195,7 +1194,7 @@ class MyPlayer(xbmc.Player):
             self.log("Playback stopped - ignored due to ignoreNextStop flag")
             return
 
-        if self.stopped == False:
+        if not self.stopped:
             self.log("Playback stopped")
 
             # Check if overlay exists and isn't exiting
@@ -1242,7 +1241,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             homeWindow.clearProperty("PTV.ExitImage1")
             homeWindow.clearProperty("PTV.ExitImage2")
             homeWindow.clearProperty("PTV.ExitImage3")
-        except:
+        except Exception as e:
             pass
 
         # Core components
@@ -1480,7 +1479,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.timeStarted = time.time()
 
         # Read configuration
-        if self.readConfig() == False:
+        if not self.readConfig():
             return
 
         # Initialize EPG
@@ -1508,13 +1507,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # Initialize current channel
         try:
-            if self.forceReset == False:
+            if not self.forceReset:
                 self.currentChannel = self.fixChannel(
                     int(ADDON.getSetting("CurrentChannel"))
                 )
             else:
                 self.currentChannel = self.fixChannel(1)
-        except:
+        except Exception as e:
             self.currentChannel = self.fixChannel(1)
 
         # Start playback
@@ -1533,7 +1532,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.weatherRefreshTimer.start()
 
         # Start channel thread if needed
-        if self.backgroundUpdating < 2 or self.isMaster == False:
+        if self.backgroundUpdating < 2 or not self.isMaster:
             self.channelThread.name = "ChannelThread"
             self.channelThread.start()
 
@@ -1561,7 +1560,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             if not FileAccess.exists(directory):
                 try:
                     FileAccess.makedirs(directory)
-                except:
+                except Exception as e:
                     self.Error(error_msg)
                     return False
         return True
@@ -1599,7 +1598,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             favs = ADDON.getSetting("FavoriteChannels")
             if favs:
                 self.favoriteChannels = [int(x) for x in favs.split(",") if x.strip()]
-        except:
+        except Exception as e:
             pass
 
     # Speed Dial Persistence Methods
@@ -1637,7 +1636,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             channel = int(v)
                             if channel > 0:
                                 self.speedDialChannels[key] = channel
-                        except:
+                        except Exception as e:
                             pass
 
                     # Load shows
@@ -1664,7 +1663,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         "loadSpeedDialFromSettings - Loaded channel %d for speed dial %d"
                         % (channel, i)
                     )
-            except:
+            except Exception as e:
                 pass
 
         # Load show speed dials
@@ -1674,9 +1673,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if showInfo:
                     self.speedDialShows[str(i)] = showInfo
                     self.log(
-                        "loadSpeedDialFromSettings - Loaded show for speed dial %d" % i
+                        "loadSpeedDialFromSettings - Loaded show for speed dial {}".format(i)
                     )
-            except:
+            except Exception as e:
                 pass
 
     def saveSpeedDial(self):
@@ -1789,7 +1788,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 with open(favShowsFile, "r") as f:
                     data = json.load(f)
                     self.favoriteShows = data.get("shows", [])
-                    self.log("Loaded %d favorite shows" % len(self.favoriteShows))
+                    self.log("Loaded {} favorite shows".format(len)(self.favoriteShows))
         except Exception as e:
             self.log("Error loading favorite shows: " + str(e))
             # Try loading from settings as fallback
@@ -1799,7 +1798,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.favoriteShows = [
                         s.strip() for s in shows.split(",") if s.strip()
                     ]
-            except:
+            except Exception as e:
                 pass
 
     def saveFavoriteShows(self):
@@ -1962,7 +1961,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
             with open(scheduleFile, "w") as f:
                 f.write("PseudoTV Favorite Shows Schedule\n")
-                f.write("Generated: %s\n" % time.strftime("%Y-%m-%d %H:%M:%S"))
+                f.write("Generated: {}\n".format(time.strftime)("%Y-%m-%d %H:%M:%S"))
                 f.write("=" * 50 + "\n\n")
 
                 if not self.favoriteShowsNextAiring:
@@ -1992,14 +1991,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         )
                         timeUntil = startTime - time.time()
 
-                        f.write("Show: %s\n" % fullTitle)
+                        f.write("Show: {}\n".format(fullTitle))
                         f.write("Channel: %d - %s\n" % (channelNum, channelName))
-                        f.write("Start Time: %s\n" % startStr)
+                        f.write("Start Time: {}\n".format(startStr))
 
                         if timeUntil > 0:
                             minutes = int(timeUntil / 60)
                             if minutes > 0:
-                                f.write("Starts in: %d minutes\n" % minutes)
+                                f.write("Starts in: {} minutes\n".format(minutes))
                             else:
                                 f.write("Starting now!\n")
                         else:
@@ -2065,14 +2064,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
                 if timeSinceLastNotify > cooldown:
                     # Show notification
-                    self.log("Triggering notification for %s" % showName)
+                    self.log("Triggering notification for {}".format(showName))
                     self.showFavoriteShowNotification(
                         showName, channelNum, timeUntilShow, fullTitle
                     )
                     self.favoriteShowsLastNotification[showName] = currentTime
                 else:
                     self.log(
-                        "Skipping notification for %s - still in cooldown" % showName
+                        "Skipping notification for {} - still in cooldown".format(showName)
                     )
 
     def epgScanAction(self):
@@ -2156,19 +2155,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         self.log("showFavoriteShowNotification - Properties set:")
         self.log(
-            "  PTV.FavoriteShow = %s"
-            % xbmcgui.Window(10000).getProperty("PTV.FavoriteShow")
+            "  PTV.FavoriteShow = {}".format(xbmcgui.Window)(10000).getProperty("PTV.FavoriteShow")
         )
         self.log(
-            "  PTV.FavoriteShow.Title = %s"
-            % xbmcgui.Window(10000).getProperty("PTV.FavoriteShow.Title")
+            "  PTV.FavoriteShow.Title = {}".format(xbmcgui.Window)(10000).getProperty("PTV.FavoriteShow.Title")
         )
 
         minutes = int(timeUntil / 60)
         if minutes <= 1:
             timeText = "Starting Now"
         else:
-            timeText = "Starts in %d minutes" % minutes
+            timeText = "Starts in {} minutes".format(minutes)
         self.setProperty("PTV.FavoriteShow.Time", timeText)
 
         # Store info for potential channel jump
@@ -2188,7 +2185,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.favoriteShowTimer.start()
 
         # ADD THIS DEBUG LOG
-        self.log("Favorite show notification displayed for %s" % showName)
+        self.log("Favorite show notification displayed for {}".format(showName))
 
     def hideFavoriteShowNotification(self):
         """Hide favorite show notification"""
@@ -2464,7 +2461,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # Calculate elapsed time during preemption
         elapsedTime = time.time() - self.preemptStartTime
-        self.log("Preemption lasted %d seconds" % int(elapsedTime))
+        self.log("Preemption lasted {} seconds".format(int)(elapsedTime))
 
         # Get return mode from settings
         returnMode = ADDON.getSetting("OnDemandReturnMode")
@@ -2478,7 +2475,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             ]
 
             select = xbmcgui.Dialog().select(
-                "Return to Channel %d" % self.preemptedChannel, options
+                "Return to Channel {}".format(self.preemptedChannel), options
             )
 
             if select == 0:  # Current live position
@@ -2663,7 +2660,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             options.append("Exit")
 
             select = xbmcgui.Dialog().select(
-                "Favorite Shows (%d shows)" % len(self.favoriteShows), options
+                "Favorite Shows ({} shows)".format(len)(self.favoriteShows), options
             )
 
             if select < 0 or options[select] == "Exit":
@@ -2822,7 +2819,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
             if timeUntil > 60:  # More than 1 minute away
                 minutes = int(timeUntil / 60)
-                timeStr = "in %d min" % minutes
+                timeStr = "in {} min".format(minutes)
             elif timeUntil > 0:  # Less than 1 minute away
                 timeStr = "Starting now"
             else:  # Already started
@@ -2830,7 +2827,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if minutesAgo == 0:
                     timeStr = "Just started"
                 else:
-                    timeStr = "Started %d min ago" % minutesAgo
+                    timeStr = "Started {} min ago".format(minutesAgo)
 
             options.append(
                 "%s - Ch %d: %s (%s)" % (fullTitle, channelNum, channelName, timeStr)
@@ -2845,7 +2842,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
                 # Ask if user wants to jump to this channel
                 if xbmcgui.Dialog().yesno(
-                    "Jump to Channel", "Switch to channel %d now?" % channelNum
+                    "Jump to Channel", "Switch to channel {} now?".format(channelNum)
                 ):
                     self.background.setVisible(True)
                     self.setChannel(channelNum)
@@ -2930,7 +2927,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("setChannel invalid channel " + str(channel), xbmc.LOGERROR)
             return
 
-        if self.channels[channel - 1].isValid == False:
+        if self.channels[channel - 1].not isValid:
             self.log("setChannel channel not valid " + str(channel), xbmc.LOGERROR)
             return
 
@@ -2995,8 +2992,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Load channel playlist
         xbmc.PlayList(xbmc.PLAYLIST_MUSIC).clear()
         if (
-            xbmc.PlayList(xbmc.PLAYLIST_MUSIC).load(self.channels[channel - 1].fileName)
-            == False
+            xbmc.PlayList(xbmc.PLAYLIST_MUSIC).not load(self.channels[channel - 1].fileName)
         ):
             self.log("Error loading playlist", xbmc.LOGERROR)
             self.InvalidateChannel(channel)
@@ -3014,7 +3010,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         timedif = curtime - self.channels[self.currentChannel - 1].lastAccessTime
 
         # Adjust show position if not paused
-        if self.channels[self.currentChannel - 1].isPaused == False:
+        if self.channels[self.currentChannel - 1].not isPaused:
             while (
                 self.channels[self.currentChannel - 1].showTimeOffset + timedif
                 > self.channels[self.currentChannel - 1].getCurrentDuration()
@@ -3044,9 +3040,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 )
                 if self.channels[self.currentChannel - 1].mode & MODE_ALWAYSPAUSE == 0:
                     self.Player.pause()
-                    if self.waitForVideoPaused() == False:
+                    if not self.waitForVideoPaused():
                         return
-            except:
+            except Exception as e:
                 self.log("Exception during seek on paused channel", xbmc.LOGERROR)
         else:
             # Seek to proper time
@@ -3057,14 +3053,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             )
             try:
                 self.Player.seekTime(seektime)
-            except:
+            except Exception as e:
                 self.log("Unable to set proper seek time, trying different value")
                 try:
                     seektime = (
                         self.channels[self.currentChannel - 1].showTimeOffset + timedif
                     )
                     self.Player.seekTime(seektime)
-                except:
+                except Exception as e:
                     self.log("Exception during seek", xbmc.LOGERROR)
 
         self.showChannelLabel(self.currentChannel)
@@ -3111,13 +3107,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Manual channel entry - always show info
             self.infoOffset = 0
             self.showInfo(5.0)
-        elif self.inputChannel == -1 and self.infoOnChange == True:
+        elif self.inputChannel == -1 and self.infoOnChange:
             # Channel up/down - show based on setting
             self.infoOffset = 0
             self.showInfo(5.0)
 
         # Show channel bug
-        if self.showChannelBug == True:
+        if self.showChannelBug:
             self.updateChannelBug()
 
         # Hide Kodi info if showing
@@ -3423,13 +3419,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     import os
 
                     hourIconFilename = os.path.basename(hourIcon)
-                    self.setProperty("PTV.Weather.Hour%d.Icon" % i, hourIconFilename)
+                    self.setProperty("PTV.Weather.Hour{}.Icon".format(i), hourIconFilename)
                 else:
-                    self.setProperty("PTV.Weather.Hour%d.Icon" % i, "")
+                    self.setProperty("PTV.Weather.Hour{}.Icon".format(i), "")
 
-                self.setProperty("PTV.Weather.Hour%d.Time" % i, hourTime)
-                self.setProperty("PTV.Weather.Hour%d.Temp" % i, hourTemp)
-                self.setProperty("PTV.Weather.Hour%d.Condition" % i, hourCondition)
+                self.setProperty("PTV.Weather.Hour{}.Time".format(i), hourTime)
+                self.setProperty("PTV.Weather.Hour{}.Temp".format(i), hourTemp)
+                self.setProperty("PTV.Weather.Hour{}.Condition".format(i), hourCondition)
 
             # If conditions are "Busy" or empty, try again after a delay
             if (
@@ -3512,13 +3508,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             try:
                 response = urllib2.urlopen(request, timeout=10)
                 data = response.read()
-                self.log("Sonarr API response received, length: %d bytes" % len(data))
+                self.log("Sonarr API response received, length: {} bytes".format(len)(data))
             except urllib2.URLError as e:
                 self.log("URLError fetching Sonarr: " + str(e), xbmc.LOGERROR)
                 if hasattr(e, 'code'):
-                    self.log("HTTP Error Code: %d" % e.code, xbmc.LOGERROR)
+                    self.log("HTTP Error Code: {}".format(e.code), xbmc.LOGERROR)
                 if hasattr(e, 'reason'):
-                    self.log("Reason: %s" % str(e.reason), xbmc.LOGERROR)
+                    self.log("Reason: {}".format(str)(e.reason), xbmc.LOGERROR)
                 return []
             except Exception as e:
                 self.log("Error fetching Sonarr: " + str(e), xbmc.LOGERROR)
@@ -3527,7 +3523,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Parse JSON
             try:
                 calendar = json.loads(data)
-                self.log("Parsed Sonarr JSON: %d episodes found" % len(calendar))
+                self.log("Parsed Sonarr JSON: {} episodes found".format(len)(calendar))
             except Exception as e:
                 self.log("Error parsing Sonarr JSON: " + str(e), xbmc.LOGERROR)
                 self.log("Raw data preview: " + data[:200], xbmc.LOGERROR)
@@ -3544,7 +3540,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if seriesId:
                     uniqueSeriesIds.add(seriesId)
             
-            self.log("Found %d unique series in calendar" % len(uniqueSeriesIds))
+            self.log("Found {} unique series in calendar".format(len)(uniqueSeriesIds))
             
             # Fetch series details for each unique series ID
             for seriesId in uniqueSeriesIds:
@@ -3566,7 +3562,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.log("Error fetching series %d: %s" % (seriesId, str(e)))
                     continue
             
-            self.log("Series cache built with %d entries" % len(seriesCache))
+            self.log("Series cache built with {} entries".format(len)(seriesCache))
             
             # Process episodes
             episodes = []
@@ -3603,7 +3599,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             airTime = localAirDateTime.strftime("%I:%M %p").lstrip('0')
                             
                         except Exception as e:
-                            self.log("Error parsing UTC time: %s" % str(e))
+                            self.log("Error parsing UTC time: {}".format(str)(e))
                             localAirDateTime = None
 
                     # Use LOCAL date for comparison, not Sonarr's airDate
@@ -3622,8 +3618,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             month = int(dateParts[1])
                             day = int(dateParts[2])
                             airDate = DATE(year, month, day)
-                        except:
-                            self.log("Could not parse date: %s" % airDateStr)
+                        except Exception as e:
+                            self.log("Could not parse date: {}".format(airDateStr))
                             continue
 
                     daysUntil = (airDate - today).days
@@ -3650,7 +3646,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         seriesImages = seriesInfo.get('images', [])
                         self.log("Using series: %s (ID: %d)" % (seriesTitle, seriesId))
                     else:
-                        self.log("WARNING: Series ID %s not in cache" % str(seriesId))
+                        self.log("WARNING: Series ID {} not in cache".format(str)(seriesId))
                     
                     # Get episode info
                     seasonNumber = item.get('seasonNumber', 0)
@@ -3665,7 +3661,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         status = "âœ“ Downloaded"
                     elif isToday:
                         if airTime:
-                            status = "Airing at %s" % airTime  
+                            status = "Airing at {}".format(airTime)  
                         else:
                             status = "â˜… Airing Today"
                     else:
@@ -3722,7 +3718,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.log("Traceback: " + traceback.format_exc(), xbmc.LOGERROR)
                     continue
             
-            self.log("fetchSonarrCalendar - Returning %d episodes" % len(episodes))
+            self.log("fetchSonarrCalendar - Returning {} episodes".format(len)(episodes))
             return episodes
             
         except Exception as e:
@@ -3774,13 +3770,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             try:
                 response = urllib2.urlopen(request, timeout=10)
                 data = response.read()
-                self.log("Radarr API response received, length: %d bytes" % len(data))
+                self.log("Radarr API response received, length: {} bytes".format(len)(data))
             except urllib2.URLError as e:
                 self.log("URLError fetching Radarr: " + str(e), xbmc.LOGERROR)
                 if hasattr(e, 'code'):
-                    self.log("HTTP Error Code: %d" % e.code, xbmc.LOGERROR)
+                    self.log("HTTP Error Code: {}".format(e.code), xbmc.LOGERROR)
                 if hasattr(e, 'reason'):
-                    self.log("Reason: %s" % str(e.reason), xbmc.LOGERROR)
+                    self.log("Reason: {}".format(str)(e.reason), xbmc.LOGERROR)
                 return []
             except Exception as e:
                 self.log("Error fetching Radarr: " + str(e), xbmc.LOGERROR)
@@ -3789,7 +3785,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Parse JSON
             try:
                 calendar = json.loads(data)
-                self.log("Parsed Radarr JSON: %d movies found" % len(calendar))
+                self.log("Parsed Radarr JSON: {} movies found".format(len)(calendar))
             except Exception as e:
                 self.log("Error parsing Radarr JSON: " + str(e), xbmc.LOGERROR)
                 self.log("Raw data preview: " + data[:200], xbmc.LOGERROR)
@@ -3833,7 +3829,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     elif isToday:
                         status = "â˜… Releasing Today"
                     else:
-                        status = "Releases %s" % dayStr
+                        status = "Releases {}".format(dayStr)
                     
                     # Get poster - TRY LIBRARY FIRST, then Radarr remote URLs
                     poster = ""
@@ -3878,7 +3874,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.log("Traceback: " + traceback.format_exc(), xbmc.LOGERROR)
                     continue
             
-            self.log("fetchRadarrCalendar - Returning %d movies" % len(movies))
+            self.log("fetchRadarrCalendar - Returning {} movies".format(len)(movies))
             return movies
             
         except Exception as e:
@@ -4004,16 +4000,16 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("updateCalendarData - Fetching Sonarr...")
             sonarrData = self.fetchSonarrCalendar()
             self.sonarrCalendar = sonarrData if sonarrData else []
-            self.log("updateCalendarData - Sonarr returned %d items" % len(self.sonarrCalendar))
+            self.log("updateCalendarData - Sonarr returned {} items".format(len)(self.sonarrCalendar))
             
             self.log("updateCalendarData - Fetching Radarr...")
             radarrData = self.fetchRadarrCalendar()
             self.radarrCalendar = radarrData if radarrData else []
-            self.log("updateCalendarData - Radarr returned %d items" % len(self.radarrCalendar))
+            self.log("updateCalendarData - Radarr returned {} items".format(len)(self.radarrCalendar))
             
             # Combine and sort by date
             allItems = self.sonarrCalendar + self.radarrCalendar
-            self.log("updateCalendarData - Total items: %d" % len(allItems))
+            self.log("updateCalendarData - Total items: {}".format(len)(allItems))
             
             if not allItems:
                 self.log("updateCalendarData - No items found from either service")
@@ -4114,7 +4110,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Movie
             self.log("updateTodayDisplay - Movie detected")
             self.setProperty("PTV.Calendar.Today.Title", item['title'])
-            self.setProperty("PTV.Calendar.Today.Episode", "(%s)" % item['year'])
+            self.setProperty("PTV.Calendar.Today.Episode", "({})".format(item)['year'])
         
         self.log("updateTodayDisplay - Setting status: " + item['status'])
         self.setProperty("PTV.Calendar.Today.Status", item['status'])
@@ -4349,7 +4345,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             
             # Return only the 10 most recent
             result = recent_items[:10]
-            self.log("fetchRecentlyAdded - Returning %d items" % len(result))
+            self.log("fetchRecentlyAdded - Returning {} items".format(len)(result))
             return result
             
         except Exception as e:
@@ -4388,21 +4384,21 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             else:
                 label = "%s - %s" % (item["title"], item["episode_info"])
             
-            self.setProperty("PTV.Recent.List.%d" % i, label)
+            self.setProperty("PTV.Recent.List.{}".format(i), label)
             
             # Mark if watched
             watched = item.get("playcount", 0) > 0
-            self.setProperty("PTV.Recent.List.%d.Watched" % i, str(watched))
+            self.setProperty("PTV.Recent.List.{}.Watched".format(i), str(watched))
         
         # Clear any unused list slots
         for i in range(len(list_items) + 1, 6):
-            self.setProperty("PTV.Recent.List.%d" % i, "")
+            self.setProperty("PTV.Recent.List.{}".format(i), "")
         
         self.log("updateRecentlyAddedData - COMPLETED")
     
     def updateRecentlyAddedFeaturedItem(self, index):
         """Update the featured item display"""
-        self.log("updateRecentlyAddedFeaturedItem - index %d" % index)
+        self.log("updateRecentlyAddedFeaturedItem - index {}".format(index))
         
         if not self.recentlyAddedItems or index >= len(self.recentlyAddedItems):
             return
@@ -4455,14 +4451,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         watched = item.get("playcount", 0) > 0
         self.setProperty("PTV.Recent.Featured.Watched", str(watched))
         
-        self.log("updateRecentlyAddedFeaturedItem - Set to: %s" % item.get("title"))
+        self.log("updateRecentlyAddedFeaturedItem - Set to: {}".format(item.get)("title"))
     
     def rotateRecentlyAddedFeaturedItem(self):
         """Rotate to next featured item"""
         if not self.showingRecentlyAdded:
             return
         
-        if not self.recentlyAddedItems or len(self.recentlyAddedItems) == 0:
+        if not self.recentlyAddedItems or not self.recentlyAddedItems:
             # Reschedule and return
             self.recentlyAddedRotationTimer = threading.Timer(5.0, self.rotateRecentlyAddedFeaturedItem)  # CHANGED
             if not self.isExiting:
@@ -4608,7 +4604,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.log("No valid channels found")
                 return []
             
-            self.log("Found %d valid channels" % len(validChannels))
+            self.log("Found {} valid channels".format(len)(validChannels))
             
             # Calculate viewing window: 9 AM - 11:59 PM
             currentTime = time.time()
@@ -4630,9 +4626,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Calculate viewing window duration
             viewingWindowHours = (viewingEndTimestamp - viewingStartTimestamp) / 3600.0
             
-            self.log("Current time: %s" % now.strftime("%Y-%m-%d %I:%M:%S %p"))
-            self.log("Viewing window start: %s" % viewingStart.strftime("%Y-%m-%d %I:%M:%S %p"))
-            self.log("Viewing window end (11:59 PM): %s" % viewingEnd.strftime("%Y-%m-%d %I:%M:%S %p"))
+            self.log("Current time: {}".format(now.strftime)("%Y-%m-%d %I:%M:%S %p"))
+            self.log("Viewing window start: {}".format(viewingStart.strftime)("%Y-%m-%d %I:%M:%S %p"))
+            self.log("Viewing window end (11:59 PM): {}".format(viewingEnd.strftime)("%Y-%m-%d %I:%M:%S %p"))
             self.log("Viewing window duration: %.2f hours" % viewingWindowHours)
             
             # Build pool of valid items during viewing hours
@@ -4685,9 +4681,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             'airtime': itemAirtime
                         })
             
-            self.log("Found %d items playing during viewing hours (9 AM - 11:59 PM)" % len(validItems))
+            self.log("Found {} items playing during viewing hours (9 AM - 11:59 PM)".format(len)(validItems))
             
-            if len(validItems) == 0:
+            if not validItems:
                 self.log("No items found during viewing hours (9 AM - 11:59 PM)")
                 return []
             
@@ -4734,7 +4730,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         movieItems.append(itemData)
                         
                 except Exception as e:
-                    self.log("Error categorizing item: %s" % str(e))
+                    self.log("Error categorizing item: {}".format(str)(e))
                     continue
             
             self.log("Found: %d movies, %d audio, %d TV shows" % (len(movieItems), len(audioItems), len(tvItems)))
@@ -4745,7 +4741,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Select 2 movies
             if len(movieItems) >= 2:
                 selectedMovies = random.sample(movieItems, 2)
-            elif len(movieItems) > 0:
+            elif movieItems:
                 selectedMovies = random.sample(movieItems, len(movieItems))
             else:
                 selectedMovies = []
@@ -4754,7 +4750,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Select 3 audio
             if len(audioItems) >= 3:
                 selectedAudio = random.sample(audioItems, 3)
-            elif len(audioItems) > 0:
+            elif audioItems:
                 selectedAudio = random.sample(audioItems, len(audioItems))
             else:
                 selectedAudio = []
@@ -4764,7 +4760,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             remainingSlots = 20 - len(selectedItems)
             if len(tvItems) >= remainingSlots:
                 selectedTV = random.sample(tvItems, remainingSlots)
-            elif len(tvItems) > 0:
+            elif tvItems:
                 selectedTV = random.sample(tvItems, len(tvItems))
             else:
                 selectedTV = []
@@ -4793,7 +4789,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Shuffle the selected items so they're not grouped by type
             random.shuffle(selectedItems)
             
-            self.log("Selected mix: %d total items for recommendations" % len(selectedItems))
+            self.log("Selected mix: {} total items for recommendations".format(len)(selectedItems))
             
             # Build recommendations from selected items
             for item in selectedItems:
@@ -4815,7 +4811,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     # NEW: For audio channels (Music Genre - *), use the full channel name
                     if channelName and channelName.startswith("Music Genre - "):
                         genre = channelName  # Use full name: "Music Genre - Cinematic"
-                        self.log("Audio channel detected, using full name as genre: %s" % genre)
+                        self.log("Audio channel detected, using full name as genre: {}".format(genre))
                     # Try to extract genre from channel name patterns like "Action Movies" or "Comedy TV"
                     elif channelName:
                         # Common patterns: "Genre Movies", "Genre TV", "Genre - Something"
@@ -4837,7 +4833,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         itemPathLower = itemPath.lower()
                         if "/audio/" in itemPathLower or "\\audio\\" in itemPathLower:
                             isAudio = True
-                            self.log("Detected AUDIO content: %s" % itemPath)
+                            self.log("Detected AUDIO content: {}".format(itemPath))
                             
                             # Extract artist and album from path
                             # Example: /mnt/user/AUDIO/Dreamstate Logic/Era Three/01 - Track.mp3
@@ -4858,7 +4854,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                                 
                                 self.log("Extracted - Artist: %s, Album: %s" % (artist, album))
                             except Exception as e:
-                                self.log("Error extracting artist/album: %s" % str(e))
+                                self.log("Error extracting artist/album: {}".format(str)(e))
                                 artist = "Unknown Artist"
                                 album = "Unknown Album"
                     
@@ -4871,7 +4867,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         if "season" in dirName or dirName.startswith("s0") or dirName.startswith("s1"):
                             # We're in a season folder, use the parent (show) folder instead
                             itemDir = os.path.dirname(itemDir)
-                            self.log("In season folder, checking show directory: %s" % itemDir)
+                            self.log("In season folder, checking show directory: {}".format(itemDir))
                         
                         # Now check for poster/folder art (including files without extensions)
                         posterFiles = ["folder.jpg", "folder.png", "folder", "poster.jpg", "poster.png", "poster", "cover.jpg", "cover.png", "cover"]
@@ -4879,7 +4875,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             posterPath = os.path.join(itemDir, posterFile)
                             if FileAccess.exists(posterPath):
                                 poster = posterPath
-                                self.log("Found poster: %s" % posterPath)
+                                self.log("Found poster: {}".format(posterPath))
                                 break
 
                     # If still no poster, use channel logo as fallback
@@ -4977,16 +4973,16 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     recommendations.append(recommendation)
                     
                 except Exception as e:
-                    self.log("Error processing recommendation: %s" % str(e))
+                    self.log("Error processing recommendation: {}".format(str)(e))
                     import traceback
                     self.log(traceback.format_exc())
                     continue
             
-            self.log("fetchRandomRecommendations - returning %d recommendations" % len(recommendations))
+            self.log("fetchRandomRecommendations - returning {} recommendations".format(len)(recommendations))
             return recommendations
             
         except Exception as e:
-            self.log("fetchRandomRecommendations FAILED: %s" % str(e))
+            self.log("fetchRandomRecommendations FAILED: {}".format(str)(e))
             import traceback
             self.log(traceback.format_exc())
             return []
@@ -5006,8 +5002,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             return "%s - %s - CHANNEL %d" % (dayName, timeStr, channelNumber)
             
         except Exception as e:
-            self.log("Error formatting airtime: %s" % str(e), xbmc.LOGERROR)
-            return "CHANNEL %d" % channelNumber
+            self.log("Error formatting airtime: {}".format(str)(e), xbmc.LOGERROR)
+            return "CHANNEL {}".format(channelNumber)
     
     def updateRecommendationsData(self):
         """Update window properties with recommendations data"""
@@ -5071,23 +5067,23 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         
         # Map common genres to your channel artwork with type suffix
         genre_map = {
-            "Action": "Action %s.png" % item_type,
-            "Adventure": "Adventure %s.png" % item_type,
-            "Animation": "Animation %s.png" % item_type,
-            "Comedy": "Comedy %s.png" % item_type,
-            "Crime": "Crime %s.png" % item_type,
-            "Documentary": "Documentary %s.png" % item_type,
-            "Drama": "Drama %s.png" % item_type,
-            "Family": "Family %s.png" % item_type,
-            "Fantasy": "Fantasy %s.png" % item_type,
-            "Horror": "Horror %s.png" % item_type,
-            "Mystery": "Mystery %s.png" % item_type,
-            "Romance": "Romance %s.png" % item_type,
-            "Science Fiction": "Science Fiction %s.png" % item_type,
-            "Sci-Fi & Fantasy": "Science Fiction %s.png" % item_type,
-            "Thriller": "Thriller %s.png" % item_type,
-            "Western": "Western %s.png" % item_type,
-            "War": "War %s.png" % item_type,
+            "Action": "Action {}.png".format(item_type),
+            "Adventure": "Adventure {}.png".format(item_type),
+            "Animation": "Animation {}.png".format(item_type),
+            "Comedy": "Comedy {}.png".format(item_type),
+            "Crime": "Crime {}.png".format(item_type),
+            "Documentary": "Documentary {}.png".format(item_type),
+            "Drama": "Drama {}.png".format(item_type),
+            "Family": "Family {}.png".format(item_type),
+            "Fantasy": "Fantasy {}.png".format(item_type),
+            "Horror": "Horror {}.png".format(item_type),
+            "Mystery": "Mystery {}.png".format(item_type),
+            "Romance": "Romance {}.png".format(item_type),
+            "Science Fiction": "Science Fiction {}.png".format(item_type),
+            "Sci-Fi & Fantasy": "Science Fiction {}.png".format(item_type),
+            "Thriller": "Thriller {}.png".format(item_type),
+            "Western": "Western {}.png".format(item_type),
+            "War": "War {}.png".format(item_type),
         }
         
         # Get the mapped artwork filename
@@ -5114,7 +5110,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         else:
             self.log("File NOT found at primary path")
             # Try fallback without type suffix
-            fallback_filename = "%s.png" % genre
+            fallback_filename = "{}.png".format(genre)
             fallback_path = translatePath(
                 "special://home/addons/script.paragontv/resources/logos/" + fallback_filename
             )
@@ -5136,7 +5132,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
     
     def updateRecommendationsFeaturedItem(self, index):
         """Update the featured recommendation display"""
-        self.log("updateRecommendationsFeaturedItem - index %d" % index)
+        self.log("updateRecommendationsFeaturedItem - index {}".format(index))
         
         if not self.recommendationsItems or index >= len(self.recommendationsItems):
             return
@@ -5185,14 +5181,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.setProperty("PTV.Recommendations.AirtimeInfo", airtimeInfo)
         self.log("Set airtime info: " + airtimeInfo)
         
-        self.log("updateRecommendationsFeaturedItem - Set to: %s" % item.get("title"))
+        self.log("updateRecommendationsFeaturedItem - Set to: {}".format(item.get)("title"))
     
     def rotateRecommendationsFeaturedItem(self):
         """Rotate to next featured recommendation"""
         if not self.showingRecommendations:
             return
         
-        if not self.recommendationsItems or len(self.recommendationsItems) == 0:
+        if not self.recommendationsItems or not self.recommendationsItems:
             self.recommendationsRotationTimer = threading.Timer(30.0, self.rotateRecommendationsFeaturedItem)
             if not self.isExiting:
                 self.recommendationsRotationTimer.start()
@@ -5378,13 +5374,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if not line.strip():
                     continue
                 
-                self.log("Parsing df line: %s" % line)
+                self.log("Parsing df line: {}".format(line))
                 
                 try:
                     if '/mnt/disk' in line and 'tmpfs' not in line:  # ADD: and 'tmpfs' not in line
                         parts = line.split()
                         if len(parts) < 5:
-                            self.log("Skipping malformed disk line: %s" % line)
+                            self.log("Skipping malformed disk line: {}".format(line))
                             continue
                         
                         # Try to extract disk number from device name
@@ -5398,7 +5394,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             disk_num = device.split('sd')[1][0]  # Just the letter
                         
                         disks.append({
-                            'name': 'Disk %s' % disk_num,
+                            'name': 'Disk {}'.format(disk_num),
                             'total': parts[1],
                             'used': parts[2],
                             'avail': parts[3],
@@ -5441,13 +5437,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             # Split on either degree symbol or 'C'
                             temp = temp_str.split('C')[0].replace(u'Â°', '').strip()
                             if temp:
-                                cpu_temp = "%dÂ°F" % int(float(temp) * 9/5 + 32)
+                                cpu_temp = "{}Â°F".format(int)(float(temp) * 9/5 + 32)
                     elif 'Composite:' in line:
                         if '+' in line:
                             temp_str = line.split('+')[1]
                             temp = temp_str.split('C')[0].replace(u'Â°', '').strip()
                             if temp:
-                                cache_temp = "%dÂ°F" % int(float(temp) * 9/5 + 32)
+                                cache_temp = "{}Â°F".format(int)(float(temp) * 9/5 + 32)
                 except Exception as e:
                     self.log("Error parsing temperature line '%s': %s" % (line, str(e)), xbmc.LOGERROR)
                     continue
@@ -5483,9 +5479,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             return stats
             
         except Exception as e:
-            self.log("Error fetching server stats: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error fetching server stats: {}".format(str)(e), xbmc.LOGERROR)
             import traceback
-            self.log("Traceback: %s" % traceback.format_exc(), xbmc.LOGERROR)
+            self.log("Traceback: {}".format(traceback.format_exc)(), xbmc.LOGERROR)
             return {}
 
     def updateServerStatsData(self):
@@ -5525,15 +5521,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Individual disks
             disks = stats.get('disks', [])
             for i, disk in enumerate(disks[:5], 1):  # Up to 5 disks
-                self.setProperty("PTV.ServerStats.Disk.%d.Name" % i, disk.get('name', ''))
-                self.setProperty("PTV.ServerStats.Disk.%d.Used" % i, disk.get('used', ''))
-                self.setProperty("PTV.ServerStats.Disk.%d.Total" % i, disk.get('total', ''))
-                self.setProperty("PTV.ServerStats.Disk.%d.Percent" % i, disk.get('percent', ''))
+                self.setProperty("PTV.ServerStats.Disk.{}.Name".format(i), disk.get('name', ''))
+                self.setProperty("PTV.ServerStats.Disk.{}.Used".format(i), disk.get('used', ''))
+                self.setProperty("PTV.ServerStats.Disk.{}.Total".format(i), disk.get('total', ''))
+                self.setProperty("PTV.ServerStats.Disk.{}.Percent".format(i), disk.get('percent', ''))
             
             self.log("updateServerStatsData - COMPLETED")
             
         except Exception as e:
-            self.log("Error in updateServerStatsData: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error in updateServerStatsData: {}".format(str)(e), xbmc.LOGERROR)
 
     def fetchRandomWikipediaArticle(self):
         """Fetch a random Wikipedia article from curated lists without repeating until all are viewed"""
@@ -5545,7 +5541,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.log("Building flat list of all Wikipedia articles...")
                 for category_articles in WIKIPEDIA_ARTICLES.values():
                     self.wikipedia_all_articles.extend(category_articles)
-                self.log("Total Wikipedia articles available: %d" % len(self.wikipedia_all_articles))
+                self.log("Total Wikipedia articles available: {}".format(len)(self.wikipedia_all_articles))
 
             # If we've viewed all articles, reset the viewed list
             if len(self.wikipedia_viewed_articles) >= len(self.wikipedia_all_articles):
@@ -5574,7 +5570,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.updateKnowledgeDisplay()
 
         except Exception as e:
-            self.log("Error fetching Wikipedia article: %s" % str(e))
+            self.log("Error fetching Wikipedia article: {}".format(str)(e))
     
     def fetchRandomFunFact(self):
         """Fetch a random fun fact article"""
@@ -5587,11 +5583,11 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.log("Building flat list of all Fun Facts articles...")
                 for category_articles in FUNFACTS_ARTICLES.values():
                     self.funfacts_all_articles.extend(category_articles)
-                self.log("Total Fun Facts articles available: %d" % len(self.funfacts_all_articles))
+                self.log("Total Fun Facts articles available: {}".format(len)(self.funfacts_all_articles))
             
             # Pick random article from fun facts
             article_title = random.choice(self.funfacts_all_articles)
-            self.log("Selected fun fact: %s" % article_title)
+            self.log("Selected fun fact: {}".format(article_title))
             
             # Fetch article content from Kiwix (uses same Wikipedia ZIM)
             article_data = self.fetchWikipediaContent(article_title)
@@ -5603,7 +5599,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.updateKnowledgeDisplay()
                 
         except Exception as e:
-            self.log("Error fetching fun fact: %s" % str(e))
+            self.log("Error fetching fun fact: {}".format(str)(e))
 
     def fetchRandomTrivia(self):
         """Fetch a random trivia article"""
@@ -5616,11 +5612,11 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.log("Building flat list of all Trivia articles...")
                 for category_articles in TRIVIA_ARTICLES.values():
                     self.trivia_all_articles.extend(category_articles)
-                self.log("Total Trivia articles available: %d" % len(self.trivia_all_articles))
+                self.log("Total Trivia articles available: {}".format(len)(self.trivia_all_articles))
             
             # Pick random article from trivia
             article_title = random.choice(self.trivia_all_articles)
-            self.log("Selected trivia: %s" % article_title)
+            self.log("Selected trivia: {}".format(article_title))
             
             # Fetch article content from Kiwix (uses same Wikipedia ZIM)
             article_data = self.fetchWikipediaContent(article_title)
@@ -5632,7 +5628,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.updateKnowledgeDisplay()
                 
         except Exception as e:
-            self.log("Error fetching trivia: %s" % str(e))
+            self.log("Error fetching trivia: {}".format(str)(e))
 
     def fetchRandomMystery(self):
         """Fetch a random unsolved mystery article"""
@@ -5645,11 +5641,11 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.log("Building flat list of all Mystery articles...")
                 for category_articles in MYSTERIES_ARTICLES.values():
                     self.mysteries_all_articles.extend(category_articles)
-                self.log("Total Mystery articles available: %d" % len(self.mysteries_all_articles))
+                self.log("Total Mystery articles available: {}".format(len)(self.mysteries_all_articles))
             
             # Pick random article from mysteries
             article_title = random.choice(self.mysteries_all_articles)
-            self.log("Selected mystery: %s" % article_title)
+            self.log("Selected mystery: {}".format(article_title))
             
             # Fetch article content from Kiwix (uses same Wikipedia ZIM)
             article_data = self.fetchWikipediaContent(article_title)
@@ -5661,7 +5657,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.updateKnowledgeDisplay()
                 
         except Exception as e:
-            self.log("Error fetching mystery: %s" % str(e))
+            self.log("Error fetching mystery: {}".format(str)(e))
     
     def fetchWikipediaContent(self, article_title):
         """Fetch article content from Kiwix server"""
@@ -5677,7 +5673,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             first_letter = article_title[0].upper()
             url = "%s/%s/%s" % (base_url, first_letter, article_title)
             
-            self.log("Fetching Wikipedia article: %s" % url)
+            self.log("Fetching Wikipedia article: {}".format(url))
             
             # Fetch article
             response = urllib2.urlopen(url, timeout=10)
@@ -5746,7 +5742,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     cleaned_chars.append(char)
                 else:
                     cleaned_chars.append(' ')
-            except:
+            except Exception as e:
                 cleaned_chars.append(' ')
         
         text = ''.join(cleaned_chars)
@@ -5785,7 +5781,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Extract main image from infobox or first image
             img_pattern = r'<img[^>]+src="([^"]+)"[^>]*>'
             img_matches = re.findall(img_pattern, html_content)
-            self.log("Found %d total images in article" % len(img_matches))
+            self.log("Found {} total images in article".format(len)(img_matches))
 
             # Separate landscape and portrait candidates
             landscape_candidates = []
@@ -5794,7 +5790,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             if img_matches:
                 # Get first substantial image (not icons)
                 for img_url in img_matches:
-                    self.log("Checking image URL: %s" % img_url)
+                    self.log("Checking image URL: {}".format(img_url))
                     
                     # Skip tiny icons, edit buttons, and UI elements
                     skip_terms = ['edit', 'icon', 'logo', '20px', '25px', '30px', '15px', 'button', 'magnify']
@@ -5842,7 +5838,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         full_url = wiki_base + "/" + img_url
                     
                     article_data['image'] = full_url
-                    self.log("Selected article image: %s" % full_url)
+                    self.log("Selected article image: {}".format(full_url))
                     break
                 
                 if not article_data['image']:
@@ -5884,7 +5880,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             return article_data
             
         except Exception as e:
-            self.log("Error parsing Wikipedia article: %s" % str(e))
+            self.log("Error parsing Wikipedia article: {}".format(str)(e))
             return None
  
     def updateKnowledgeDisplay(self):
@@ -5922,7 +5918,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("Knowledge updated: %s (%s)" % (content['title'], content.get('source', 'Unknown')))
             
         except Exception as e:
-            self.log("Error updating knowledge display: %s" % str(e))
+            self.log("Error updating knowledge display: {}".format(str)(e))
 
     def startKnowledgePage(self):
         """Initialize Knowledge Page - picks next source in rotation"""
@@ -5931,7 +5927,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             source_key = KNOWLEDGE_ROTATION[self.knowledge_rotation_index]
             source_config = KNOWLEDGE_SOURCES[source_key]
             
-            self.log("Starting Knowledge Page with source: %s" % source_config['name'])
+            self.log("Starting Knowledge Page with source: {}".format(source_config)['name'])
             
             # Advance rotation index for next time
             self.knowledge_rotation_index = (self.knowledge_rotation_index + 1) % len(KNOWLEDGE_ROTATION)
@@ -5951,7 +5947,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.showingWikipedia = True
             
         except Exception as e:
-            self.log("Error starting Knowledge Page: %s" % str(e))
+            self.log("Error starting Knowledge Page: {}".format(str)(e))
 
     def stopKnowledgePage(self):
         """Stop Knowledge Page and clear display"""
@@ -5971,7 +5967,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.showingWikipedia = False
             
         except Exception as e:
-            self.log("Error stopping Knowledge Page: %s" % str(e))
+            self.log("Error stopping Knowledge Page: {}".format(str)(e))
 
     def showServerStatsOverlay(self, persistent=False):
         """Show the server stats overlay"""
@@ -6051,7 +6047,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         try:
             self.updateServerStatsData()
         except Exception as e:
-            self.log("Error refreshing server stats: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error refreshing server stats: {}".format(str)(e), xbmc.LOGERROR)
         
         # Schedule next refresh ONLY if still on channel 99 and showing stats
         if self.showingServerStats and self.currentChannel == 99 and not self.isExiting:
@@ -6228,7 +6224,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                                 
                                 total_db_size += db_size
                                 total_tables += db_tables
-                            except:
+                            except Exception as e:
                                 pass
                 
                 # Parse library statistics
@@ -6255,17 +6251,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     if 'Episodes:' in line:
                         try:
                             orphaned_episodes = int(line.split(':')[1].strip())
-                        except:
+                        except Exception as e:
                             pass
                     elif 'Movies:' in line:
                         try:
                             orphaned_movies = int(line.split(':')[1].strip())
-                        except:
+                        except Exception as e:
                             pass
                     elif 'Paths:' in line:
                         try:
                             orphaned_paths = int(line.split(':')[1].strip())
-                        except:
+                        except Exception as e:
                             pass
                 
                 # Parse table integrity
@@ -6280,7 +6276,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     if 'Active connections:' in line:
                         try:
                             active_connections = line.split(':')[1].strip()
-                        except:
+                        except Exception as e:
                             pass
                 
                 # Parse Kodi clients
@@ -6296,7 +6292,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                                 'status': status,
                                 'online': 'Connected' in status
                             })
-                        except:
+                        except Exception as e:
                             pass
             
             # Calculate health status
@@ -6305,7 +6301,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             orphaned_total = orphaned_episodes + orphaned_movies + orphaned_paths
             
             if orphaned_total > 0:
-                health_status = "Needs Cleaning (%d orphaned)" % orphaned_total
+                health_status = "Needs Cleaning ({} orphaned)".format(orphaned_total)
                 health_color = "yellow"
             
             if table_integrity != "OK":
@@ -6339,9 +6335,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             return stats
             
         except Exception as e:
-            self.log("Error fetching MySQL stats: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error fetching MySQL stats: {}".format(str)(e), xbmc.LOGERROR)
             import traceback
-            self.log("Traceback: %s" % traceback.format_exc(), xbmc.LOGERROR)
+            self.log("Traceback: {}".format(traceback.format_exc)(), xbmc.LOGERROR)
             return {}
 
     def updateMySQLStatsData(self):
@@ -6373,9 +6369,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Individual databases
             databases = stats.get('databases', [])
             for i, db in enumerate(databases[:5], 1):  # Up to 5 databases
-                self.setProperty("PTV.MySQLStats.DB.%d.Name" % i, db.get('name', ''))
-                self.setProperty("PTV.MySQLStats.DB.%d.Size" % i, db.get('size', ''))
-                self.setProperty("PTV.MySQLStats.DB.%d.Tables" % i, str(db.get('tables', '')))
+                self.setProperty("PTV.MySQLStats.DB.{}.Name".format(i), db.get('name', ''))
+                self.setProperty("PTV.MySQLStats.DB.{}.Size".format(i), db.get('size', ''))
+                self.setProperty("PTV.MySQLStats.DB.{}.Tables".format(i), str(db.get('tables', '')))
             
             # Library stats
             self.setProperty("PTV.MySQLStats.Movies", stats.get('movies_count', ''))
@@ -6392,14 +6388,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # Kodi clients
             kodi_clients = stats.get('kodi_clients', [])
             for i, client in enumerate(kodi_clients[:5], 1):  # Up to 5 clients
-                self.setProperty("PTV.MySQLStats.Client.%d.Name" % i, client.get('name', ''))
-                self.setProperty("PTV.MySQLStats.Client.%d.Status" % i, client.get('status', ''))
-                self.setProperty("PTV.MySQLStats.Client.%d.Online" % i, "true" if client.get('online', False) else "false")
+                self.setProperty("PTV.MySQLStats.Client.{}.Name".format(i), client.get('name', ''))
+                self.setProperty("PTV.MySQLStats.Client.{}.Status".format(i), client.get('status', ''))
+                self.setProperty("PTV.MySQLStats.Client.{}.Online".format(i), "true" if client.get('online', False) else "false")
             
             self.log("updateMySQLStatsData - COMPLETED")
             
         except Exception as e:
-            self.log("Error in updateMySQLStatsData: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error in updateMySQLStatsData: {}".format(str)(e), xbmc.LOGERROR)
 
     def showMySQLStatsOverlay(self, persistent=False):
         """Show MySQL stats overlay - called by page rotation"""
@@ -6418,7 +6414,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("showMySQLStatsOverlay - COMPLETED")
             
         except Exception as e:
-            self.log("Error in showMySQLStatsOverlay: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error in showMySQLStatsOverlay: {}".format(str)(e), xbmc.LOGERROR)
 
     def hideMySQLStatsOverlay(self):
         """Hide MySQL stats overlay - called by page rotation"""
@@ -6437,7 +6433,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("hideMySQLStatsOverlay - COMPLETED")
             
         except Exception as e:
-            self.log("Error in hideMySQLStatsOverlay: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error in hideMySQLStatsOverlay: {}".format(str)(e), xbmc.LOGERROR)
 
     def startMySQLStatsRefresh(self):
         """Start MySQL stats refresh timer"""
@@ -6459,7 +6455,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("startMySQLStatsRefresh - Timer started")
             
         except Exception as e:
-            self.log("Error in startMySQLStatsRefresh: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error in startMySQLStatsRefresh: {}".format(str)(e), xbmc.LOGERROR)
 
     def stopMySQLStatsRefresh(self):
         """Stop MySQL stats refresh timer"""
@@ -6473,7 +6469,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("stopMySQLStatsRefresh - Timer stopped")
             
         except Exception as e:
-            self.log("Error in stopMySQLStatsRefresh: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error in stopMySQLStatsRefresh: {}".format(str)(e), xbmc.LOGERROR)
 
     # ============================================================
     # KODI BOX STATS METHODS (Page 7)
@@ -6536,8 +6532,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             return stats
             
         except Exception as e:
-            self.log("Error fetching Kodi box stats: %s" % str(e), xbmc.LOGERROR)
-            self.log("Traceback: %s" % traceback.format_exc(), xbmc.LOGERROR)
+            self.log("Error fetching Kodi box stats: {}".format(str)(e), xbmc.LOGERROR)
+            self.log("Traceback: {}".format(traceback.format_exc)(), xbmc.LOGERROR)
             return None
 
     def updateKodiBoxStats(self):
@@ -6574,12 +6570,12 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.getControl(9901).setLabel(safe_str(stats.get('hostname', 'UNKNOWN').upper()))
             
             # 9902 = Uptime
-            self.getControl(9902).setLabel(safe_str("Uptime: %s" % stats.get('uptime', 'N/A')))
+            self.getControl(9902).setLabel(safe_str("Uptime: {}".format(stats.get)('uptime', 'N/A')))
             
             # 9903 = CPU Temp
             cpu = stats.get('cpu', {})
             temp = cpu.get('temperature', 'N/A')
-            self.getControl(9903).setLabel(safe_str("CPU Temp: %sC" % temp))
+            self.getControl(9903).setLabel(safe_str("CPU Temp: {}C".format(temp)))
             
             # 9907 = Kodi Status (user has this in position 4)
             kodi = stats.get('kodi', {})
@@ -6590,7 +6586,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             # 9905 = Memory
             memory = stats.get('memory', {})
             mem_percent = memory.get('percent', 0)
-            self.getControl(9905).setLabel(safe_str("Memory: %s%%" % mem_percent))
+            self.getControl(9905).setLabel(safe_str("Memory: {}%%".format(mem_percent)))
             
             # 9906 = Network
             network = stats.get('network', {})
@@ -6600,10 +6596,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             
             # Right side - System info
             # 9911 = LibreELEC
-            self.getControl(9911).setLabel(safe_str("LibreELEC: %s" % stats.get('libreelec_version', 'N/A')))
+            self.getControl(9911).setLabel(safe_str("LibreELEC: {}".format(stats.get)('libreelec_version', 'N/A')))
             
             # 9912 = IP
-            self.getControl(9912).setLabel(safe_str("IP: %s" % network.get('ip_address', 'N/A')))
+            self.getControl(9912).setLabel(safe_str("IP: {}".format(network.get)('ip_address', 'N/A')))
             
             # 9913 = Root storage
             storage = stats.get('storage', {})
@@ -6617,13 +6613,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     control_id = 9920 + i
                     try:
                         self.getControl(control_id).setLabel(safe_str("Core %d: %s%%" % (i, usage)))
-                    except:
+                    except Exception as e:
                         pass
             
             self.log("Kodi box stats display updated")
             
         except Exception as e:
-            self.log("Error displaying Kodi box stats: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error displaying Kodi box stats: {}".format(str)(e), xbmc.LOGERROR)
 
     def showKodiBoxStatsOverlay(self):
         """Show Kodi box stats overlay"""
@@ -6649,7 +6645,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("Kodi box stats overlay shown")
             
         except Exception as e:
-            self.log("Error showing Kodi box stats overlay: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error showing Kodi box stats overlay: {}".format(str)(e), xbmc.LOGERROR)
 
     def hideKodiBoxStatsOverlay(self):
         """Hide Kodi box stats overlay"""
@@ -6686,12 +6682,12 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.KodiBoxStats.KodiUptime", "")
             self.setProperty("PTV.KodiBoxStats.LoadAverage", "")
             for i in range(8):
-                self.setProperty("PTV.KodiBoxStats.Core%d" % i, "")
+                self.setProperty("PTV.KodiBoxStats.Core{}".format(i), "")
             
             self.log("Kodi box stats overlay hidden")
             
         except Exception as e:
-            self.log("Error hiding Kodi box stats overlay: %s" % str(e), xbmc.LOGERROR)
+            self.log("Error hiding Kodi box stats overlay: {}".format(str)(e), xbmc.LOGERROR)
 
     def refreshKodiBoxStats(self):
         """Refresh Kodi box stats (called by timer)"""
@@ -6707,7 +6703,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
     def cycleChannel99Pages(self):
         """Cycle between calendar, recently added, recommendations, server stats, mysql stats, kodi box stats, and knowledge page on channel 99"""
-        self.log("cycleChannel99Pages - Current page: %s" % self.channel99CurrentPage)
+        self.log("cycleChannel99Pages - Current page: {}".format(self.channel99CurrentPage))
         
         # Only cycle if we're on channel 99
         if self.currentChannel != 99:
@@ -6775,7 +6771,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.channel99PageTimer = threading.Timer(duration, self.cycleChannel99Pages)
         if not self.isExiting:
             self.channel99PageTimer.start()
-            self.log("Next page switch scheduled in %d seconds" % duration)
+            self.log("Next page switch scheduled in {} seconds".format(duration))
 
     def startChannel99PageCycling(self):
         """Start the page cycling for channel 99"""
@@ -6793,7 +6789,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         duration = self.getPageDuration(self.channel99CurrentPage)
         self.channel99PageTimer = threading.Timer(duration, self.cycleChannel99Pages)
         self.channel99PageTimer.start()
-        self.log("Channel 99 page cycling started - first switch in %d seconds" % duration)
+        self.log("Channel 99 page cycling started - first switch in {} seconds".format(duration))
 
     def stopChannel99PageCycling(self):
         """Stop the page cycling for channel 99"""
@@ -6983,11 +6979,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # ADD DEBUG TO VERIFY PROPERTIES ARE SET
         self.log("showComingUpOverlay - Properties set:")
         self.log(
-            "  PTV.ComingUp = %s" % xbmcgui.Window(10000).getProperty("PTV.ComingUp")
+            "  PTV.ComingUp = {}".format(xbmcgui.Window)(10000).getProperty("PTV.ComingUp")
         )
         self.log(
-            "  PTV.ComingUp.Title = %s"
-            % xbmcgui.Window(10000).getProperty("PTV.ComingUp.Title")
+            "  PTV.ComingUp.Title = {}".format(xbmcgui.Window)(10000).getProperty("PTV.ComingUp.Title")
         )
 
         self.showingComingUp = True
@@ -7023,8 +7018,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.setProperty("PTV.ComingUp.Image", ICON)
 
         # Log window IDs
-        self.log("Current window ID: %s" % xbmcgui.getCurrentWindowId())
-        self.log("Dialog window ID: %s" % xbmcgui.getCurrentWindowDialogId())
+        self.log("Current window ID: {}".format(xbmcgui.getCurrentWindowId)())
+        self.log("Dialog window ID: {}".format(xbmcgui.getCurrentWindowDialogId)())
 
         # Check if property is actually set
         value = xbmcgui.Window(10000).getProperty("PTV.ComingUp")
@@ -7055,12 +7050,12 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # MOVED TO TOP: Acquire semaphore FIRST before any other logic
         # Ignore actions if we're already processing one
-        if self.actionSemaphore.acquire(False) == False:
+        if not self.actionSemaphore.acquire(False):
             self.log("Unable to get semaphore")
             return
 
         # ADD THIS LINE TO TEST
-        self.log("onAction: action id = %d, T key would be 84 or 116" % action)
+        self.log("onAction: action id = {}, T key would be 84 or 116".format(action))
 
         # Handle favorite show notification click
         if (
@@ -7185,7 +7180,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Disable fast forward action (F key)
         elif action == 77:  # ACTION_PLAYER_FORWARD (F key)
             icon = os.path.join(CWD, 'icon.png')
-            xbmc.executebuiltin('Notification(Paragon TV, Cannot fast forward on live TV, 3000, %s)' % icon)
+            xbmc.executebuiltin('Notification(Paragon TV, Cannot fast forward on live TV, 3000, {})'.format(icon))
             self.log("Fast forward action (77) disabled - live TV mode")
         # Menu triggers
         elif action == 109:  # M key (moved from action 77 which conflicts with forward)
@@ -7236,7 +7231,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         else:
             # Disabled for live TV experience - cannot skip forward on live TV
             icon = os.path.join(CWD, 'icon.png')
-            xbmc.executebuiltin('Notification(Paragon TV, Cannot skip forward on live TV, 3000, %s)' % icon)
+            xbmc.executebuiltin('Notification(Paragon TV, Cannot skip forward on live TV, 3000, {})'.format(icon))
             self.log("Skip forward disabled - live TV mode")
 
     def handleBackAction(self):
@@ -7278,7 +7273,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         self.notificationTimer = threading.Timer(timertime, self.notificationAction)
 
-        if self.Player.stopped == False:
+        if not self.Player.stopped:
             self.notificationTimer.name = "NotificationTimer"
             self.notificationTimer.start()
 
@@ -7286,7 +7281,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         """Show coming up next notification"""
         self.log("notificationAction")
 
-        if self.showNextItem == False:
+        if not self.showNextItem:
             return
 
         if self.Player.isPlaying():
@@ -7300,10 +7295,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 != xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
             ):
                 docheck = True
-            elif self.notificationShowedNotif == False:
+            elif not self.notificationShowedNotif:
                 docheck = True
 
-            if docheck == True:
+            if docheck:
                 self.notificationLastChannel = self.currentChannel
                 self.notificationLastShow = xbmc.PlayList(
                     xbmc.PLAYLIST_MUSIC
@@ -7329,7 +7324,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 )
 
                 if (
-                    self.notificationShowedNotif == False
+                    not self.notificationShowedNotif
                     and timedif < NOTIFICATION_TIME_BEFORE_END
                     and timedif > NOTIFICATION_DISPLAY_TIME
                 ):
@@ -7386,7 +7381,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
                         # If speed is greater than normal (fast forward), reset it
                         if current_speed > 1:
-                            self.log("Detected fast forward playback speed: %d - resetting to normal" % current_speed)
+                            self.log("Detected fast forward playback speed: {} - resetting to normal".format(current_speed))
 
                             # Reset speed to normal
                             reset_query = '{"jsonrpc":"2.0","method":"Player.SetSpeed","params":{"playerid":%d,"speed":1},"id":1}' % player_id
@@ -7394,7 +7389,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
                             # Show notification
                             icon = os.path.join(CWD, 'icon.png')
-                            xbmc.executebuiltin('Notification(Paragon TV, Cannot fast forward on live TV, 3000, %s)' % icon)
+                            xbmc.executebuiltin('Notification(Paragon TV, Cannot fast forward on live TV, 3000, {})'.format(icon))
             except Exception as e:
                 self.log("Error monitoring playback speed: " + str(e))
         else:
@@ -7405,7 +7400,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.end()
             return
 
-        if self.Player.stopped == False:
+        if not self.Player.stopped:
             self.playerTimer.name = "PlayerTimer"
             self.playerTimer.start()
 
@@ -7420,7 +7415,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         """Backup channel files for sharing"""
         self.log("backupFiles")
 
-        if CHANNEL_SHARING == False:
+        if not CHANNEL_SHARING:
             return
 
         realloc = ADDON.getSetting("SettingsFolder")
@@ -7437,7 +7432,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         """Store channel files for sharing"""
         self.log("storeFiles")
 
-        if CHANNEL_SHARING == False:
+        if not CHANNEL_SHARING:
             return
 
         realloc = ADDON.getSetting("SettingsFolder")
@@ -7554,7 +7549,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         try:
             self.getControl(103).setVisible(False)
             self.log("end - Hidden channel logo")
-        except:
+        except Exception as e:
             pass
 
         # Use progress dialog for exit instead of image crossfade
@@ -7642,8 +7637,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.Calendar.Today.Status", "")
             self.setProperty("PTV.Calendar.Today.Poster", "")
             for i in range(1, 11):
-                self.setProperty("PTV.Calendar.Week.%d" % i, "")
-                self.setProperty("PTV.Calendar.Week.%d.InLibrary" % i, "false")
+                self.setProperty("PTV.Calendar.Week.{}".format(i), "")
+                self.setProperty("PTV.Calendar.Week.{}.InLibrary".format(i), "false")
             
             # Clear recently added properties
             self.setProperty("PTV.Recent.Featured.Title", "")
@@ -7653,8 +7648,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.Recent.Featured.DateAdded", "")
             self.setProperty("PTV.Recent.Featured.Watched", "false")
             for i in range(1, 6):
-                self.setProperty("PTV.Recent.List.%d" % i, "")
-                self.setProperty("PTV.Recent.List.%d.Watched" % i, "false")
+                self.setProperty("PTV.Recent.List.{}".format(i), "")
+                self.setProperty("PTV.Recent.List.{}.Watched".format(i), "false")
             
             # Clear recommendations properties
             self.setProperty("PTV.Recommendations", "false")
@@ -7664,8 +7659,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.Recommendations.Featured.Poster", "")
             self.setProperty("PTV.Recommendations.Featured.Genre", "")
             for i in range(1, 6):
-                self.setProperty("PTV.Recommendations.Genre.%d" % i, "")
-                self.setProperty("PTV.Recommendations.Genre.%d.Artwork" % i, "")
+                self.setProperty("PTV.Recommendations.Genre.{}".format(i), "")
+                self.setProperty("PTV.Recommendations.Genre.{}.Artwork".format(i), "")
             
             # Clear server stats properties
             self.setProperty("PTV.ServerStats", "false")
@@ -7679,10 +7674,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.ServerStats.Array.Used", "")
             self.setProperty("PTV.ServerStats.Array.Percent", "")
             for i in range(1, 6):
-                self.setProperty("PTV.ServerStats.Disk.%d.Name" % i, "")
-                self.setProperty("PTV.ServerStats.Disk.%d.Used" % i, "")
-                self.setProperty("PTV.ServerStats.Disk.%d.Total" % i, "")
-                self.setProperty("PTV.ServerStats.Disk.%d.Percent" % i, "")
+                self.setProperty("PTV.ServerStats.Disk.{}.Name".format(i), "")
+                self.setProperty("PTV.ServerStats.Disk.{}.Used".format(i), "")
+                self.setProperty("PTV.ServerStats.Disk.{}.Total".format(i), "")
+                self.setProperty("PTV.ServerStats.Disk.{}.Percent".format(i), "")
             self.setProperty("PTV.ServerStats.Cache.Total", "")
             self.setProperty("PTV.ServerStats.Cache.Used", "")
             self.setProperty("PTV.ServerStats.Cache.Percent", "")
@@ -7700,9 +7695,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.MySQLStats.TotalSize", "")
             self.setProperty("PTV.MySQLStats.TotalTables", "")
             for i in range(1, 6):
-                self.setProperty("PTV.MySQLStats.DB.%d.Name" % i, "")
-                self.setProperty("PTV.MySQLStats.DB.%d.Size" % i, "")
-                self.setProperty("PTV.MySQLStats.DB.%d.Tables" % i, "")
+                self.setProperty("PTV.MySQLStats.DB.{}.Name".format(i), "")
+                self.setProperty("PTV.MySQLStats.DB.{}.Size".format(i), "")
+                self.setProperty("PTV.MySQLStats.DB.{}.Tables".format(i), "")
             self.setProperty("PTV.MySQLStats.Movies", "")
             self.setProperty("PTV.MySQLStats.TVShows", "")
             self.setProperty("PTV.MySQLStats.Episodes", "")
@@ -7733,7 +7728,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.KodiBoxStats.KodiUptime", "")
             self.setProperty("PTV.KodiBoxStats.LoadAverage", "")
             for i in range(8):
-                self.setProperty("PTV.KodiBoxStats.Core%d" % i, "")
+                self.setProperty("PTV.KodiBoxStats.Core{}".format(i), "")
             
             # Clear Wikipedia properties:
             self.setProperty("PTV.ShowWikipedia", "false")
@@ -7750,9 +7745,9 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.setProperty("PTV.Weather.Conditions", "")
             self.setProperty("PTV.Weather.CurrentIcon", "")
             for i in range(5):
-                self.setProperty("PTV.Weather.Hour%d.Time" % i, "")
-                self.setProperty("PTV.Weather.Hour%d.Temp" % i, "")
-                self.setProperty("PTV.Weather.Hour%d.Icon" % i, "")
+                self.setProperty("PTV.Weather.Hour{}.Time".format(i), "")
+                self.setProperty("PTV.Weather.Hour{}.Temp".format(i), "")
+                self.setProperty("PTV.Weather.Hour{}.Icon".format(i), "")
             
             self.log("end - Overlay cleanup complete")
         except Exception as e:
@@ -7783,7 +7778,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     xbmc.PLAYLIST_MUSIC
                 ).getposition()
                 self.Player.stop()
-        except:
+        except Exception as e:
             pass
 
         curtime = time.time()
@@ -7792,7 +7787,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Hide the background
         try:
             self.background.setVisible(False)
-        except:
+        except Exception as e:
             pass
 
         # Always use progress dialog for exit (image crossfade disabled)
@@ -7800,7 +7795,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         updateDialog.create(ADDON_NAME, "")
 
         # Clean up file locks
-        if self.isMaster and CHANNEL_SHARING == True:
+        if self.isMaster and CHANNEL_SHARING:
             if updateDialog:
                 updateDialog.update(1, message="Exiting - Removing File Locks")
             GlobalFileLock.unlockFile("MasterLock")
@@ -7837,7 +7832,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if timer and timer.isAlive():
                     timer.cancel()
                     # Don't join() here as it can cause deadlocks
-            except:
+            except Exception as e:
                 pass
 
         # Handle sleep timer
@@ -7845,7 +7840,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             if self.sleepTimeValue > 0:
                 if self.sleepTimer and self.sleepTimer.isAlive():
                     self.sleepTimer.cancel()
-        except:
+        except Exception as e:
             pass
 
         # Stop channel thread
@@ -7854,7 +7849,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         if self.channelThread.isAlive():
             try:
                 self.channelThread.stop()  # If the thread has a stop method
-            except:
+            except Exception as e:
                 pass
 
             # Give it a moment to stop gracefully
@@ -7864,7 +7859,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         if self.isMaster:
             try:
                 ADDON.setSetting("CurrentChannel", str(self.currentChannel))
-            except:
+            except Exception as e:
                 pass
 
             ADDON_SETTINGS.setSetting("LastExitTime", str(int(curtime)))
@@ -7928,7 +7923,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Clear the playlist
         try:
             xbmc.PlayList(xbmc.PLAYLIST_MUSIC).clear()
-        except:
+        except Exception as e:
             pass
         # Final property cleanup before closing window
         try:
@@ -7946,7 +7941,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.setProperty("PTV.ExitImage1", "")
                 self.setProperty("PTV.ExitImage2", "")
                 self.setProperty("PTV.ExitImage3", "")
-        except:
+        except Exception as e:
             pass
 
         # Progress dialog approach doesn't need delay (exit image crossfade disabled)
@@ -8077,7 +8072,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         else:
             direction = -1
 
-        if self.channels[channel - 1].isValid == False:
+        if self.channels[channel - 1].not isValid:
             return self.fixChannel(channel + direction, increasing)
 
         return channel
