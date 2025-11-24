@@ -65,11 +65,11 @@ def main():
 
         if count > 0:
             log(
-                "ptv_reset_history: Successfully reset {} channel histories".format(count),
+                "ptv_reset_history: Successfully reset %d channel histories" % count,
                 xbmc.LOGNOTICE,
             )
             notify(
-                "Reset {} channel histories".format(count),
+                "Reset %d channel histories" % count,
                 "Episode History Reset",
             )
             dialog.ok(
@@ -89,7 +89,7 @@ def main():
             )
 
     except Exception as e:
-        error_msg = "Error resetting episode history: {}".format(str)(e)
+        error_msg = "Error resetting episode history: %s" % str(e)
         log("ptv_reset_history: " + error_msg, xbmc.LOGERROR)
         notify("Error resetting history", "Error")
         dialog.ok("Error", error_msg)

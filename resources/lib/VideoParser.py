@@ -44,7 +44,7 @@ class VideoParser:
     def getVideoLength(self, filename):
         self.log("getVideoLength " + filename)
 
-        if not filename:
+        if len(filename) == 0:
             self.log("No file name specified")
             return 0
 

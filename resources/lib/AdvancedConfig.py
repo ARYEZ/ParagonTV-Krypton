@@ -65,7 +65,7 @@ class AdvancedConfig(xbmcgui.WindowXMLDialog):
         try:
             focusid = self.getFocusId()
             self.log("focus id is " + str(focusid))
-        except Exception as e:
+        except:
             pass
 
         if focusid >= 160:
@@ -144,13 +144,13 @@ class AdvancedConfig(xbmcgui.WindowXMLDialog):
             try:
                 if self.getFocusId() == 131:
                     self.scrollRulesLeft()
-            except Exception as e:
+            except:
                 pass
         elif action == ACTION_MOVE_RIGHT:
             try:
                 if self.getFocusId() == 131:
                     self.scrollRulesRight()
-            except Exception as e:
+            except:
                 pass
 
     def scrollOptionsUp(self):
@@ -191,7 +191,7 @@ class AdvancedConfig(xbmcgui.WindowXMLDialog):
                 arrowdown.setVisible(True)
             else:
                 arrowdown.setVisible(False)
-        except Exception as e:
+        except:
             pass
 
         for i in range(4):

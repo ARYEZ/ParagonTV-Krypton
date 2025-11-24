@@ -47,7 +47,7 @@ class TSParser:
 
         try:
             self.File = FileAccess.open(filename, "rb", None)
-        except Exception as e:
+        except:
             self.log("Unable to open the file")
             return
 
@@ -92,7 +92,7 @@ class TSParser:
                         start = self.File.tell()
                         # A minimum of 188, so skip the rest
                         self.File.seek(187, 1)
-            except Exception as e:
+            except:
                 self.log("Exception in findPacketLength")
                 return
 
@@ -110,7 +110,7 @@ class TSParser:
             self.File.seek(0, 2)
             size = self.File.tell()
             self.File.seek(pos, 0)
-        except Exception as e:
+        except:
             pass
 
         return size
@@ -123,7 +123,7 @@ class TSParser:
 
         try:
             self.File.seek(0, 0)
-        except Exception as e:
+        except:
             return 0
 
         while maxpackets > 0:
@@ -149,7 +149,7 @@ class TSParser:
 
         try:
             self.File.seek((packetcount * self.packetLength) - self.packetLength, 0)
-        except Exception as e:
+        except:
             return 0
 
         maxpackets = 12000
@@ -175,7 +175,7 @@ class TSParser:
             else:
                 try:
                     self.File.seek(-1 * (self.packetLength * 2), 1)
-                except Exception as e:
+                except:
                     self.log("exception")
                     return 0
 
@@ -205,7 +205,7 @@ class TSParser:
                     timestamp = timestamp | (data[12 + offset] << 7)
                     timestamp = timestamp | (data[13 + offset] >> 1)
                     return timestamp
-        except Exception as e:
+        except:
             self.log("exception in getPTS")
             pass
 
@@ -247,7 +247,7 @@ class TSParser:
                     if pos < 188:
                         # read the PES data
                         packet.pesdata = self.File.read(self.packetLength - pos)
-        except Exception as e:
+        except:
             self.log("readTSPacket exception")
             return None
 

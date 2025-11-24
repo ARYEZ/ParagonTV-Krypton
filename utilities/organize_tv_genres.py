@@ -23,7 +23,7 @@ try:
         ADDON_ID = 'script.paragontv'
         ADDON_PATH = ADDON.getAddonInfo('path')
         ICON = os.path.join(ADDON_PATH, 'icon.png')
-    except Exception as e:
+    except:
         ADDON = None
         ADDON_ID = "organize_tv_genres"
         ICON = ""
@@ -32,12 +32,6 @@ except ImportError:
     ADDON = None
     ADDON_ID = "organize_tv_genres"
     ICON = ""
-
-# Configuration: Default NFS server paths
-# Change these values to match your network setup
-DEFAULT_NFS_SERVER = "10.0.0.39"
-DEFAULT_TV_PATH = "nfs://{}/mnt/user/TELEVISION/".format(DEFAULT_NFS_SERVER)
-DEFAULT_FALLBACK_PATH = "/path/to/television/"
 
 # XML parsing
 try:
@@ -462,8 +456,8 @@ if __name__ == "__main__":
     else:
         # Default path
         if KODI_MODE:
-            base_path = DEFAULT_TV_PATH
+            base_path = "nfs://10.0.0.39/mnt/user/TELEVISION/"
         else:
-            base_path = DEFAULT_FALLBACK_PATH
+            base_path = "/path/to/tv/shows/"
     
     organize_tv_genres(base_path)

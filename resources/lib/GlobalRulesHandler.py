@@ -107,7 +107,7 @@ class GlobalRulesHandler:
                 int(ch.strip()) for ch in excludedChannels.split(",") if ch.strip()
             ]
             return channelNumber in excludedList
-        except Exception as e:
+        except:
             self.log("Error parsing excluded channels list")
             return False
 
@@ -210,7 +210,7 @@ class GlobalRulesHandler:
                 current = 0
                 try:
                     current = options.index(currentValue)
-                except Exception as e:
+                except:
                     pass
 
                 ret = dlg.select(label, options)

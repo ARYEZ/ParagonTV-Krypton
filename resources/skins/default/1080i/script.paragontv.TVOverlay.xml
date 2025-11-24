@@ -254,7 +254,32 @@
                 <texture>faded.png</texture>
             </control>
             
-            <control type="group">
+            
+            <control type="label">
+                <description>Favorite show title</description>
+                <posx>593</posx>
+                <posy>829</posy>
+                <width>1340</width>
+                <height>40</height>
+                <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Title)]</label>
+                <font>fontsize_50</font>
+                <scroll>true</scroll>
+                <scrollout>false</scrollout>
+                <textcolor>white</textcolor>
+                <shadowcolor>black</shadowcolor>
+                <align>left</align>
+                <autoscroll time="2000" delay="0" repeat="0">Skin.HasSetting(AutoScroll)</autoscroll>
+            </control>
+            <control type="image">
+                <description>Show Channel Icon</description>
+                <posx>1610</posx>
+                <posy>20</posy>
+                <width>275</width>
+                <height>155</height>
+                <texture>$INFO[Window(Home).Property(PTV.FavoriteShow.ChannelLogo)]</texture>
+                <animation effect="fade" start="50" end="50" condition="True">Conditional</animation>
+            </control>
+			<control type="group">
                 <posx>-51</posx>
                 <posy>-680</posy>
                 <control type="label">
@@ -281,30 +306,6 @@
 					<font>fontsize_120</font>
                     <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Channel)]</label>
                 </control>
-            </control>
-            <control type="label">
-                <description>Favorite show title</description>
-                <posx>593</posx>
-                <posy>829</posy>
-                <width>1340</width>
-                <height>40</height>
-                <label>$INFO[Window(Home).Property(PTV.FavoriteShow.Title)]</label>
-                <font>fontsize_50</font>
-                <scroll>true</scroll>
-                <scrollout>false</scrollout>
-                <textcolor>white</textcolor>
-                <shadowcolor>black</shadowcolor>
-                <align>left</align>
-                <autoscroll time="2000" delay="0" repeat="0">Skin.HasSetting(AutoScroll)</autoscroll>
-            </control>
-            <control type="image">
-                <description>Show Channel Icon</description>
-                <posx>1610</posx>
-                <posy>20</posy>
-                <width>275</width>
-                <height>155</height>
-                <texture>$INFO[Window(Home).Property(PTV.FavoriteShow.ChannelLogo)]</texture>
-                <animation effect="fade" start="50" end="50" condition="True">Conditional</animation>
             </control>
         </control>
         

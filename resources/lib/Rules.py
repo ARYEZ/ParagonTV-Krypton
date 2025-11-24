@@ -203,7 +203,7 @@ class BaseRule:
                 self.optionValues[optionindex] = str(val)
 
             return
-        except Exception as e:
+        except:
             pass
 
         self.optionValues[optionindex] = str(default)
@@ -341,7 +341,7 @@ class OnlyUnWatchedRule(BaseRule):
 
             try:
                 pc = int(playcount.group(1))
-            except Exception as e:
+            except:
                 pc = 0
 
             if pc > 0:
@@ -369,7 +369,7 @@ class OnlyWatchedRule(BaseRule):
 
             try:
                 pc = int(playcount.group(1))
-            except Exception as e:
+            except:
                 pc = 0
 
             if pc == 0:
@@ -445,7 +445,7 @@ class InterleaveChannel(BaseRule):
                 chan = int(self.optionValues[0])
                 minint = int(self.optionValues[1])
                 maxint = int(self.optionValues[2])
-            except Exception as e:
+            except:
                 self.log("Except when reading params")
 
             if chan > channelList.maxChannels or chan < 1 or minint < 1 or maxint < 1:
@@ -458,7 +458,7 @@ class InterleaveChannel(BaseRule):
 
             if (
                 len(channelList.channels) < chan
-                or not channelList.channels[chan - 1].isSetup
+                or channelList.channels[chan - 1].isSetup == False
             ):
                 if channelList.myOverlay.isMaster:
                     channelList.setupChannel(chan, True, True, False)
@@ -476,7 +476,7 @@ class InterleaveChannel(BaseRule):
             self.log("Length of original list: " + str(len(filelist)))
 
             while realindex < len(filelist):
-                if not channelList.threadPause():
+                if channelList.threadPause() == False:
                     return filelist
 
                 while startindex < realindex:
@@ -569,11 +569,11 @@ class PlayShowInOrder(BaseRule):
                         epval,
                     ]
                 )
-            except Exception as e:
+            except:
                 pass
 
     def sortShows(self, channelList, filelist):
-        if not self.showInfo:
+        if len(self.showInfo) == 0:
             return filelist
 
         newfilelist = []
@@ -591,7 +591,7 @@ class PlayShowInOrder(BaseRule):
         showlist[0].append(0)
 
         for item in self.showInfo:
-            if not channelList.threadPause():
+            if channelList.threadPause() == False:
                 return filelist
 
             if item[0] != curshow:
@@ -602,13 +602,13 @@ class PlayShowInOrder(BaseRule):
 
             showstr = self.findInFileList(filelist, item[1])
 
-            if showstr:
+            if len(showstr) > 0:
                 showlist[-1].append(showstr)
 
         curindex = 0
 
         for item in filelist:
-            if not channelList.threadPause():
+            if channelList.threadPause() == False:
                 return filelist
 
             # First, get the current show for the entry
@@ -700,7 +700,7 @@ class LimitMediaDuration(BaseRule):
 
                             if mindur <= duration <= maxdur:
                                 newfilelist.append(item)
-                        except Exception as e:
+                        except:
                             # If duration parsing fails, include the item
                             newfilelist.append(item)
                     else:
@@ -708,7 +708,7 @@ class LimitMediaDuration(BaseRule):
                         newfilelist.append(item)
 
                 return newfilelist
-            except Exception as e:
+            except:
                 return filelist
 
         return filelist

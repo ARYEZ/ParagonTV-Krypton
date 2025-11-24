@@ -152,7 +152,7 @@ class EpisodeHistory:
         available = [ep for ep in all_episodes if ep not in played]
 
         # If exhausted, reset this show
-        if not available and all_episodes:
+        if len(available) == 0 and len(all_episodes) > 0:
             self.reset_show(show_name, len(all_episodes))
             available = all_episodes
             self.log(

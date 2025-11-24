@@ -138,7 +138,7 @@ class SidebarWindow(xbmcgui.WindowXMLDialog):
                         + self.formatTime(totalTime)
                     )
                     self.currentTime.setLabel(timeStr)
-                except Exception as e:
+                except:
                     self.currentTime.setLabel("")
             else:
                 self.currentShow.setLabel("Not Playing")

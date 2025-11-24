@@ -186,7 +186,7 @@ def should_run_maintenance(settings, global_settings):
             last_run_time = datetime.strptime(last_run_str, "%Y-%m-%d %H:%M:%S")
             time_since_last = (now - last_run_time).total_seconds()
             cooldown_ok = time_since_last >= 600  # 10 minute cooldown
-        except Exception as e:
+        except:
             pass
 
     # Log detailed info

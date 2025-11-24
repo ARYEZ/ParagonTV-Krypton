@@ -29,15 +29,8 @@ from FileAccess import FileLock
 def log(msg, level=xbmc.LOGDEBUG):
     try:
         xbmc.log(ADDON_ID + "-" + ascii(msg), level)
-    except UnicodeEncodeError:
-        # If encoding fails, try with simple string conversion
-        try:
-            xbmc.log(ADDON_ID + "-" + str(msg), level)
-        except Exception as e:
-            xbmc.log("Logging failed: {}".format(str(e)), xbmc.LOGERROR)
-    except Exception as e:
-        # Catch all other exceptions and log them
-        xbmc.log("Logging error: {}".format(str(e)), xbmc.LOGERROR)
+    except:
+        pass
 
 
 def uni(string, encoding="utf-8"):

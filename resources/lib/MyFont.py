@@ -33,13 +33,13 @@ def getFontsXML():
                 font_xml = os.path.join(item, "Font.xml")
                 if os.path.exists(font_xml):
                     fontxml_paths.append(font_xml)
-    except Exception as e:
+    except:
         pass
     return fontxml_paths
 
 
 def isFontInstalled(fontxml_path, fontname):
-    name = "<name>{}</name>".format(fontname)
+    name = "<name>%s</name>" % fontname
     if not name in file(fontxml_path, "r").read():
         return False
     else:
@@ -96,7 +96,7 @@ def addFont(fontname, filename, size, style=""):
                         last_elem.tail = "\n\t\t"
                     tree.write(fontxml_path)
                     reload_skin = True
-    except Exception as e:
+    except:
         pass
 
     if reload_skin:

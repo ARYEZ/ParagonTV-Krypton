@@ -39,7 +39,7 @@ class AVIChunk:
 
         try:
             self.size = struct.unpack("<i", data)[0]
-        except Exception as e:
+        except:
             self.size = 0
 
         # Putting an upper limit on the chunk size, in case the file is corrupt
@@ -64,7 +64,7 @@ class AVIList:
 
         try:
             self.size = struct.unpack("<i", data)[0]
-        except Exception as e:
+        except:
             self.size = 0
 
         self.fourcc = thefile.read(4)
@@ -121,7 +121,7 @@ class AVIParser:
 
         try:
             self.File = FileAccess.open(filename, "rb", None)
-        except Exception as e:
+        except:
             self.log("Unable to open the file")
             return 0
 
@@ -190,7 +190,7 @@ class AVIParser:
                     self.File.seek(listsize - data.size - 12, 1)
 
                 data = self.getChunkOrList()
-            except Exception as e:
+            except:
                 self.log("Unable to seek")
 
         self.log("Video stream not found")
@@ -202,7 +202,7 @@ class AVIParser:
                 self.StreamHeader.dwLength
                 / (float(self.StreamHeader.dwRate) / float(self.StreamHeader.dwScale))
             )
-        except Exception as e:
+        except:
             return 0
 
     def parseHeader(self, data):
@@ -218,7 +218,7 @@ class AVIParser:
             self.Header.dwSuggestedBufferSize = header[7]
             self.Header.dwWidth = header[8]
             self.Header.dwHeight = header[9]
-        except Exception as e:
+        except:
             self.Header.empty()
             self.log("Unable to parse the header")
 
@@ -239,7 +239,7 @@ class AVIParser:
             self.StreamHeader.dwQuality = header[9]
             self.StreamHeader.dwSampleSize = header[10]
             self.StreamHeader.rcFrame = ""
-        except Exception as e:
+        except:
             self.StreamHeader.empty()
             self.log("Error reading stream header")
 
@@ -248,7 +248,7 @@ class AVIParser:
 
         if data == "RIFF" or data == "LIST":
             dataclass = AVIList()
-        elif not data:
+        elif len(data) == 0:
             dataclass = AVIChunk()
             dataclass.datatype = 3
         else:
