@@ -2155,10 +2155,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         self.log("showFavoriteShowNotification - Properties set:")
         self.log(
-            "  PTV.FavoriteShow = {}".format(xbmcgui.Window)(10000).getProperty("PTV.FavoriteShow")
+            "  PTV.FavoriteShow = {}".format(xbmcgui.Window(10000).getProperty("PTV.FavoriteShow"))
         )
         self.log(
-            "  PTV.FavoriteShow.Title = {}".format(xbmcgui.Window)(10000).getProperty("PTV.FavoriteShow.Title")
+            "  PTV.FavoriteShow.Title = {}".format(xbmcgui.Window(10000).getProperty("PTV.FavoriteShow.Title"))
         )
 
         minutes = int(timeUntil / 60)
