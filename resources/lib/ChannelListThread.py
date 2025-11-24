@@ -77,7 +77,7 @@ class ChannelListThread(threading.Thread):
                 )
 
             for i in range(self.myOverlay.maxChannels):
-                if self.myOverlay.channels[i].not isValid:
+                if not self.myOverlay.channels[i].isValid:
                     while True:
                         if self.myOverlay.isExiting:
                             self.log("Closing thread")
@@ -138,7 +138,7 @@ class ChannelListThread(threading.Thread):
                     # If minimum updating is on, don't attempt to load invalid channels
                     if (
                         not self.fullUpdating
-                        and self.myOverlay.channels[i].not isValid
+                        and not self.myOverlay.channels[i].isValid
                         and self.myOverlay.isMaster
                     ):
                         break

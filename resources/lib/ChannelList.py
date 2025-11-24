@@ -445,7 +445,7 @@ class ChannelList:
     def clearPlaylistHistory(self, channel):
         self.log("clearPlaylistHistory")
 
-        if self.channels[channel - 1].not isValid:
+        if not self.channels[channel - 1].isValid:
             self.log("channel not valid, ignoring")
             return
 
