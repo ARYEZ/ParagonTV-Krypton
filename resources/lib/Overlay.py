@@ -33,7 +33,6 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcvfs
-import re
 # Python 2/3 compatibility
 if sys.version_info[0] >= 3:
     unicode = str
