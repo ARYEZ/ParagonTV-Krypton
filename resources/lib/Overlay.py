@@ -2183,14 +2183,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             15.0, self.hideFavoriteShowNotification
         )
         self.favoriteShowTimer.start()
+        self.log("Timer started - notification will hide in 15 seconds")
 
         # ADD THIS DEBUG LOG
         self.log("Favorite show notification displayed for {}".format(showName))
 
     def hideFavoriteShowNotification(self):
         """Hide favorite show notification"""
+        self.log("hideFavoriteShowNotification called - hiding notification")
         self.setProperty("PTV.FavoriteShow", "false")
         self.pendingFavoriteShowChannel = 0
+        self.log("PTV.FavoriteShow property set to: {}".format(self.getProperty("PTV.FavoriteShow")))
 
     def showSidebar(self):
         """Show custom sidebar window"""
