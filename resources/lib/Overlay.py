@@ -2464,7 +2464,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # Calculate elapsed time during preemption
         elapsedTime = time.time() - self.preemptStartTime
-        self.log("Preemption lasted {} seconds".format(int)(elapsedTime))
+        self.log("Preemption lasted {} seconds".format(int(elapsedTime)))
 
         # Get return mode from settings
         returnMode = ADDON.getSetting("OnDemandReturnMode")
