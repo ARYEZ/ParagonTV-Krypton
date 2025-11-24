@@ -33,6 +33,12 @@ except ImportError:
     ADDON_ID = "check_tv_genre_consistency"
     ICON = ""
 
+# Configuration: Default NFS server paths
+# Change these values to match your network setup
+DEFAULT_NFS_SERVER = "10.0.0.39"
+DEFAULT_TV_PATH = "nfs://{}/mnt/user/TELEVISION/".format(DEFAULT_NFS_SERVER)
+DEFAULT_FALLBACK_PATH = "/path/to/television/"
+
 # XML parsing
 try:
     import xml.etree.ElementTree as ET
@@ -382,7 +388,7 @@ if __name__ == "__main__":
     else:
         # Default path
         if KODI_MODE:
-            base_path = "nfs://10.0.0.39/mnt/user/TELEVISION/"
+            base_path = DEFAULT_TV_PATH
         else:
             base_path = "/path/to/tv/shows/"
     
