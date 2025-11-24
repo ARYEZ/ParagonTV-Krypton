@@ -98,7 +98,7 @@ class Settings:
                 found = True
                 break
 
-        if found == False:
+        if not found:
             self.currentSettings.append([name, value])
 
         if self.alwaysWrite == 1:

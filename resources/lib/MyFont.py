@@ -39,7 +39,7 @@ def getFontsXML():
 
 
 def isFontInstalled(fontxml_path, fontname):
-    name = "<name>%s</name>" % fontname
+    name = "<name>{}</name>".format(fontname)
     if not name in file(fontxml_path, "r").read():
         return False
     else:

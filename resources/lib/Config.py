@@ -127,7 +127,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         action = act.getId()
 
         if action in ACTION_PREVIOUS_MENU:
-            if self.showingList == False:
+            if not self.showingList:
                 self.cancelChan()
                 self.hideChanDetails()
             else:
@@ -148,7 +148,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         elif act.getButtonCode() == 61575:  # Delete button
             curchan = self.listcontrol.getSelectedPosition() + 1
 
-            if (self.showingList == True) and (
+            if (self.showingList) and (
                 ADDON_SETTINGS.getSetting("Channel_" + str(curchan) + "_type") != "9999"
             ):
                 dlg = xbmcgui.Dialog()
@@ -257,7 +257,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         elif controlId == 111:  # Change channel type right
             self.changeChanType(self.channel, 1)
         elif controlId == 112:  # Ok button
-            if self.showingList == False:
+            if not self.showingList:
                 self.saveSettings()
                 self.hideChanDetails()
             else:
@@ -270,7 +270,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
                         )
                 self.close()
         elif controlId == 113:  # Cancel button
-            if self.showingList == False:
+            if not self.showingList:
                 self.cancelChan()
                 self.hideChanDetails()
             else:
@@ -279,7 +279,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             self.myRules.ruleList = self.ruleList
             self.myRules.doModal()
 
-            if self.myRules.wasSaved == True:
+            if self.myRules.wasSaved:
                 self.ruleList = self.myRules.ruleList
                 self.savedRules = True
         elif controlId == 130:  # Playlist-type channel, playlist button
@@ -319,7 +319,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         found = False
         index = 0
 
-        if len(thelist) == 0:
+        if not thelist:
             self.getControl(controlid).setLabel("")
             self.log("changeListData return Empty list")
             return
@@ -331,7 +331,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
             index += 1
 
-        if found == True:
+        if found:
             index += val
 
         while index < 0:
@@ -484,7 +484,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         if chantype == 0:
             plname = self.getSmartPlaylistName(chansetting1)
-            if len(plname) == 0:
+            if not plname:
                 chansetting1 = ""
             self.getControl(130).setLabel(
                 self.getSmartPlaylistName(chansetting1), label2=chansetting1
@@ -578,7 +578,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             if loitem == i.lower():
                 return item
 
-        if len(thelist) > 0:
+        if thelist:
             return thelist[0]
 
         return ""

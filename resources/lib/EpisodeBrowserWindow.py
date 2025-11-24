@@ -92,7 +92,7 @@ class SeasonBrowserWindow(xbmcgui.WindowXMLDialog):
 
                 if "result" in result and "seasons" in result["result"]:
                     self.seasons = result["result"]["seasons"]
-                    self.log("Loaded %d seasons" % len(self.seasons))
+                    self.log("Loaded {} seasons".format(len)(self.seasons))
 
         except Exception as e:
             self.log("Error loading seasons: " + str(e))
@@ -111,10 +111,10 @@ class SeasonBrowserWindow(xbmcgui.WindowXMLDialog):
                 if seasonNum == 0:
                     label = "Specials"
                 else:
-                    label = "Season %d" % seasonNum
+                    label = "Season {}".format(seasonNum)
 
                 # Format episode count (will be right aligned)
-                label2 = "(%d episodes)" % episodeCount
+                label2 = "({} episodes)".format(episodeCount)
 
                 # Create list item
                 item = xbmcgui.ListItem(label)
@@ -198,7 +198,7 @@ class SeasonBrowserWindow(xbmcgui.WindowXMLDialog):
 
     def openEpisodeWindow(self, seasonNum):
         """Open the episode browser for the selected season"""
-        self.log("Opening episode window for season %d" % seasonNum)
+        self.log("Opening episode window for season {}".format(seasonNum))
 
         # Create episode window
         episodeWindow = EpisodeListWindow(
@@ -253,7 +253,7 @@ class EpisodeListWindow(xbmcgui.WindowXMLDialog):
         if self.seasonNum == 0:
             seasonLabel = "Specials"
         else:
-            seasonLabel = "Season %d" % self.seasonNum
+            seasonLabel = "Season {}".format(self.seasonNum)
 
         self.setProperty("ShowTitle", showTitle)
         self.setProperty("SeasonLabel", seasonLabel)
@@ -304,7 +304,7 @@ class EpisodeListWindow(xbmcgui.WindowXMLDialog):
 
                 if "result" in result and "episodes" in result["result"]:
                     self.episodes = result["result"]["episodes"]
-                    self.log("Loaded %d episodes" % len(self.episodes))
+                    self.log("Loaded {} episodes".format(len)(self.episodes))
 
         except Exception as e:
             self.log("Error loading episodes: " + str(e))

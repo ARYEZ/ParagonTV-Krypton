@@ -148,7 +148,6 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         try:
             if (
                 self.setChannelButtons(time.time(), self.MyOverlayWindow.currentChannel)
-                == False
             ):
                 self.log("Unable to add channel buttons")
                 return
@@ -331,7 +330,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             baseh = self.getControl(111 + row).getHeight()
             basew = self.getControl(111 + row).getWidth()
 
-            if xbmc.Player().isPlaying() == False:
+            if xbmc.Player().not isPlaying():
                 self.log("No video is playing, not adding buttons")
                 self.closeEPG()
                 return False
@@ -424,7 +423,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                             shouldskip = True
 
                     # Don't show very short videos
-                    if self.MyOverlayWindow.hideShortItems and shouldskip == False:
+                    if self.MyOverlayWindow.hideShortItems and not shouldskip:
                         if (
                             self.MyOverlayWindow.channels[
                                 curchannel - 1
@@ -449,14 +448,14 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
                     width = int((basew / 5400.0) * tmpdur)
 
-                    if width < 30 and shouldskip == False:
+                    if width < 30 and not shouldskip:
                         width = 30
                         tmpdur = int(30.0 / (basew / 5400.0))
 
                     if width + xpos > basex + basew:
                         width = basex + basew - xpos
 
-                    if shouldskip == False and width >= 30:
+                    if not shouldskip and width >= 30:
                         mylabel = self.MyOverlayWindow.channels[
                             curchannel - 1
                         ].getItemTitle(playlistpos)
@@ -595,7 +594,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
     def onAction(self, act):
         self.log("onAction " + str(act.getId()))
 
-        if self.actionSemaphore.acquire(False) == False:
+        if not self.actionSemaphore.acquire(False):
             self.log("Unable to get semaphore")
             return
 
@@ -655,7 +654,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
     def onClick(self, controlid):
         self.log("onClick")
 
-        if self.actionSemaphore.acquire(False) == False:
+        if not self.actionSemaphore.acquire(False):
             self.log("Unable to get semaphore")
             return
 

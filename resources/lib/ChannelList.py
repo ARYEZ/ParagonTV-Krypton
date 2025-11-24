@@ -104,7 +104,7 @@ class ChannelList:
         makenewlists = False
         self.background = False
 
-        if self.backgroundUpdating > 0 and self.myOverlay.isMaster == True:
+        if self.backgroundUpdating > 0 and self.myOverlay.isMaster:
             makenewlists = True
 
         # Go through all channels, create their arrays, and setup the new playlist
@@ -128,10 +128,10 @@ class ChannelList:
             if self.channels[i].isValid:
                 foundvalid = True
 
-        if makenewlists == True:
+        if makenewlists:
             ADDON.setSetting("ForceChannelReset", "false")
 
-        if foundvalid == False and makenewlists == False:
+        if not foundvalid and not makenewlists:
             for i in range(self.maxChannels):
                 self.updateDialogProgress = i * 100 // self.enteredChannelCount
                 self.updateDialog.update(
@@ -180,7 +180,7 @@ class ChannelList:
                     self.maxChannels = i + 1
                     self.enteredChannelCount += 1
             elif chtype < 8 or chtype == 12:  # Added check for type 12
-                if len(chsetting1) > 0:
+                if chsetting1:
                     self.maxChannels = i + 1
                     self.enteredChannelCount += 1
 
@@ -261,8 +261,8 @@ class ChannelList:
         # Don't load if we need to reset anyway
         if (
             FileAccess.exists(CHANNELS_LOC + "channel_" + str(channel) + ".m3u")
-            and append == False
-            and needsreset == False
+            and not append
+            and not needsreset
         ):
             try:
                 self.channels[channel - 1].totalTimePlayed = int(
@@ -270,7 +270,7 @@ class ChannelList:
                 )
                 createlist = True
 
-                if self.background == False:
+                if not self.background:
                     self.updateDialog.update(
                         self.updateDialogProgress,
                         "Loading channel " + str(channel),
@@ -282,7 +282,6 @@ class ChannelList:
                     self.channels[channel - 1].setPlaylist(
                         CHANNELS_LOC + "channel_" + str(channel) + ".m3u"
                     )
-                    == True
                 ):
                     self.channels[channel - 1].isValid = True
                     self.channels[channel - 1].fileName = (
@@ -336,7 +335,7 @@ class ChannelList:
                 if createlist:
                     ADDON_SETTINGS.setSetting("LastResetTime", str(int(time.time())))
 
-        if append == False:
+        if not append:
             # if there is no start mode in the channel mode flags, set it to the default
             if self.channels[channel - 1].mode & MODE_STARTMODES == 0:
                 if self.startMode == 0:
@@ -347,7 +346,7 @@ class ChannelList:
                     self.channels[channel - 1].mode |= MODE_RANDOM
 
         if ((createlist or needsreset) and makenewlist) or append:
-            if self.background == False:
+            if not self.background:
                 self.updateDialogProgress = (
                     (channel - 1) * 100 // self.enteredChannelCount
                 )
@@ -360,13 +359,11 @@ class ChannelList:
 
             if (
                 self.makeChannelList(channel, chtype, chsetting1, chsetting2, append)
-                == True
             ):
                 if (
                     self.channels[channel - 1].setPlaylist(
                         CHANNELS_LOC + "channel_" + str(channel) + ".m3u"
                     )
-                    == True
                 ):
                     returnval = True
                     self.channels[channel - 1].fileName = (
@@ -375,7 +372,7 @@ class ChannelList:
                     self.channels[channel - 1].isValid = True
 
                     # Don't reset variables on an appending channel
-                    if append == False:
+                    if not append:
                         self.channels[channel - 1].totalTimePlayed = 0
                         ADDON_SETTINGS.setSetting(
                             "Channel_" + str(channel) + "_time", "0"
@@ -390,7 +387,7 @@ class ChannelList:
         self.runActions(RULES_ACTION_BEFORE_CLEAR, channel, self.channels[channel - 1])
 
         # Don't clear history when appending channels
-        if self.background == False and append == False and self.myOverlay.isMaster:
+        if not self.background and not append and self.myOverlay.isMaster:
             self.updateDialogProgress = (channel - 1) * 100 // self.enteredChannelCount
             self.updateDialog.update(
                 self.updateDialogProgress,
@@ -400,7 +397,7 @@ class ChannelList:
             )
             self.clearPlaylistHistory(channel)
 
-        if append == False:
+        if not append:
             self.runActions(
                 RULES_ACTION_BEFORE_TIME, channel, self.channels[channel - 1]
             )
@@ -448,7 +445,7 @@ class ChannelList:
     def clearPlaylistHistory(self, channel):
         self.log("clearPlaylistHistory")
 
-        if self.channels[channel - 1].isValid == False:
+        if self.channels[channel - 1].not isValid:
             self.log("channel not valid, ignoring")
             return
 
@@ -506,7 +503,6 @@ class ChannelList:
                     self.channels[channel - 1].setPlaylist(
                         CHANNELS_LOC + "channel_" + str(channel) + ".m3u"
                     )
-                    == False
                 ):
                     self.channels[channel - 1].isValid = False
                 else:
@@ -520,7 +516,7 @@ class ChannelList:
     def getChannelName(self, chtype, setting1):
         self.log("getChannelName " + str(chtype))
 
-        if len(setting1) == 0:
+        if not setting1:
             return ""
 
         if chtype == 0:
@@ -611,7 +607,7 @@ class ChannelList:
             % (channel, len(fileList), limit)
         )
 
-        if len(fileList) == 0:
+        if not fileList:
             return []
 
         # Check if episode history tracking is enabled
@@ -681,7 +677,7 @@ class ChannelList:
 
         # Count unique shows
         num_shows = len(episodes_by_show)
-        self.log("applySmartDistribution: Found %d unique shows" % num_shows)
+        self.log("applySmartDistribution: Found {} unique shows".format(num_shows))
 
         # Log show breakdown
         for show, episodes in episodes_by_show.items():
@@ -693,13 +689,12 @@ class ChannelList:
         if apply_hard_cap:
             hard_cap_per_show = max(1, int(limit * 0.05))  # 5% cap, minimum 1
             self.log(
-                "applySmartDistribution: Hard cap ENABLED - %d episodes max per show"
-                % hard_cap_per_show
+                "applySmartDistribution: Hard cap ENABLED - {} episodes max per show".format(hard_cap_per_show)
             )
         else:
             hard_cap_per_show = limit  # No limit for small channels
             self.log(
-                "applySmartDistribution: Hard cap DISABLED - only %d shows" % num_shows
+                "applySmartDistribution: Hard cap DISABLED - only {} shows".format(num_shows)
             )
 
         # Randomize episodes within each show
@@ -722,7 +717,7 @@ class ChannelList:
                     filename = os.path.basename(selected_episode.split("\n")[1])
                     self.log("  Guaranteed episode for %s: %s" % (show, filename))
                 except Exception as e:
-                    self.log("  Guaranteed episode for %s" % show)
+                    self.log("  Guaranteed episode for {}".format(show))
             else:
                 episodes_taken[show] = 0
 
@@ -809,9 +804,9 @@ class ChannelList:
 
             # Log statistics
             self.log("applySmartDistribution: Distribution Statistics:")
-            self.log("  Shows: %d" % stats["num_shows"])
-            self.log("  Hard cap violations: %d" % stats["cap_violations"])
-            self.log("  Spacing violations: %d" % stats["spacing_violations"])
+            self.log("  Shows: {}".format(stats)["num_shows"])
+            self.log("  Hard cap violations: {}".format(stats)["cap_violations"])
+            self.log("  Spacing violations: {}".format(stats)["spacing_violations"])
             self.log("  Average spacing: %.1f episodes" % stats["average_spacing"])
 
             # Save statistics to file for dashboard
@@ -825,8 +820,7 @@ class ChannelList:
             self.log("applySmartDistribution: Distribution statistics tracking DISABLED")
 
         self.log(
-            "applySmartDistribution: Completed - returning %d episodes"
-            % len(distributed_list)
+            "applySmartDistribution: Completed - returning {} episodes".format(len)(distributed_list)
         )
         return distributed_list
 
@@ -843,7 +837,7 @@ class ChannelList:
             Rearranged episode list
         """
         self.log(
-            "spaceEpisodes: STRICT spacing enforcement - minimum gap of %d" % minimum_spacing
+            "spaceEpisodes: STRICT spacing enforcement - minimum gap of {}".format(minimum_spacing)
         )
 
         if len(episode_list) <= 1:
@@ -944,7 +938,7 @@ class ChannelList:
                 xbmc.LOGWARNING
             )
         else:
-            self.log("spaceEpisodes: Completed - PERFECT spacing maintained for all %d episodes" % len(spaced_list))
+            self.log("spaceEpisodes: Completed - PERFECT spacing maintained for all {} episodes".format(len)(spaced_list))
 
         return spaced_list
 
@@ -960,7 +954,7 @@ class ChannelList:
         Returns:
             Dictionary with statistics
         """
-        if len(distributed_list) == 0:
+        if not distributed_list:
             return {
                 "cap_violations": 0,
                 "spacing_violations": 0,
@@ -1034,11 +1028,11 @@ class ChannelList:
         # Hard cap status
         if stats["num_shows"] >= 10:
             if stats["cap_violations"] == 0:
-                lines.append("[COLOR green][OK][/COLOR] No show exceeds 5% cap (max %d)" % stats["hard_cap"])
+                lines.append("[COLOR green][OK][/COLOR] No show exceeds 5% cap (max {})".format(stats)["hard_cap"])
             else:
-                lines.append("[COLOR red][X][/COLOR] %d show(s) exceed 5%% cap" % stats["cap_violations"])
+                lines.append("[COLOR red][X][/COLOR] {} show(s) exceed 5%% cap".format(stats)["cap_violations"])
         else:
-            lines.append("[COLOR cyan][-][/COLOR] Hard cap disabled (%d shows)" % stats["num_shows"])
+            lines.append("[COLOR cyan][-][/COLOR] Hard cap disabled ({} shows)".format(stats)["num_shows"])
 
         # Spacing status
         if stats["spacing_violations"] == 0:
@@ -1052,7 +1046,7 @@ class ChannelList:
                     "" if stats["num_shows"] == 1 else "s"
                 ))
             else:
-                lines.append("[COLOR yellow][!][/COLOR] %d spacing violations" % stats["spacing_violations"])
+                lines.append("[COLOR yellow][!][/COLOR] {} spacing violations".format(stats)["spacing_violations"])
 
         # Average spacing
         if stats["average_spacing"] > 0:
@@ -1061,7 +1055,7 @@ class ChannelList:
         # Show dialog
         message = "\n".join(lines)
         xbmcgui.Dialog().ok(
-            "Channel %d - Distribution Statistics" % channel,
+            "Channel {} - Distribution Statistics".format(channel),
             message
         )
 
@@ -1124,11 +1118,9 @@ class ChannelList:
         if chtype == 0:
             if (
                 FileAccess.copy(setting1, MADE_CHAN_LOC + os.path.split(setting1)[1])
-                == False
             ):
                 if (
                     FileAccess.exists(MADE_CHAN_LOC + os.path.split(setting1)[1])
-                    == False
                 ):
                     self.log("Unable to copy or find playlist " + setting1)
                     return False
@@ -1136,7 +1128,7 @@ class ChannelList:
         else:
             fle = self.makeTypePlaylist(chtype, setting1, setting2)
 
-        if len(fle) == 0:
+        if not fle:
             self.log(
                 "Unable to locate the playlist for channel " + str(channel),
                 xbmc.LOGERROR,
@@ -1179,10 +1171,10 @@ class ChannelList:
                 except Exception as e:
                     use_smart_dist = True
 
-                if use_smart_dist and len(fileList) > 0:
+                if use_smart_dist and fileList:
                     limit = min(len(fileList), 16384)
                     fileList = self.applySmartDistribution(fileList, limit, channel)
-                    self.log("Applied smart distribution to channel %d" % channel)
+                    self.log("Applied smart distribution to channel {}".format(channel))
 
         try:
             order = dom.getElementsByTagName("order")
@@ -1193,7 +1185,7 @@ class ChannelList:
             pass
 
         try:
-            if append == True:
+            if append:
                 channelplaylist = FileAccess.open(
                     CHANNELS_LOC + "channel_" + str(channel) + ".m3u", "r"
                 )
@@ -1214,7 +1206,7 @@ class ChannelList:
             )
             return False
 
-        if append == False:
+        if not append:
             channelplaylist.write(uni("#EXTM3U\n"))
 
         # Only randomize if not using smart distribution
@@ -1246,15 +1238,15 @@ class ChannelList:
 
     def makeTypePlaylist(self, chtype, setting1, setting2):
         if chtype == 3:
-            if len(self.showGenreList) == 0:
+            if not self.showGenreList:
                 self.fillTVInfo()
             return self.createGenrePlaylist("episodes", chtype, setting1)
         elif chtype == 4:
-            if len(self.movieGenreList) == 0:
+            if not self.movieGenreList:
                 self.fillMovieInfo()
             return self.createGenrePlaylist("movies", chtype, setting1)
         elif chtype == 12:
-            if len(self.musicGenreList) == 0:
+            if not self.musicGenreList:
                 self.fillMusicInfo()
             return self.createGenrePlaylist("songs", chtype, setting1)
 
@@ -1304,7 +1296,7 @@ class ChannelList:
         self.log("fillTVInfo")
         json_query = '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": {"properties":["studio", "genre"]}, "id": 1}'
 
-        if self.background == False:
+        if not self.background:
             self.updateDialog.update(
                 self.updateDialogProgress,
                 "Updating channel " + str(self.settingChannel),
@@ -1316,7 +1308,7 @@ class ChannelList:
         detail = re.compile("{(.*?)}", re.DOTALL).findall(json_folder_detail)
 
         for f in detail:
-            if self.threadPause() == False:
+            if not self.threadPause():
                 del self.showGenreList[:]
                 return
 
@@ -1330,7 +1322,7 @@ class ChannelList:
                     curgenre = genre.lower().strip('"').strip()
 
                     for g in range(len(self.showGenreList)):
-                        if self.threadPause() == False:
+                        if not self.threadPause():
                             del self.showGenreList[:]
                             return
 
@@ -1347,7 +1339,7 @@ class ChannelList:
 
                             break
 
-                    if found == False:
+                    if not found:
                         if sortbycount:
                             self.showGenreList.append([genre.strip('"').strip(), 1])
                         else:
@@ -1358,7 +1350,7 @@ class ChannelList:
         else:
             self.showGenreList.sort(key=lambda x: x.lower())
 
-        if len(self.showGenreList) == 0:
+        if not self.showGenreList:
             self.log(json_folder_detail)
 
         self.log("found genres " + str(self.showGenreList))
@@ -1367,7 +1359,7 @@ class ChannelList:
         self.log("fillMovieInfo")
         json_query = '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties":["studio", "genre"]}, "id": 1}'
 
-        if self.background == False:
+        if not self.background:
             self.updateDialog.update(
                 self.updateDialogProgress,
                 "Updating channel " + str(self.settingChannel),
@@ -1379,7 +1371,7 @@ class ChannelList:
         detail = re.compile("{(.*?)}", re.DOTALL).findall(json_folder_detail)
 
         for f in detail:
-            if self.threadPause() == False:
+            if not self.threadPause():
                 del self.movieGenreList[:]
                 break
 
@@ -1406,7 +1398,7 @@ class ChannelList:
 
                             break
 
-                    if found == False:
+                    if not found:
                         if sortbycount:
                             self.movieGenreList.append([genre.strip('"').strip(), 1])
                         else:
@@ -1417,7 +1409,7 @@ class ChannelList:
         else:
             self.movieGenreList.sort(key=lambda x: x.lower())
 
-        if len(self.movieGenreList) == 0:
+        if not self.movieGenreList:
             self.log(json_folder_detail)
 
         self.log("found genres " + str(self.movieGenreList))
@@ -1427,7 +1419,7 @@ class ChannelList:
         self.musicGenreList = []
         json_query = '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": {"properties":["genre"]}, "id": 1}'
 
-        if self.background == False:
+        if not self.background:
             self.updateDialog.update(
                 self.updateDialogProgress,
                 "Updating channel " + str(self.settingChannel),
@@ -1445,7 +1437,7 @@ class ChannelList:
         detail = re.compile("{(.*?)}", re.DOTALL).findall(json_folder_detail)
 
         for f in detail:
-            if self.threadPause() == False:
+            if not self.threadPause():
                 del self.musicGenreList[:]
                 return
 
@@ -1459,7 +1451,7 @@ class ChannelList:
                     curgenre = genre.lower().strip('"').strip()
 
                     for g in range(len(self.musicGenreList)):
-                        if self.threadPause() == False:
+                        if not self.threadPause():
                             del self.musicGenreList[:]
                             return
 
@@ -1473,7 +1465,7 @@ class ChannelList:
                                 self.musicGenreList[g][1] += 1
                             break
 
-                    if found == False:
+                    if not found:
                         if sortbycount:
                             self.musicGenreList.append([genre.strip('"').strip(), 1])
                         else:
@@ -1521,7 +1513,7 @@ class ChannelList:
             % (self.escapeDirJSON(dir_name), media_type)
         )
 
-        if self.background == False:
+        if not self.background:
             self.updateDialog.update(
                 self.updateDialogProgress,
                 "Updating channel " + str(self.settingChannel),
@@ -1533,7 +1525,7 @@ class ChannelList:
         file_detail = re.compile("{(.*?)}", re.DOTALL).findall(json_folder_detail)
 
         for f in file_detail:
-            if self.threadPause() == False:
+            if not self.threadPause():
                 del fileList[:]
                 break
 
@@ -1574,7 +1566,7 @@ class ChannelList:
                             seasonval = -1
                             epval = -1
 
-                            if self.background == False:
+                            if not self.background:
                                 if filecount == 1:
                                     self.updateDialog.update(
                                         self.updateDialogProgress,
@@ -1733,7 +1725,7 @@ class ChannelList:
             if rule.actions & action > 0:
                 self.runningActionId = index
 
-                if self.background == False:
+                if not self.background:
                     self.updateDialog.update(
                         self.updateDialogProgress,
                         "Updating channel " + str(self.settingChannel),
@@ -1751,12 +1743,12 @@ class ChannelList:
 
     def threadPause(self):
         if threading.activeCount() > 1:
-            while self.threadPaused == True and self.myOverlay.isExiting == False:
+            while self.threadPaused and not self.myOverlay.isExiting:
                 time.sleep(self.sleepTime)
 
             # This will fail when using config.py
             try:
-                if self.myOverlay.isExiting == True:
+                if self.myOverlay.isExiting:
                     self.log("IsExiting")
                     return False
             except Exception as e:

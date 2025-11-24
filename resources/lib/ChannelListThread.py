@@ -77,7 +77,7 @@ class ChannelListThread(threading.Thread):
                 )
 
             for i in range(self.myOverlay.maxChannels):
-                if self.myOverlay.channels[i].isValid == False:
+                if self.myOverlay.channels[i].not isValid:
                     while True:
                         if self.myOverlay.isExiting:
                             self.log("Closing thread")
@@ -85,7 +85,7 @@ class ChannelListThread(threading.Thread):
 
                         time.sleep(1)
 
-                        if self.paused == False:
+                        if not self.paused:
                             break
 
                     self.chanlist.channels[i].setAccessTime(
@@ -103,7 +103,7 @@ class ChannelListThread(threading.Thread):
 
                             self.myOverlay.channels[i] = self.chanlist.channels[i]
 
-                            if self.myOverlay.channels[i].isValid == True:
+                            if self.myOverlay.channels[i].isValid:
                                 xbmc.executebuiltin(
                                     "Notification(%s, %s, %d, %s)"
                                     % (
@@ -130,15 +130,15 @@ class ChannelListThread(threading.Thread):
                 modified = True
 
                 while (
-                    modified == True
+                    modified
                     and self.myOverlay.channels[i].getTotalDuration()
                     < PREP_CHANNEL_TIME
                     and self.myOverlay.channels[i].Playlist.size() < 16288
                 ):
                     # If minimum updating is on, don't attempt to load invalid channels
                     if (
-                        self.fullUpdating == False
-                        and self.myOverlay.channels[i].isValid == False
+                        not self.fullUpdating
+                        and self.myOverlay.channels[i].not isValid
                         and self.myOverlay.isMaster
                     ):
                         break
@@ -245,17 +245,17 @@ class ChannelListThread(threading.Thread):
 
                         time.sleep(2)
 
-                        if self.paused == False:
+                        if not self.paused:
                             break
 
                 timeslept = 0
 
-            if self.fullUpdating == False and self.myOverlay.isMaster:
+            if not self.fullUpdating and self.myOverlay.isMaster:
                 return
 
             # If we're master, wait 30 minutes in between checks.  If not, wait 5 minutes.
-            while (timeslept < 1800 and self.myOverlay.isMaster == True) or (
-                timeslept < 300 and self.myOverlay.isMaster == False
+            while (timeslept < 1800 and self.myOverlay.isMaster) or (
+                timeslept < 300 and not self.myOverlay.isMaster
             ):
                 if self.myOverlay.isExiting:
                     self.log("IsExiting")

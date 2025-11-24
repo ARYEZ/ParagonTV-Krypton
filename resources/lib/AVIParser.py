@@ -248,7 +248,7 @@ class AVIParser:
 
         if data == "RIFF" or data == "LIST":
             dataclass = AVIList()
-        elif len(data) == 0:
+        elif not data:
             dataclass = AVIChunk()
             dataclass.datatype = 3
         else:

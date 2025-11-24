@@ -134,7 +134,7 @@ class FileAccess:
 
     @staticmethod
     def _makedirs(path):
-        if len(path) == 0:
+        if not path:
             return False
 
         if xbmcvfs.exists(path):
@@ -142,7 +142,7 @@ class FileAccess:
 
         success = xbmcvfs.mkdir(path)
 
-        if success == False:
+        if not success:
             if path == os.path.dirname(path):
                 return False
 
@@ -237,7 +237,7 @@ class FileLock:
 
         self.refreshLocksTimer = threading.Timer(4.0, self.refreshLocks)
 
-        if self.isExiting == False:
+        if not self.isExiting:
             self.refreshLocksTimer.name = "RefreshLocks"
             self.refreshLocksTimer.start()
             return True
@@ -253,7 +253,7 @@ class FileLock:
         locked = True
         lines = []
 
-        while locked == True and attempts < FILE_LOCK_MAX_FILE_TIMEOUT:
+        while locked and attempts < FILE_LOCK_MAX_FILE_TIMEOUT:
             locked = False
 
             if curval > -1:
@@ -263,7 +263,7 @@ class FileLock:
 
             self.grabSemaphore.acquire()
 
-            if self.grabLockFile() == False:
+            if not self.grabLockFile():
                 self.grabSemaphore.release()
                 return False
 
@@ -296,7 +296,7 @@ class FileLock:
                     if curval == val:
                         attempts += 1
                     else:
-                        if block == False:
+                        if not block:
                             self.releaseLockFile()
                             self.grabSemaphore.release()
                             self.log("File is locked")
@@ -315,7 +315,7 @@ class FileLock:
                 existing = True
                 break
 
-        if existing == False:
+        if not existing:
             self.lockedList.append(filename)
 
         self.grabSemaphore.release()
@@ -449,13 +449,13 @@ class FileLock:
 
         self.listSemaphore.release()
 
-        if found == False:
+        if not found:
             self.log("Lock not found")
             return False
 
         self.grabSemaphore.acquire()
 
-        if self.grabLockFile() == False:
+        if not self.grabLockFile():
             self.grabSemaphore.release()
             return False
 
@@ -479,7 +479,7 @@ class FileLock:
         filename = filename.lower()
         self.grabSemaphore.acquire()
 
-        if self.grabLockFile() == False:
+        if not self.grabLockFile():
             self.grabSemaphore.release()
             return True
 

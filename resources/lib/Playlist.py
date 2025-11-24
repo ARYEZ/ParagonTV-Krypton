@@ -186,7 +186,7 @@ class Playlist:
 
         self.processingSemaphore.release()
 
-        if len(self.itemlist) == 0:
+        if not self.itemlist:
             return False
 
         return True

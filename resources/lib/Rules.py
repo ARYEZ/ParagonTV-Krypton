@@ -458,7 +458,7 @@ class InterleaveChannel(BaseRule):
 
             if (
                 len(channelList.channels) < chan
-                or channelList.channels[chan - 1].isSetup == False
+                or channelList.channels[chan - 1].not isSetup
             ):
                 if channelList.myOverlay.isMaster:
                     channelList.setupChannel(chan, True, True, False)
@@ -476,7 +476,7 @@ class InterleaveChannel(BaseRule):
             self.log("Length of original list: " + str(len(filelist)))
 
             while realindex < len(filelist):
-                if channelList.threadPause() == False:
+                if not channelList.threadPause():
                     return filelist
 
                 while startindex < realindex:
@@ -573,7 +573,7 @@ class PlayShowInOrder(BaseRule):
                 pass
 
     def sortShows(self, channelList, filelist):
-        if len(self.showInfo) == 0:
+        if not self.showInfo:
             return filelist
 
         newfilelist = []
@@ -591,7 +591,7 @@ class PlayShowInOrder(BaseRule):
         showlist[0].append(0)
 
         for item in self.showInfo:
-            if channelList.threadPause() == False:
+            if not channelList.threadPause():
                 return filelist
 
             if item[0] != curshow:
@@ -602,13 +602,13 @@ class PlayShowInOrder(BaseRule):
 
             showstr = self.findInFileList(filelist, item[1])
 
-            if len(showstr) > 0:
+            if showstr:
                 showlist[-1].append(showstr)
 
         curindex = 0
 
         for item in filelist:
-            if channelList.threadPause() == False:
+            if not channelList.threadPause():
                 return filelist
 
             # First, get the current show for the entry
