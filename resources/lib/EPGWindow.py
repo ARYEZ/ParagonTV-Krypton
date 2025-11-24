@@ -330,7 +330,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             baseh = self.getControl(111 + row).getHeight()
             basew = self.getControl(111 + row).getWidth()
 
-            if xbmc.Player().not isPlaying():
+            if not xbmc.Player().isPlaying():
                 self.log("No video is playing, not adding buttons")
                 self.closeEPG()
                 return False

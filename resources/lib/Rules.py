@@ -458,7 +458,7 @@ class InterleaveChannel(BaseRule):
 
             if (
                 len(channelList.channels) < chan
-                or channelList.channels[chan - 1].not isSetup
+                or not channelList.channels[chan - 1].isSetup
             ):
                 if channelList.myOverlay.isMaster:
                     channelList.setupChannel(chan, True, True, False)

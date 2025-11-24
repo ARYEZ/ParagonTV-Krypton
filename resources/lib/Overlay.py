@@ -2927,7 +2927,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             self.log("setChannel invalid channel " + str(channel), xbmc.LOGERROR)
             return
 
-        if self.channels[channel - 1].not isValid:
+        if not self.channels[channel - 1].isValid:
             self.log("setChannel channel not valid " + str(channel), xbmc.LOGERROR)
             return
 
@@ -2992,7 +2992,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Load channel playlist
         xbmc.PlayList(xbmc.PLAYLIST_MUSIC).clear()
         if (
-            xbmc.PlayList(xbmc.PLAYLIST_MUSIC).not load(self.channels[channel - 1].fileName)
+            not xbmc.PlayList(xbmc.PLAYLIST_MUSIC).load(self.channels[channel - 1].fileName)
         ):
             self.log("Error loading playlist", xbmc.LOGERROR)
             self.InvalidateChannel(channel)
@@ -3010,7 +3010,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         timedif = curtime - self.channels[self.currentChannel - 1].lastAccessTime
 
         # Adjust show position if not paused
-        if self.channels[self.currentChannel - 1].not isPaused:
+        if not self.channels[self.currentChannel - 1].isPaused:
             while (
                 self.channels[self.currentChannel - 1].showTimeOffset + timedif
                 > self.channels[self.currentChannel - 1].getCurrentDuration()
@@ -8072,7 +8072,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         else:
             direction = -1
 
-        if self.channels[channel - 1].not isValid:
+        if not self.channels[channel - 1].isValid:
             return self.fixChannel(channel + direction, increasing)
 
         return channel
