@@ -39,7 +39,7 @@ class Migrate:
 
             if len(curver) == 0:
                 curver = "0.0.0"
-        except:
+        except Exception as e:
             curver = "0.0.0"
 
         if curver == Globals.VERSION:

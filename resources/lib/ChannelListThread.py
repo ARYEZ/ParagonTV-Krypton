@@ -117,7 +117,7 @@ class ChannelListThread(threading.Thread):
                                         ICON,
                                     )
                                 )
-                    except:
+                    except Exception as e:
                         self.log("Unknown Channel Creation Exception", xbmc.LOGERROR)
                         self.log(traceback.format_exc(), xbmc.LOGERROR)
                         return
@@ -179,7 +179,7 @@ class ChannelListThread(threading.Thread):
 
                             try:
                                 self.chanlist.setupChannel(i + 1, True, False, True)
-                            except:
+                            except Exception as e:
                                 self.log(
                                     "Unknown Channel Appending Exception", xbmc.LOGERROR
                                 )
@@ -207,7 +207,7 @@ class ChannelListThread(threading.Thread):
                         else:
                             try:
                                 self.chanlist.setupChannel(i + 1, True, True, False)
-                            except:
+                            except Exception as e:
                                 self.log(
                                     "Unknown Channel Modification Exception",
                                     xbmc.LOGERROR,
@@ -218,7 +218,7 @@ class ChannelListThread(threading.Thread):
                         try:
                             # We're not master, so no modifications...just try and load the channel
                             self.chanlist.setupChannel(i + 1, True, False, False)
-                        except:
+                        except Exception as e:
                             self.log("Unknown Channel Loading Exception", xbmc.LOGERROR)
                             self.log(traceback.format_exc(), xbmc.LOGERROR)
                             return

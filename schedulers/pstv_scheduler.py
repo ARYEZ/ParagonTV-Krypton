@@ -80,7 +80,7 @@ class PSTVScheduler:
             self.custom_days = [
                 int(day.strip()) for day in self.custom_days if day.strip().isdigit()
             ]
-        except:
+        except Exception as e:
             log("Error parsing custom days - defaulting to weekdays", xbmc.LOGERROR)
             self.custom_days = [1, 2, 3, 4, 5]  # Default to weekdays
 
@@ -118,7 +118,7 @@ class PSTVScheduler:
             hour, minute = self.schedule_time.split(":")
             hour = int(hour)
             minute = int(minute)
-        except:
+        except Exception as e:
             log("Error parsing time: {}".format(self.schedule_time), xbmc.LOGERROR)
             return False
 
@@ -196,7 +196,7 @@ class PSTVScheduler:
             del_cmd = 'schtasks /Delete /TN "{}" /F'.format(task_name)
             try:
                 subprocess.call(del_cmd, shell=True)
-            except:
+            except Exception as e:
                 pass  # Ignore errors if task doesn't exist
 
             # Create new task
@@ -301,7 +301,7 @@ class PSTVScheduler:
             # Clean up
             try:
                 os.remove(cron_file)
-            except:
+            except Exception as e:
                 pass
 
             if result == 0:
@@ -489,7 +489,7 @@ class PSTVScheduler:
                 # Clean up
                 try:
                     os.remove(cron_file)
-                except:
+                except Exception as e:
                     pass
 
             elif xbmc.getCondVisibility(

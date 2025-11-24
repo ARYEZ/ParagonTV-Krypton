@@ -23,7 +23,7 @@ try:
         ADDON_ID = 'script.paragontv'
         ADDON_PATH = ADDON.getAddonInfo('path')
         ICON = os.path.join(ADDON_PATH, 'icon.png')
-    except:
+    except Exception as e:
         ADDON = None
         ADDON_ID = "organize_tv_genres"
         ICON = ""

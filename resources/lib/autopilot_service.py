@@ -58,7 +58,7 @@ class AutopilotService:
                    'root@{}'.format(self.master_ip), 'echo "connected"']
             result = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             return result == 0
-        except:
+        except Exception as e:
             return False
             
     def get_file_checksum(self, filepath):
@@ -72,7 +72,7 @@ class AutopilotService:
             else:  # Local file
                 with open(filepath, 'rb') as f:
                     return hashlib.md5(f.read()).hexdigest()
-        except:
+        except Exception as e:
             return None
             
     def sync_settings2(self):
@@ -242,7 +242,7 @@ class AutopilotService:
         try:
             subprocess.call(['rsync', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             return True
-        except:
+        except Exception as e:
             return False
             
     def check_force_reset(self):
@@ -378,7 +378,7 @@ class AutopilotTester:
                     
                 xbmcgui.Dialog().ok("Connection Test", message)
                 
-            except:
+            except Exception as e:
                 xbmcgui.Dialog().ok("Connection Test", 
                                    "Connected to master at {}".format(self.master_ip))
         else:

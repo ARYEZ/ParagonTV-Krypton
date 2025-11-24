@@ -20,7 +20,7 @@ try:
     try:
         ADDON = xbmcaddon.Addon('script.paragontv')
         ADDON_ID = 'script.paragontv'
-    except:
+    except Exception as e:
         ADDON = None
         ADDON_ID = "repair_corrupted_nfo"
 except ImportError:

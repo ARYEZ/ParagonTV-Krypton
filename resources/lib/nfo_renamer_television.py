@@ -638,7 +638,7 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
                 if recursive:
                     for d in subdirs:
                         count += count_nfos(os.path.join(dir_path, d))
-            except:
+            except Exception as e:
                 pass
             return count
         progress_state["total_nfos"] = count_nfos(directory)

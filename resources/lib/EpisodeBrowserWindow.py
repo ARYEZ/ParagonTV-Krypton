@@ -328,7 +328,7 @@ class EpisodeListWindow(xbmcgui.WindowXMLDialog):
                 if firstaired:
                     try:
                         year = firstaired.split("-")[0]
-                    except:
+                    except Exception as e:
                         year = "2005"  # Default year if parsing fails
 
                 # Format label for list display

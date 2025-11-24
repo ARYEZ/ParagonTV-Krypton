@@ -77,12 +77,12 @@ class ChannelList:
 
         try:
             self.lastResetTime = int(ADDON_SETTINGS.getSetting("LastResetTime"))
-        except:
+        except Exception as e:
             self.lastResetTime = 0
 
         try:
             self.lastExitTime = int(ADDON_SETTINGS.getSetting("LastExitTime"))
-        except:
+        except Exception as e:
             self.lastExitTime = int(time.time())
 
         # Load global bumper position
@@ -90,7 +90,7 @@ class ChannelList:
             self.globalBumperPosition = int(ADDON_SETTINGS.getSetting("GlobalBumperPosition"))
             if self.globalBumperPosition < 1:
                 self.globalBumperPosition = 1
-        except:
+        except Exception as e:
             self.globalBumperPosition = 1
 
         self.log("Global Bumper Position loaded: " + str(self.globalBumperPosition))
@@ -172,7 +172,7 @@ class ChannelList:
                 )
                 chsetting1 = ADDON_SETTINGS.getSetting("Channel_" + str(i + 1) + "_1")
                 chsetting2 = ADDON_SETTINGS.getSetting("Channel_" + str(i + 1) + "_2")
-            except:
+            except Exception as e:
                 pass
 
             if chtype == 0:
@@ -208,7 +208,7 @@ class ChannelList:
             chtype = int(ADDON_SETTINGS.getSetting("Channel_" + str(channel) + "_type"))
             chsetting1 = ADDON_SETTINGS.getSetting("Channel_" + str(channel) + "_1")
             chsetting2 = ADDON_SETTINGS.getSetting("Channel_" + str(channel) + "_2")
-        except:
+        except Exception as e:
             pass
 
         while len(self.channels) < channel:
@@ -253,7 +253,7 @@ class ChannelList:
 
             if needsreset:
                 self.channels[channel - 1].isSetup = False
-        except:
+        except Exception as e:
             pass
 
         # If possible, use an existing playlist
@@ -319,7 +319,7 @@ class ChannelList:
 
                     if self.channelResetSetting == 4:
                         createlist = False
-            except:
+            except Exception as e:
                 pass
 
         if createlist or needsreset:
@@ -328,7 +328,7 @@ class ChannelList:
             if makenewlist:
                 try:
                     os.remove(CHANNELS_LOC + "channel_" + str(channel) + ".m3u")
-                except:
+                except Exception as e:
                     pass
 
                 append = False
@@ -458,7 +458,7 @@ class ChannelList:
                 fle = FileAccess.open(
                     CHANNELS_LOC + "channel_" + str(channel) + ".m3u", "w"
                 )
-            except:
+            except Exception as e:
                 self.log(
                     "clearPlaylistHistory Unable to open the smart playlist",
                     xbmc.LOGERROR,
@@ -540,13 +540,13 @@ class ChannelList:
 
         try:
             xml = FileAccess.open(fle, "r")
-        except:
+        except Exception as e:
             self.log("getSmartPlaylistName Unable to open " + fle)
             return ""
 
         try:
             dom = parse(xml)
-        except:
+        except Exception as e:
             self.log("getSmartPlaylistName Unable to parse " + fle)
             xml.close()
             return ""
@@ -557,7 +557,7 @@ class ChannelList:
             plname = dom.getElementsByTagName("name")
             self.log("getSmartPlaylistName return " + plname[0].childNodes[0].nodeValue)
             return plname[0].childNodes[0].nodeValue
-        except:
+        except Exception as e:
             self.log("getSmartPlaylistName return")
             return ""
 
@@ -642,7 +642,7 @@ class ChannelList:
                         if show_name not in episodes_by_show:
                             episodes_by_show[show_name] = []
                         episodes_by_show[show_name].append(episode_str)
-            except:
+            except Exception as e:
                 self.log(
                     "applySmartDistribution: Error parsing episode string",
                     xbmc.LOGWARNING,
@@ -721,7 +721,7 @@ class ChannelList:
                 try:
                     filename = os.path.basename(selected_episode.split("\n")[1])
                     self.log("  Guaranteed episode for %s: %s" % (show, filename))
-                except:
+                except Exception as e:
                     self.log("  Guaranteed episode for %s" % show)
             else:
                 episodes_taken[show] = 0
@@ -788,7 +788,7 @@ class ChannelList:
                 if len(parts) >= 2:
                     show_name = parts[1].split("//")[0]
                     show_counts[show_name] = show_counts.get(show_name, 0) + 1
-            except:
+            except Exception as e:
                 pass
 
         for show, count in sorted(show_counts.items()):
@@ -859,7 +859,7 @@ class ChannelList:
                     if show_name not in show_episodes:
                         show_episodes[show_name] = []
                     show_episodes[show_name].append((i, episode))
-            except:
+            except Exception as e:
                 continue
 
         # If we only have one show, just return the original list
@@ -983,7 +983,7 @@ class ChannelList:
                     if show_name not in show_positions:
                         show_positions[show_name] = []
                     show_positions[show_name].append(idx)
-            except:
+            except Exception as e:
                 pass
 
         # Check for 5% hard cap violations
@@ -1145,7 +1145,7 @@ class ChannelList:
 
         try:
             xml = FileAccess.open(fle, "r")
-        except:
+        except Exception as e:
             self.log(
                 "makeChannelList Unable to open the smart playlist " + fle,
                 xbmc.LOGERROR,
@@ -1154,7 +1154,7 @@ class ChannelList:
 
         try:
             dom = parse(xml)
-        except:
+        except Exception as e:
             self.log("makeChannelList Problem parsing playlist " + fle, xbmc.LOGERROR)
             xml.close()
             return False
@@ -1176,7 +1176,7 @@ class ChannelList:
                         )
                         != "false"
                     )
-                except:
+                except Exception as e:
                     use_smart_dist = True
 
                 if use_smart_dist and len(fileList) > 0:
@@ -1189,7 +1189,7 @@ class ChannelList:
 
             if order[0].childNodes[0].nodeValue.lower() == "random":
                 israndom = True
-        except:
+        except Exception as e:
             pass
 
         try:
@@ -1203,7 +1203,7 @@ class ChannelList:
                 channelplaylist = FileAccess.open(
                     CHANNELS_LOC + "channel_" + str(channel) + ".m3u", "w"
                 )
-        except:
+        except Exception as e:
             self.log(
                 "Unable to open the cache file "
                 + CHANNELS_LOC
@@ -1266,7 +1266,7 @@ class ChannelList:
 
         try:
             fle = FileAccess.open(flename, "w")
-        except:
+        except Exception as e:
             self.Error(LANGUAGE(30034) + " " + flename, xbmc.LOGERROR)
             return ""
 
@@ -1550,14 +1550,14 @@ class ChannelList:
 
                     try:
                         dur = int(duration.group(1))
-                    except:
+                    except Exception as e:
                         dur = 0
 
                     if dur == 0:
                         duration = re.search('"runtime" *: *([0-9]*?),', f)
                         try:
                             dur = int(duration.group(1))
-                        except:
+                        except Exception as e:
                             dur = 0
 
                     if dur == 0:
@@ -1565,7 +1565,7 @@ class ChannelList:
                             dur = self.videoParser.getVideoLength(
                                 uni(match.group(1)).replace("\\\\", "\\")
                             )
-                        except:
+                        except Exception as e:
                             dur = 0
 
                     try:
@@ -1603,7 +1603,7 @@ class ChannelList:
                                 tracknum = ""
                                 try:
                                     tracknum = str(int(track.group(1))) + ". "
-                                except:
+                                except Exception as e:
                                     pass
 
                                 tmpstr += (
@@ -1645,7 +1645,7 @@ class ChannelList:
                                                 + str(epval)
                                                 + ")"
                                             )
-                                    except:
+                                    except Exception as e:
                                         seasonval = -1
                                         epval = -1
 
@@ -1674,7 +1674,7 @@ class ChannelList:
                                 seasoneplist.append([seasonval, epval, tmpstr])
                             else:
                                 fileList.append(tmpstr)
-                    except:
+                    except Exception as e:
                         pass
             else:
                 continue
@@ -1699,7 +1699,7 @@ class ChannelList:
         try:
             rules = dom1.getElementsByTagName("rule")
             order = dom1.getElementsByTagName("order")
-        except:
+        except Exception as e:
             self.log("buildMixedFileList Problem parsing playlist", xbmc.LOGERROR)
             return fileList
 
@@ -1759,7 +1759,7 @@ class ChannelList:
                 if self.myOverlay.isExiting == True:
                     self.log("IsExiting")
                     return False
-            except:
+            except Exception as e:
                 pass
 
         return True
@@ -1778,7 +1778,7 @@ class ChannelList:
         try:
             pltype = dom.getElementsByTagName("smartplaylist")
             return pltype[0].attributes["type"].value
-        except:
+        except Exception as e:
             self.log("Unable to get the playlist type.", xbmc.LOGERROR)
             return ""
 
@@ -1787,7 +1787,7 @@ class ChannelList:
         for i in range(999):
             try:
                 FileAccess.delete(CHANNELS_LOC + "channel_" + str(i + 1) + ".m3u")
-            except:
+            except Exception as e:
                 pass
 
     def Error(self, msg, severity=xbmc.LOGWARNING):

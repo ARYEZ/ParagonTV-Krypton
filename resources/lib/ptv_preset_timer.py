@@ -440,7 +440,7 @@ class PresetRefreshTimer:
                 vol_percent = int(phase_data["volume_level"])
                 xbmc.executebuiltin("SetVolume({})".format(vol_percent))
                 log("Set volume to {}%".format(vol_percent), xbmc.LOGERROR)
-            except:
+            except Exception as e:
                 pass
 
         # Clear force reset flag after phase 5 (first wake)

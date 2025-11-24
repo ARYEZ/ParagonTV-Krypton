@@ -68,7 +68,7 @@ try:
     from PIL import Image, ImageEnhance
 
     PIL_AVAILABLE = True
-except:
+except Exception as e:
     PIL_AVAILABLE = False
 
 ICON = ADDON.getAddonInfo("icon")
@@ -1168,7 +1168,7 @@ class LibraryMonitor(xbmc.Monitor):
                 # Trigger preemption with this file
                 self.overlay.preemptChannelWithShow(playingFile)
 
-            except:
+            except Exception as e:
                 self.log("Failed to get playing file info")
 
 
@@ -1241,7 +1241,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             homeWindow.clearProperty("PTV.ExitImage1")
             homeWindow.clearProperty("PTV.ExitImage2")
             homeWindow.clearProperty("PTV.ExitImage3")
-        except:
+        except Exception as e:
             pass
 
         # Core components
@@ -1513,7 +1513,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 )
             else:
                 self.currentChannel = self.fixChannel(1)
-        except:
+        except Exception as e:
             self.currentChannel = self.fixChannel(1)
 
         # Start playback
@@ -1560,7 +1560,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             if not FileAccess.exists(directory):
                 try:
                     FileAccess.makedirs(directory)
-                except:
+                except Exception as e:
                     self.Error(error_msg)
                     return False
         return True
@@ -1598,7 +1598,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             favs = ADDON.getSetting("FavoriteChannels")
             if favs:
                 self.favoriteChannels = [int(x) for x in favs.split(",") if x.strip()]
-        except:
+        except Exception as e:
             pass
 
     # Speed Dial Persistence Methods
@@ -1636,7 +1636,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             channel = int(v)
                             if channel > 0:
                                 self.speedDialChannels[key] = channel
-                        except:
+                        except Exception as e:
                             pass
 
                     # Load shows
@@ -1663,7 +1663,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         "loadSpeedDialFromSettings - Loaded channel %d for speed dial %d"
                         % (channel, i)
                     )
-            except:
+            except Exception as e:
                 pass
 
         # Load show speed dials
@@ -1675,7 +1675,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.log(
                         "loadSpeedDialFromSettings - Loaded show for speed dial %d" % i
                     )
-            except:
+            except Exception as e:
                 pass
 
     def saveSpeedDial(self):
@@ -1798,7 +1798,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.favoriteShows = [
                         s.strip() for s in shows.split(",") if s.strip()
                     ]
-            except:
+            except Exception as e:
                 pass
 
     def saveFavoriteShows(self):
@@ -3045,7 +3045,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.Player.pause()
                     if self.waitForVideoPaused() == False:
                         return
-            except:
+            except Exception as e:
                 self.log("Exception during seek on paused channel", xbmc.LOGERROR)
         else:
             # Seek to proper time
@@ -3056,14 +3056,14 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             )
             try:
                 self.Player.seekTime(seektime)
-            except:
+            except Exception as e:
                 self.log("Unable to set proper seek time, trying different value")
                 try:
                     seektime = (
                         self.channels[self.currentChannel - 1].showTimeOffset + timedif
                     )
                     self.Player.seekTime(seektime)
-                except:
+                except Exception as e:
                     self.log("Exception during seek", xbmc.LOGERROR)
 
         self.showChannelLabel(self.currentChannel)
@@ -3621,7 +3621,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                             month = int(dateParts[1])
                             day = int(dateParts[2])
                             airDate = DATE(year, month, day)
-                        except:
+                        except Exception as e:
                             self.log("Could not parse date: %s" % airDateStr)
                             continue
 
@@ -5745,7 +5745,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     cleaned_chars.append(char)
                 else:
                     cleaned_chars.append(' ')
-            except:
+            except Exception as e:
                 cleaned_chars.append(' ')
         
         text = ''.join(cleaned_chars)
@@ -6227,7 +6227,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                                 
                                 total_db_size += db_size
                                 total_tables += db_tables
-                            except:
+                            except Exception as e:
                                 pass
                 
                 # Parse library statistics
@@ -6254,17 +6254,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     if 'Episodes:' in line:
                         try:
                             orphaned_episodes = int(line.split(':')[1].strip())
-                        except:
+                        except Exception as e:
                             pass
                     elif 'Movies:' in line:
                         try:
                             orphaned_movies = int(line.split(':')[1].strip())
-                        except:
+                        except Exception as e:
                             pass
                     elif 'Paths:' in line:
                         try:
                             orphaned_paths = int(line.split(':')[1].strip())
-                        except:
+                        except Exception as e:
                             pass
                 
                 # Parse table integrity
@@ -6279,7 +6279,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     if 'Active connections:' in line:
                         try:
                             active_connections = line.split(':')[1].strip()
-                        except:
+                        except Exception as e:
                             pass
                 
                 # Parse Kodi clients
@@ -6295,7 +6295,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                                 'status': status,
                                 'online': 'Connected' in status
                             })
-                        except:
+                        except Exception as e:
                             pass
             
             # Calculate health status
@@ -6616,7 +6616,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     control_id = 9920 + i
                     try:
                         self.getControl(control_id).setLabel(safe_str("Core %d: %s%%" % (i, usage)))
-                    except:
+                    except Exception as e:
                         pass
             
             self.log("Kodi box stats display updated")
@@ -7553,7 +7553,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         try:
             self.getControl(103).setVisible(False)
             self.log("end - Hidden channel logo")
-        except:
+        except Exception as e:
             pass
 
         # Use progress dialog for exit instead of image crossfade
@@ -7782,7 +7782,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     xbmc.PLAYLIST_MUSIC
                 ).getposition()
                 self.Player.stop()
-        except:
+        except Exception as e:
             pass
 
         curtime = time.time()
@@ -7791,7 +7791,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Hide the background
         try:
             self.background.setVisible(False)
-        except:
+        except Exception as e:
             pass
 
         # Always use progress dialog for exit (image crossfade disabled)
@@ -7836,7 +7836,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if timer and timer.isAlive():
                     timer.cancel()
                     # Don't join() here as it can cause deadlocks
-            except:
+            except Exception as e:
                 pass
 
         # Handle sleep timer
@@ -7844,7 +7844,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             if self.sleepTimeValue > 0:
                 if self.sleepTimer and self.sleepTimer.isAlive():
                     self.sleepTimer.cancel()
-        except:
+        except Exception as e:
             pass
 
         # Stop channel thread
@@ -7853,7 +7853,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         if self.channelThread.isAlive():
             try:
                 self.channelThread.stop()  # If the thread has a stop method
-            except:
+            except Exception as e:
                 pass
 
             # Give it a moment to stop gracefully
@@ -7863,7 +7863,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         if self.isMaster:
             try:
                 ADDON.setSetting("CurrentChannel", str(self.currentChannel))
-            except:
+            except Exception as e:
                 pass
 
             ADDON_SETTINGS.setSetting("LastExitTime", str(int(curtime)))
@@ -7927,7 +7927,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         # Clear the playlist
         try:
             xbmc.PlayList(xbmc.PLAYLIST_MUSIC).clear()
-        except:
+        except Exception as e:
             pass
         # Final property cleanup before closing window
         try:
@@ -7945,7 +7945,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.setProperty("PTV.ExitImage1", "")
                 self.setProperty("PTV.ExitImage2", "")
                 self.setProperty("PTV.ExitImage3", "")
-        except:
+        except Exception as e:
             pass
 
         # Progress dialog approach doesn't need delay (exit image crossfade disabled)

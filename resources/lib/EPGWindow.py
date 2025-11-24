@@ -142,7 +142,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
             if focusedcolor > 0:
                 self.focusedcolor = hex(focusedcolor)[2:]
-        except:
+        except Exception as e:
             pass
 
         try:
@@ -188,13 +188,13 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
             self.focusRow = 2
             self.setShowInfo()
-        except:
+        except Exception as e:
             self.log("Unknown EPG Initialization Exception", xbmc.LOGERROR)
             self.log(traceback.format_exc(), xbmc.LOGERROR)
 
             try:
                 self.close()
-            except:
+            except Exception as e:
                 self.log("Error closing", xbmc.LOGERROR)
 
             self.MyOverlayWindow.sleepTimeValue = 1
@@ -244,7 +244,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         for i in range(self.rowCount):
             try:
                 self.getControl(311 + i).setLabel(str(curchannel))
-            except:
+            except Exception as e:
                 pass
 
             try:
@@ -260,7 +260,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                         + "_c.png"
                     ):
                         self.getControl(321 + i).setImage(IMAGES_LOC + "Default.png")
-            except:
+            except Exception as e:
                 pass
 
             curchannel = self.MyOverlayWindow.fixChannel(curchannel + 1)
@@ -280,11 +280,11 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
         try:
             self.removeControls(self.toRemove)
-        except:
+        except Exception as e:
             for cntrl in self.toRemove:
                 try:
                     self.removeControl(cntrl)
-                except:
+                except Exception as e:
                     pass
 
         self.addControls(myadds)
@@ -526,7 +526,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                                 )
                                 if chtype == 12 and not hasVideoKeyword:
                                     isMusicChannel = True
-                            except:
+                            except Exception as e:
                                 pass
 
                             if isMusicChannel and " - " in mylabel:
@@ -585,7 +585,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                             focusedColor=self.focusedcolor,
                         )
                     )
-        except:
+        except Exception as e:
             self.log("Exception in setButtons", xbmc.LOGERROR)
             self.log(traceback.format_exc(), xbmc.LOGERROR)
 
@@ -621,13 +621,13 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                     self.selectShow()
                     self.closeEPG()
                     self.lastActionTime = time.time()
-        except:
+        except Exception as e:
             self.log("Unknown EPG Exception", xbmc.LOGERROR)
             self.log(traceback.format_exc(), xbmc.LOGERROR)
 
             try:
                 self.close()
-            except:
+            except Exception as e:
                 self.log("Error closing", xbmc.LOGERROR)
 
             self.MyOverlayWindow.sleepTimeValue = 1
@@ -643,7 +643,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         try:
             self.removeControl(self.currentTimeBar)
             self.MyOverlayWindow.startSleepTimer()
-        except:
+        except Exception as e:
             pass
 
         self.close()
@@ -664,7 +664,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         if lastaction >= 2:
             try:
                 selectedbutton = self.getControl(controlid)
-            except:
+            except Exception as e:
                 self.actionSemaphore.release()
                 self.log("onClick unknown controlid " + str(controlid))
                 return
@@ -943,7 +943,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                     keyword in channelName.lower() for keyword in videoExcludeKeywords
                 ):
                     isMusicChannel = True
-        except:
+        except Exception as e:
             pass
 
         if isMusicChannel:  # Music channels
@@ -1131,7 +1131,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                                     showArtwork = art
                                     self.log("Found artwork from metadata: " + artType)
                                     break
-                    except:
+                    except Exception as e:
                         pass
 
         except Exception as e:

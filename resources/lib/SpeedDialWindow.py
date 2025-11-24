@@ -63,7 +63,7 @@ class SpeedDialWindow(xbmcgui.WindowXMLDialog):
                     import ast
 
                     self.speedDialShows[str(i)] = ast.literal_eval(showInfo)
-                except:
+                except Exception as e:
                     # Fall back to old format and convert
                     parts = showInfo.split("|")
                     if len(parts) >= 3:

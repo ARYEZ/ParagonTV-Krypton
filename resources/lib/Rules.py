@@ -203,7 +203,7 @@ class BaseRule:
                 self.optionValues[optionindex] = str(val)
 
             return
-        except:
+        except Exception as e:
             pass
 
         self.optionValues[optionindex] = str(default)
@@ -341,7 +341,7 @@ class OnlyUnWatchedRule(BaseRule):
 
             try:
                 pc = int(playcount.group(1))
-            except:
+            except Exception as e:
                 pc = 0
 
             if pc > 0:
@@ -369,7 +369,7 @@ class OnlyWatchedRule(BaseRule):
 
             try:
                 pc = int(playcount.group(1))
-            except:
+            except Exception as e:
                 pc = 0
 
             if pc == 0:
@@ -445,7 +445,7 @@ class InterleaveChannel(BaseRule):
                 chan = int(self.optionValues[0])
                 minint = int(self.optionValues[1])
                 maxint = int(self.optionValues[2])
-            except:
+            except Exception as e:
                 self.log("Except when reading params")
 
             if chan > channelList.maxChannels or chan < 1 or minint < 1 or maxint < 1:
@@ -569,7 +569,7 @@ class PlayShowInOrder(BaseRule):
                         epval,
                     ]
                 )
-            except:
+            except Exception as e:
                 pass
 
     def sortShows(self, channelList, filelist):
@@ -700,7 +700,7 @@ class LimitMediaDuration(BaseRule):
 
                             if mindur <= duration <= maxdur:
                                 newfilelist.append(item)
-                        except:
+                        except Exception as e:
                             # If duration parsing fails, include the item
                             newfilelist.append(item)
                     else:
@@ -708,7 +708,7 @@ class LimitMediaDuration(BaseRule):
                         newfilelist.append(item)
 
                 return newfilelist
-            except:
+            except Exception as e:
                 return filelist
 
         return filelist
