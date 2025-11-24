@@ -94,13 +94,15 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         for i in range(8):  # Hide controls 120-127
             try:
                 self.getControl(120 + i).setVisible(False)
-            except:
+            except (RuntimeError, AttributeError) as e:
+                # Control doesn't exist in this skin - expected, ignore
                 pass
 
         # Also hide Music Genre control
         try:
             self.getControl(128).setVisible(False)
-        except:
+        except (RuntimeError, AttributeError) as e:
+            # Control doesn't exist in this skin - expected, ignore
             pass
 
         migratemaster = Migrate()
@@ -167,8 +169,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         try:
             chantype = int(ADDON_SETTINGS.getSetting("Channel_" + chan + "_type"))
-        except:
-            self.log("Unable to get channel type")
+        except (ValueError, TypeError) as e:
+            self.log("Unable to get channel type: {}".format(str(e)))
 
         setting1 = "Channel_" + chan + "_1"
         setting2 = "Channel_" + chan + "_2"
@@ -195,8 +197,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         try:
             set1 = ADDON_SETTINGS.getSetting(setting1)
             set2 = ADDON_SETTINGS.getSetting(setting2)
-        except:
-            pass
+        except Exception as e:
+            self.log("Unable to get settings {}/{}: {}".format(setting1, setting2, str(e)), xbmc.LOGWARNING)
 
         if (
             chantype != self.channel_type
@@ -222,13 +224,15 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         for i in range(NUMBER_CHANNEL_TYPES):
             try:
                 self.getControl(120 + i).setVisible(False)
-            except:
+            except (RuntimeError, AttributeError):
+                # Control doesn't exist in this skin - expected, ignore
                 pass
 
         # Special handling for Music Genre control
         try:
             self.getControl(128).setVisible(False)
-        except:
+        except (RuntimeError, AttributeError):
+            # Control doesn't exist in this skin - expected, ignore
             pass
 
         self.setFocusId(102)
@@ -345,15 +349,15 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         try:
             xml = FileAccess.open(fle, "r")
-        except:
-            self.log("Unable to open smart playlist")
+        except IOError as e:
+            self.log("Unable to open smart playlist: {}".format(str(e)))
             return ""
 
         try:
             dom = parse(xml)
-        except:
+        except Exception as e:
             xml.close()
-            self.log("getSmartPlaylistName return unable to parse")
+            self.log("getSmartPlaylistName return unable to parse: {}".format(str(e)))
             return ""
 
         xml.close()
@@ -362,8 +366,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             plname = dom.getElementsByTagName("name")
             self.log("getSmartPlaylistName return " + plname[0].childNodes[0].nodeValue)
             return plname[0].childNodes[0].nodeValue
-        except:
-            self.playlisy("Unable to find element name")
+        except (IndexError, AttributeError) as e:
+            self.log("Unable to find element name: {}".format(str(e)))
 
         self.log("getSmartPlaylistName return")
 
