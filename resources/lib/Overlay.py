@@ -2423,6 +2423,13 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.currentChannel - 1
             ].playlistPosition
 
+        # CRITICAL FIX: Update the channel's lastAccessTime to current time
+        # This ensures that when we return to live, the time difference (timedif)
+        # only accounts for the time spent in preemption, not time since channel was last accessed
+        self.channels[self.currentChannel - 1].setAccessTime(time.time())
+        self.log("DEBUG: Updated channel {} lastAccessTime to {}".format(
+            self.currentChannel, time.time()))
+
         # Mark that we're in preemption mode
         self.isPreempting = True
 
@@ -2502,6 +2509,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
     def returnToLivePosition(self):
         """Return to current real-time position (existing behavior)"""
         self.log("returnToLivePosition")
+
+        # Debug: Check channel state before returning
+        ch = self.channels[self.preemptedChannel - 1]
+        self.log("DEBUG: Before return - Channel {} state:".format(self.preemptedChannel))
+        self.log("  lastAccessTime: {}".format(ch.lastAccessTime))
+        self.log("  showTimeOffset: {}".format(ch.showTimeOffset))
+        self.log("  playlistPosition: {}".format(ch.playlistPosition))
+        self.log("  current time: {}".format(time.time()))
+        self.log("  timedif will be: {}".format(time.time() - ch.lastAccessTime))
 
         # Clear preemption flag
         self.isPreempting = False
@@ -3012,6 +3028,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         curtime = time.time()
         timedif = curtime - self.channels[self.currentChannel - 1].lastAccessTime
 
+        # Debug logging
+        self.log("DEBUG setChannel: channel={}".format(channel))
+        self.log("  curtime: {}".format(curtime))
+        self.log("  lastAccessTime: {}".format(self.channels[self.currentChannel - 1].lastAccessTime))
+        self.log("  timedif: {}".format(timedif))
+        self.log("  showTimeOffset (before): {}".format(self.channels[self.currentChannel - 1].showTimeOffset))
+        self.log("  playlistPosition (before): {}".format(self.channels[self.currentChannel - 1].playlistPosition))
+        self.log("  isPaused: {}".format(self.channels[self.currentChannel - 1].isPaused))
+
         # Adjust show position if not paused
         if not self.channels[self.currentChannel - 1].isPaused:
             while (
@@ -3024,6 +3049,12 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 )
                 self.channels[self.currentChannel - 1].addShowPosition(1)
                 self.channels[self.currentChannel - 1].setShowTime(0)
+
+        # Debug logging after adjustment
+        self.log("DEBUG setChannel (after adjustment):")
+        self.log("  showTimeOffset: {}".format(self.channels[self.currentChannel - 1].showTimeOffset))
+        self.log("  playlistPosition: {}".format(self.channels[self.currentChannel - 1].playlistPosition))
+        self.log("  remaining timedif: {}".format(timedif))
 
         xbmc.sleep(self.channelDelay)
 
@@ -3054,6 +3085,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 + timedif
                 + int((time.time() - curtime))
             )
+            self.log("DEBUG: Seeking to time: {}".format(seektime))
             try:
                 self.Player.seekTime(seektime)
             except Exception as e:
