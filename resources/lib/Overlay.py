@@ -1501,7 +1501,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # Initialize Video Info Window
         self.myVideoInfo = VideoInfoWindow(
-            "script.paragontv.VideoInfo.xml", CWD, "default"
+            "DialogPlayerProcessInfo.xml", CWD, "default"
         )
 
         # Initialize library monitor for preemption
