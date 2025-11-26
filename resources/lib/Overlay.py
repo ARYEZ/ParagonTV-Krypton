@@ -64,6 +64,7 @@ from Migrate import Migrate
 from Playlist import Playlist
 from SidebarWindow import SidebarWindow
 from SpeedDialWindow import SpeedDialWindow
+from VideoInfoWindow import VideoInfoWindow
 
 try:
     from PIL import Image, ImageEnhance
@@ -1498,6 +1499,11 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         )
         self.mySpeedDial.overlayWindow = self
 
+        # Initialize Video Info Window
+        self.myVideoInfo = VideoInfoWindow(
+            "script.paragontv.VideoInfo.xml", CWD, "default"
+        )
+
         # Initialize library monitor for preemption
         self.libraryMonitor = LibraryMonitor(self)
 
@@ -2231,7 +2237,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             elif action == "settings":
                 xbmc.executebuiltin("ActivateWindow(videoosd)")
             elif action == "codecinfo":
-                xbmc.executebuiltin("ActivateWindow(playerprocessinfo)")
+                self.myVideoInfo.doModal()
             elif action == "blackout":
                 self.toggleBlackout()
             elif action == "lastchannel":
