@@ -2,7 +2,33 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
+"""
+NFO Renamer Television
+
+This script reads TV show NFO files and renames associated video files to the extended format:
+SSxEE - Episode Title - Show Title - Genre - Resolution - Audio Channels - Audio Codec - Holiday.ext
+
+It preserves the original NFO file content but renames both the NFO and video files.
+Genre and show title information are obtained from tvshow.nfo if not available in episode NFO.
+Holiday detection (Christmas/Thanksgiving/Halloween/None) is based on plot text analysis.
+
+IMPROVED:
+- Now skips files that are already in the correct format
+- Sanitizes filenames to remove invalid Windows characters
+- Handles colons and other special characters in filenames
+- Properly handles Unicode characters in filenames and content
+"""
+
+import argparse
+import io  # For proper UTF-8 encoding handling
+import logging
+import os
+import re
+import shutil
 import sys
+import xml.etree.ElementTree as ET
+
+import xbmcvfs  # Add this import
 
 # Python 2/3 compatibility for Unicode handling
 if sys.version_info[0] == 2:
@@ -19,32 +45,6 @@ try:
     IN_KODI = True
 except ImportError:
     IN_KODI = False
-
-"""
-NFO Renamer Television
-
-This script reads TV show NFO files and renames associated video files to the extended format:
-SSxEE - Episode Title - Show Title - Genre - Resolution - Audio Channels - Audio Codec - Holiday.ext
-
-It preserves the original NFO file content but renames both the NFO and video files.
-Genre and show title information are obtained from tvshow.nfo if not available in episode NFO.
-Holiday detection (Christmas/Thanksgiving/Halloween/None) is based on plot text analysis.
-
-IMPROVED: 
-- Now skips files that are already in the correct format
-- Sanitizes filenames to remove invalid Windows characters
-- Handles colons and other special characters in filenames
-- Scans for poster.jpg files and creates folder.jpg copies for Kodi compatibility
-"""
-
-import argparse
-import logging
-import os
-import re
-import shutil
-import xml.etree.ElementTree as ET
-
-import xbmcvfs
 
 # Configure logging - console only
 logging.basicConfig(
@@ -139,7 +139,12 @@ def sanitize_filename(filename):
 
     # Check if the filename is valid after sanitization
     if sanitized != filename:
-        logger.info("Sanitized filename: '{}' -> '{}'".format(filename, sanitized))
+        logger.info(
+            "Sanitized filename: '{}' -> '{}'".format(
+                filename.encode("utf-8", "replace"),
+                sanitized.encode("utf-8", "replace"),
+            )
+        )
 
     return sanitized
 
@@ -228,116 +233,6 @@ def detect_holiday(plot_text):
     return "None"
 
 
-def process_poster_to_folder(directory, dry_run=False):
-    """
-    Look for poster.jpg in the directory and copy it as folder.jpg if folder.jpg doesn't exist.
-    This ensures media folders have the proper artwork for Kodi.
-
-    Args:
-        directory: Directory to process
-        dry_run: If True, only log what would happen without copying
-
-    Returns:
-        Boolean indicating if a copy was made (or would be made in dry_run mode)
-    """
-    poster_path = os.path.join(directory, "poster.jpg")
-    folder_path = os.path.join(directory, "folder.jpg")
-
-    # Check if poster.jpg exists and folder.jpg doesn't
-    if xbmcvfs.exists(poster_path) and not xbmcvfs.exists(folder_path):
-        logger.info("Found poster.jpg in: {}".format(directory))
-
-        if dry_run:
-            logger.info(
-                "[DRY RUN] Would copy poster.jpg to folder.jpg in: {}".format(directory)
-            )
-            return True
-        else:
-            try:
-                # Copy poster.jpg to folder.jpg
-                success = xbmcvfs.copy(poster_path, folder_path)
-                if success:
-                    logger.info(
-                        "Successfully copied poster.jpg to folder.jpg in: {}".format(
-                            directory
-                        )
-                    )
-                    return True
-                else:
-                    logger.error(
-                        "Failed to copy poster.jpg to folder.jpg in: {}".format(
-                            directory
-                        )
-                    )
-                    return False
-            except Exception as e:
-                logger.error(
-                    "Error copying poster.jpg to folder.jpg in {}: {}".format(
-                        directory, e
-                    )
-                )
-                return False
-
-    return False
-
-
-def scan_for_posters(root_directory, dry_run=False, recursive=True):
-    """
-    Scan directory tree for poster.jpg files and create folder.jpg copies where needed.
-
-    Args:
-        root_directory: Starting directory for scan
-        dry_run: If True, only log what would happen
-        recursive: If True, scan subdirectories
-
-    Returns:
-        Dictionary with statistics
-    """
-    stats = {
-        "directories_scanned": 0,
-        "posters_found": 0,
-        "folders_created": 0,
-        "errors": 0,
-    }
-
-    logger.info("Starting poster scan in: {}".format(root_directory))
-
-    # Process the root directory first
-    stats["directories_scanned"] += 1
-    if process_poster_to_folder(root_directory, dry_run):
-        stats["posters_found"] += 1
-        stats["folders_created"] += 1
-
-    # If recursive, process subdirectories
-    if recursive:
-        try:
-            dirs, files = xbmcvfs.listdir(root_directory)
-
-            for dirname in dirs:
-                dir_path = os.path.join(root_directory, dirname)
-                stats["directories_scanned"] += 1
-
-                # Check this directory for poster.jpg
-                if process_poster_to_folder(dir_path, dry_run):
-                    stats["posters_found"] += 1
-                    stats["folders_created"] += 1
-
-                # Recursively scan subdirectories
-                if recursive:
-                    sub_stats = scan_for_posters(dir_path, dry_run, recursive)
-                    # Merge statistics
-                    stats["directories_scanned"] += sub_stats["directories_scanned"]
-                    stats["posters_found"] += sub_stats["posters_found"]
-                    stats["folders_created"] += sub_stats["folders_created"]
-                    stats["errors"] += sub_stats["errors"]
-
-        except Exception as e:
-            logger.error("Error scanning directory {}: {}".format(root_directory, e))
-            stats["errors"] += 1
-
-    return stats
-
-
 def parse_nfo_file(nfo_path):
     """
     Parse NFO file to extract TV show metadata
@@ -346,37 +241,17 @@ def parse_nfo_file(nfo_path):
     try:
         # Read the file content using xbmcvfs
         f = xbmcvfs.File(nfo_path, "r")
-        # Try readBytes first for more reliable NFS reading, fall back to read()
-        try:
-            content = f.readBytes()
-        except:
-            content = f.read()
+        content = f.read()
         f.close()
 
-        # Check if content is empty or None
-        if not content:
-            logger.error("Empty or unreadable file: {}".format(nfo_path))
-            return None
-
-        # Handle Unicode content - ensure we have bytes first for consistent handling
-        if isinstance(content, unicode):
-            # Already unicode, encode to bytes for consistent processing
-            content_bytes = content.encode("utf-8", "replace")
-        else:
-            content_bytes = content
-
-        # Decode bytes to unicode with error handling
-        try:
-            # First try strict UTF-8
-            content = content_bytes.decode("utf-8")
-        except UnicodeDecodeError:
-            # If that fails, use replace mode to handle truncated multi-byte sequences
-            content = content_bytes.decode("utf-8", "replace")
-
-        # Check if content is still empty after decoding
-        if not content or not content.strip():
-            logger.error("Empty content after decoding: {}".format(nfo_path))
-            return None
+        # Handle Unicode content
+        if not isinstance(content, unicode):
+            try:
+                # First try UTF-8
+                content = content.decode("utf-8")
+            except UnicodeDecodeError:
+                # If that fails, use replace mode
+                content = content.decode("utf-8", "replace")
 
         # Parse XML from string content
         root = ET.fromstring(content.encode("utf-8"))
@@ -512,37 +387,17 @@ def get_tvshow_metadata(episode_nfo_path):
     try:
         # Read the file content using xbmcvfs
         f = xbmcvfs.File(tvshow_nfo_path, "r")
-        # Try readBytes first for more reliable NFS reading, fall back to read()
-        try:
-            content = f.readBytes()
-        except:
-            content = f.read()
+        content = f.read()
         f.close()
 
-        # Check if content is empty or None
-        if not content:
-            logger.error("Empty or unreadable tvshow.nfo: {}".format(tvshow_nfo_path))
-            return {"genre": None, "showtitle": None}
-
-        # Handle Unicode content - ensure we have bytes first for consistent handling
-        if isinstance(content, unicode):
-            # Already unicode, encode to bytes for consistent processing
-            content_bytes = content.encode("utf-8", "replace")
-        else:
-            content_bytes = content
-
-        # Decode bytes to unicode with error handling
-        try:
-            # First try strict UTF-8
-            content = content_bytes.decode("utf-8")
-        except UnicodeDecodeError:
-            # If that fails, use replace mode to handle truncated multi-byte sequences
-            content = content_bytes.decode("utf-8", "replace")
-
-        # Check if content is still empty after decoding
-        if not content or not content.strip():
-            logger.error("Empty content after decoding tvshow.nfo: {}".format(tvshow_nfo_path))
-            return {"genre": None, "showtitle": None}
+        # Handle Unicode content
+        if not isinstance(content, unicode):
+            try:
+                # First try UTF-8
+                content = content.decode("utf-8")
+            except UnicodeDecodeError:
+                # If that fails, use replace mode
+                content = content.decode("utf-8", "replace")
 
         # Parse XML from string content
         root = ET.fromstring(content.encode("utf-8"))
@@ -657,29 +512,9 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
         directory: The directory to process
         dry_run: If True, don't actually rename files, just show what would happen
         recursive: If True, process subdirectories recursively
-        progress_callback: Optional callback function for progress updates
-        depth: Current recursion depth
-        progress_state: Shared dict for tracking progress across recursive calls
     """
     print("Starting rename_files with directory: {}".format(directory))
     logger.info("Starting rename_files with directory: {}".format(directory))
-
-    # Only scan for posters at the root level (depth 0) to avoid exponential behavior
-    if depth == 0:
-        print("\nScanning for poster.jpg files to copy as folder.jpg...")
-        poster_stats = scan_for_posters(directory, dry_run, recursive)
-        print(
-            "Poster scan complete: {} directories scanned, {} posters found, {} folders created".format(
-                poster_stats["directories_scanned"],
-                poster_stats["posters_found"],
-                poster_stats["folders_created"],
-            )
-        )
-        if poster_stats["errors"] > 0:
-            print(
-                "  Errors encountered during poster scan: {}".format(poster_stats["errors"])
-            )
-        print("")  # Blank line for readability
 
     # Check if directory exists using xbmcvfs
     if not xbmcvfs.exists(directory):
@@ -888,6 +723,7 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
                 )
             )
 
+            # When renaming files, use xbmcvfs
             if not dry_run:
                 try:
                     # Rename video file
@@ -904,26 +740,6 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
                 except Exception as e:
                     logger.error("Error renaming files: {}".format(e))
                     stats["errors"] += 1
-
-    # Log summary for this directory
-    logger.info(
-        "Directory {} - Processed: {}, Renamed: {}, Errors: {}, Skipped: {}, "
-        "Already Extended: {}, Genre from tvshow.nfo: {}, "
-        "Show title from tvshow.nfo: {}, Holiday episodes - Christmas: {}, "
-        "Thanksgiving: {}, Halloween: {}".format(
-            directory,
-            stats["processed"],
-            stats["renamed"],
-            stats["errors"],
-            stats["skipped"],
-            stats["already_extended"],
-            stats["genre_from_tvshow"],
-            stats["showtitle_from_tvshow"],
-            stats["christmas_episodes"],
-            stats["thanksgiving_episodes"],
-            stats["halloween_episodes"],
-        )
-    )
 
     return stats
 
@@ -958,11 +774,12 @@ def run_renamer(directory, dry_run=False, recursive=False, progress_callback=Non
             print("  Christmas: {}".format(stats["christmas_episodes"]))
             print("  Thanksgiving: {}".format(stats["thanksgiving_episodes"]))
             print("  Halloween: {}".format(stats["halloween_episodes"]))
-            return 0
     except Exception as e:
         logger.error("An error occurred: {}".format(e))
         print("\nOperation failed with error: {}".format(e))
         return 1
+
+    return 0
 
 
 def main():
@@ -999,10 +816,8 @@ def main():
         progress = xbmcgui.DialogProgress()
         progress.create("NFO Renamer - TV Shows", "Scanning files...")
 
-        # Create progress callback that updates the dialog and checks for cancellation
+        # Create progress callback that updates the dialog
         def progress_callback(percent, message):
-            if progress.iscanceled():
-                raise Exception("Operation cancelled by user")
             progress.update(percent, message)
 
         try:
