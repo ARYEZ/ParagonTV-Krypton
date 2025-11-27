@@ -107,6 +107,8 @@ INVALID_FILENAME_CHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*"]
 
 # Cache for tvshow.nfo metadata to avoid re-parsing the same file multiple times
 tvshow_metadata_cache = {}
+# Cache for tvshow.nfo file locations to avoid repeated xbmcvfs.exists() calls
+tvshow_nfo_path_cache = {}
 
 # Pattern to detect if a file is already in the extended format
 # Format: SSxEE - Episode Title - Show Title - Genre - Resolution - Audio Channels - Audio Codec - Holiday.ext
@@ -368,35 +370,51 @@ def get_tvshow_metadata(episode_nfo_path):
     # Get parent directory
     parent_dir = os.path.dirname(episode_nfo_path)
 
-    # Check cache first
+    # Check metadata cache first (by parent_dir)
     if parent_dir in tvshow_metadata_cache:
         logger.debug("Using cached tvshow metadata for {}".format(parent_dir))
         return tvshow_metadata_cache[parent_dir]
 
-    # Path to tvshow.nfo
-    tvshow_nfo_path = os.path.join(parent_dir, "tvshow.nfo")
+    # Determine the show directory (parent of season folder if in a season folder)
+    current_folder = os.path.basename(parent_dir)
+    if re.match(r"[Ss]eason\s*\d+", current_folder, re.IGNORECASE):
+        show_dir = os.path.dirname(parent_dir)
+    else:
+        show_dir = parent_dir
 
-    # If we're already in a season subfolder, go up one level
-    logger.debug("DEBUG: Checking if tvshow.nfo exists at: {}".format(tvshow_nfo_path))
-    start_time = time.time()
-    exists_check = xbmcvfs.exists(tvshow_nfo_path)
-    logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check))
-    if not exists_check:
-        # Check if current folder name matches season pattern
-        current_folder = os.path.basename(parent_dir)
-        if re.match(r"[Ss]eason\s*\d+", current_folder, re.IGNORECASE):
-            # Go up one level
-            show_dir = os.path.dirname(parent_dir)
-            tvshow_nfo_path = os.path.join(show_dir, "tvshow.nfo")
+    # Check path cache to see if we already know where tvshow.nfo is for this show
+    if show_dir in tvshow_nfo_path_cache:
+        tvshow_nfo_path = tvshow_nfo_path_cache[show_dir]
+        logger.debug("Using cached tvshow.nfo path: {}".format(tvshow_nfo_path))
+        if tvshow_nfo_path is None:
+            # We previously determined tvshow.nfo doesn't exist
+            return {"genre": None, "showtitle": None}
+    else:
+        # Need to find tvshow.nfo - check show directory first (most common)
+        tvshow_nfo_path = os.path.join(show_dir, "tvshow.nfo")
+        logger.debug("DEBUG: Checking if tvshow.nfo exists at: {}".format(tvshow_nfo_path))
+        start_time = time.time()
+        exists_check = xbmcvfs.exists(tvshow_nfo_path)
+        logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check))
 
-    # Check if tvshow.nfo exists
-    logger.debug("DEBUG: Final check for tvshow.nfo at: {}".format(tvshow_nfo_path))
-    start_time = time.time()
-    exists_check2 = xbmcvfs.exists(tvshow_nfo_path)
-    logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check2))
-    if not exists_check2:
-        logger.warning("tvshow.nfo not found for {}".format(episode_nfo_path))
-        return {"genre": None, "showtitle": None}
+        if not exists_check:
+            # Also check parent_dir if different from show_dir
+            if parent_dir != show_dir:
+                tvshow_nfo_path = os.path.join(parent_dir, "tvshow.nfo")
+                logger.debug("DEBUG: Checking parent dir for tvshow.nfo: {}".format(tvshow_nfo_path))
+                start_time = time.time()
+                exists_check = xbmcvfs.exists(tvshow_nfo_path)
+                logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check))
+
+            if not exists_check:
+                # tvshow.nfo not found - cache this result to avoid future lookups
+                tvshow_nfo_path_cache[show_dir] = None
+                logger.warning("tvshow.nfo not found for {}".format(episode_nfo_path))
+                return {"genre": None, "showtitle": None}
+
+        # Cache the found path for future lookups
+        tvshow_nfo_path_cache[show_dir] = tvshow_nfo_path
+        logger.debug("Cached tvshow.nfo path for {}: {}".format(show_dir, tvshow_nfo_path))
 
     # Initialize metadata with defaults
     tvshow_metadata = {"genre": None, "showtitle": None}
@@ -615,6 +633,18 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
                     if key in sub_stats:
                         stats[key] += sub_stats[key]
 
+    # Build a lookup dictionary of files in this directory to avoid repeated NFS calls
+    # This is a CRITICAL optimization - instead of calling xbmcvfs.exists() for each
+    # video extension (6 calls per NFO), we use the already-fetched file list
+    file_lookup = {}
+    for f in files:
+        base = os.path.splitext(f)[0].lower()
+        ext = os.path.splitext(f)[1].lower()
+        if base not in file_lookup:
+            file_lookup[base] = {}
+        file_lookup[base][ext] = f  # Store original filename with case preserved
+    logger.debug("DEBUG: Built file lookup with {} unique base names".format(len(file_lookup)))
+
     # Process files in the current directory
     for filename in files:
         file_path = os.path.join(directory, filename)
@@ -640,27 +670,21 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
 
             # Get base name without extension
             base_name = os.path.splitext(filename)[0]
+            base_name_lower = base_name.lower()
             logger.debug("DEBUG: Looking for video file matching: {}".format(base_name))
 
-            # Look for associated video file with matching base name
+            # Look for associated video file using the pre-built lookup (NO NFS calls!)
             video_file = None
             video_ext = None
 
-            for ext in VIDEO_EXTENSIONS:
-                potential_video = base_name + ext
-                potential_path = os.path.join(directory, potential_video)
-                logger.debug("DEBUG: Checking for video: {}".format(potential_path))
-                start_time = time.time()
-                if xbmcvfs.exists(potential_path):
-                    elapsed = time.time() - start_time
-                    logger.debug("DEBUG: xbmcvfs.exists() found video in {:.2f}s".format(elapsed))
-                    video_file = potential_video
-                    video_ext = ext
-                    break
-                else:
-                    elapsed = time.time() - start_time
-                    if elapsed > 1.0:
-                        logger.warning("DEBUG: SLOW xbmcvfs.exists() took {:.2f}s for {}".format(elapsed, potential_path))
+            if base_name_lower in file_lookup:
+                for ext in VIDEO_EXTENSIONS:
+                    ext_lower = ext.lower()
+                    if ext_lower in file_lookup[base_name_lower]:
+                        video_file = file_lookup[base_name_lower][ext_lower]
+                        video_ext = ext
+                        logger.debug("DEBUG: Found video file in lookup: {}".format(video_file))
+                        break
 
             if not video_file:
                 logger.warning(
@@ -799,6 +823,12 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
 
 def run_renamer(directory, dry_run=False, recursive=False, progress_callback=None):
     """Run the renamer with specified parameters"""
+    # Clear caches at the start of each run to ensure fresh data
+    global tvshow_metadata_cache, tvshow_nfo_path_cache
+    tvshow_metadata_cache = {}
+    tvshow_nfo_path_cache = {}
+    logger.info("Cleared metadata caches for fresh run")
+
     print("nfo renamer television")
     print("Processing directory: {}".format(directory))
     print("Recursive mode: {}".format("Yes" if recursive else "No"))
