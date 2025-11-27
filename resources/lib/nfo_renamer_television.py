@@ -116,10 +116,15 @@ EXTENDED_FORMAT_PATTERN = re.compile(
 def sanitize_filename(filename):
     """
     Remove or replace characters that are invalid in Windows filenames
+    Properly handles Unicode characters
     """
-    # Ensure filename is unicode (Python 2/3 compatible)
-    if isinstance(filename, bytes):
-        filename = filename.decode("utf-8")
+    # Ensure we're working with Unicode
+    if not isinstance(filename, unicode):
+        try:
+            filename = filename.decode("utf-8")
+        except UnicodeDecodeError:
+            # If UTF-8 decoding fails, try with error replacement
+            filename = filename.decode("utf-8", "replace")
 
     # Replace colons with a safe alternative
     sanitized = filename.replace(":", ".")
@@ -145,6 +150,14 @@ def is_already_extended_format(filename):
     Check if the filename is already in the extended format
     Returns True if it matches the pattern, False otherwise
     """
+    # Ensure we're working with Unicode
+    if not isinstance(filename, unicode):
+        try:
+            filename = filename.decode("utf-8")
+        except UnicodeDecodeError:
+            # If UTF-8 decoding fails, try with error replacement
+            filename = filename.decode("utf-8", "replace")
+
     # Strip extension
     base_name = os.path.splitext(filename)[0]
 
@@ -190,6 +203,14 @@ def detect_holiday(plot_text):
     """
     if not plot_text:
         return "None"
+
+    # Ensure we're working with Unicode
+    if not isinstance(plot_text, unicode):
+        try:
+            plot_text = plot_text.decode("utf-8")
+        except UnicodeDecodeError:
+            # If UTF-8 decoding fails, try with error replacement
+            plot_text = plot_text.decode("utf-8", "replace")
 
     # Convert to lowercase for case-insensitive matching
     plot_lower = plot_text.lower()
@@ -328,12 +349,17 @@ def parse_nfo_file(nfo_path):
         content = f.read()
         f.close()
 
-        # Decode content if it's bytes (Python 2/3 compatible)
-        if isinstance(content, bytes):
-            content = content.decode("utf-8")
+        # Handle Unicode content
+        if not isinstance(content, unicode):
+            try:
+                # First try UTF-8
+                content = content.decode("utf-8")
+            except UnicodeDecodeError:
+                # If that fails, use replace mode
+                content = content.decode("utf-8", "replace")
 
         # Parse XML from string content
-        root = ET.fromstring(content.encode("utf-8") if isinstance(content, str) else content)
+        root = ET.fromstring(content.encode("utf-8"))
 
         # Initialize metadata with defaults
         metadata = {
@@ -343,8 +369,8 @@ def parse_nfo_file(nfo_path):
             "showtitle": None,
             "genre": None,
             "resolution": None,
-            "audio_channels": None,
-            "audio_codec": None,
+            "audio_channels": "2",  # Default to '2' for audio channels
+            "audio_codec": "AAC",  # Default to 'AAC' for audio codec
             "holiday": "None",  # Default to 'None' for holiday
         }
 
@@ -469,12 +495,17 @@ def get_tvshow_metadata(episode_nfo_path):
         content = f.read()
         f.close()
 
-        # Decode content if it's bytes (Python 2/3 compatible)
-        if isinstance(content, bytes):
-            content = content.decode("utf-8")
+        # Handle Unicode content
+        if not isinstance(content, unicode):
+            try:
+                # First try UTF-8
+                content = content.decode("utf-8")
+            except UnicodeDecodeError:
+                # If that fails, use replace mode
+                content = content.decode("utf-8", "replace")
 
         # Parse XML from string content
-        root = ET.fromstring(content.encode("utf-8") if isinstance(content, str) else content)
+        root = ET.fromstring(content.encode("utf-8"))
 
         # Extract genre
         genre_elem = root.find(".//genre")
@@ -522,6 +553,14 @@ def get_tvshow_metadata(episode_nfo_path):
 
 def get_resolution_from_filename(filename):
     """Extract resolution from filename if present"""
+    # Ensure we're working with Unicode
+    if not isinstance(filename, unicode):
+        try:
+            filename = filename.decode("utf-8")
+        except UnicodeDecodeError:
+            # If UTF-8 decoding fails, try with error replacement
+            filename = filename.decode("utf-8", "replace")
+
     for key in RESOLUTION_MAP:
         if key in filename:
             return RESOLUTION_MAP[key]
@@ -540,9 +579,17 @@ def create_extended_filename(metadata, original_ext):
     showtitle = metadata.get("showtitle", "Unknown Show")
     genre = metadata.get("genre", "Unknown")
     resolution = metadata.get("resolution", "1080")
-    audio_channels = metadata.get("audio_channels", "2")  # Default to stereo
-    audio_codec = metadata.get("audio_codec", "AAC")  # Default to AAC
-    holiday = metadata.get("holiday", "None")  # Default to 'None'
+
+    # Explicitly handle None values for audio fields
+    audio_channels = "2"  # Default to stereo
+    if metadata.get("audio_channels") not in (None, "None"):
+        audio_channels = metadata.get("audio_channels")
+
+    audio_codec = "AAC"  # Default to AAC
+    if metadata.get("audio_codec") not in (None, "None"):
+        audio_codec = metadata.get("audio_codec")
+
+    holiday = metadata.get("holiday", "None")
 
     # Format the new filename
     filename = "{:02d}x{:02d} - {} - {} - {} - {} - {} - {} - {}{}".format(
@@ -763,7 +810,7 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
                 metadata["resolution"] = get_resolution_from_filename(base_name)
 
             # Try to extract audio information from filename if not in NFO
-            if not metadata["audio_channels"] or not metadata["audio_codec"]:
+            if not metadata["audio_channels"] or metadata["audio_channels"] == "None":
                 # Look for patterns like "5.1" or "7.1" for channels
                 channels_match = re.search(
                     r"(\d+\.\d+)ch|(\d+)ch|(\d+\.\d+)|(\d+)channels", base_name.lower()
@@ -775,6 +822,7 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
                             metadata["audio_channels"] = group
                             break
 
+            if not metadata["audio_codec"] or metadata["audio_codec"] == "None":
                 # Look for audio codec indicators
                 for codec, standardized in AUDIO_CODEC_MAP.items():
                     if codec.lower() in base_name.lower():
