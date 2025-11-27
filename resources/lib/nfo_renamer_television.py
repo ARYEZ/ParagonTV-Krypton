@@ -346,17 +346,37 @@ def parse_nfo_file(nfo_path):
     try:
         # Read the file content using xbmcvfs
         f = xbmcvfs.File(nfo_path, "r")
-        content = f.read()
+        # Try readBytes first for more reliable NFS reading, fall back to read()
+        try:
+            content = f.readBytes()
+        except:
+            content = f.read()
         f.close()
 
-        # Handle Unicode content
-        if not isinstance(content, unicode):
-            try:
-                # First try UTF-8
-                content = content.decode("utf-8")
-            except UnicodeDecodeError:
-                # If that fails, use replace mode
-                content = content.decode("utf-8", "replace")
+        # Check if content is empty or None
+        if not content:
+            logger.error("Empty or unreadable file: {}".format(nfo_path))
+            return None
+
+        # Handle Unicode content - ensure we have bytes first for consistent handling
+        if isinstance(content, unicode):
+            # Already unicode, encode to bytes for consistent processing
+            content_bytes = content.encode("utf-8", "replace")
+        else:
+            content_bytes = content
+
+        # Decode bytes to unicode with error handling
+        try:
+            # First try strict UTF-8
+            content = content_bytes.decode("utf-8")
+        except UnicodeDecodeError:
+            # If that fails, use replace mode to handle truncated multi-byte sequences
+            content = content_bytes.decode("utf-8", "replace")
+
+        # Check if content is still empty after decoding
+        if not content or not content.strip():
+            logger.error("Empty content after decoding: {}".format(nfo_path))
+            return None
 
         # Parse XML from string content
         root = ET.fromstring(content.encode("utf-8"))
@@ -492,17 +512,37 @@ def get_tvshow_metadata(episode_nfo_path):
     try:
         # Read the file content using xbmcvfs
         f = xbmcvfs.File(tvshow_nfo_path, "r")
-        content = f.read()
+        # Try readBytes first for more reliable NFS reading, fall back to read()
+        try:
+            content = f.readBytes()
+        except:
+            content = f.read()
         f.close()
 
-        # Handle Unicode content
-        if not isinstance(content, unicode):
-            try:
-                # First try UTF-8
-                content = content.decode("utf-8")
-            except UnicodeDecodeError:
-                # If that fails, use replace mode
-                content = content.decode("utf-8", "replace")
+        # Check if content is empty or None
+        if not content:
+            logger.error("Empty or unreadable tvshow.nfo: {}".format(tvshow_nfo_path))
+            return {"genre": None, "showtitle": None}
+
+        # Handle Unicode content - ensure we have bytes first for consistent handling
+        if isinstance(content, unicode):
+            # Already unicode, encode to bytes for consistent processing
+            content_bytes = content.encode("utf-8", "replace")
+        else:
+            content_bytes = content
+
+        # Decode bytes to unicode with error handling
+        try:
+            # First try strict UTF-8
+            content = content_bytes.decode("utf-8")
+        except UnicodeDecodeError:
+            # If that fails, use replace mode to handle truncated multi-byte sequences
+            content = content_bytes.decode("utf-8", "replace")
+
+        # Check if content is still empty after decoding
+        if not content or not content.strip():
+            logger.error("Empty content after decoding tvshow.nfo: {}".format(tvshow_nfo_path))
+            return {"genre": None, "showtitle": None}
 
         # Parse XML from string content
         root = ET.fromstring(content.encode("utf-8"))
