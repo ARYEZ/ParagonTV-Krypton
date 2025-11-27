@@ -117,8 +117,8 @@ def sanitize_filename(filename):
     """
     Remove or replace characters that are invalid in Windows filenames
     """
-    # Ensure filename is unicode
-    if isinstance(filename, str):
+    # Ensure filename is unicode (Python 2/3 compatible)
+    if isinstance(filename, bytes):
         filename = filename.decode("utf-8")
 
     # Replace colons with a safe alternative
@@ -328,12 +328,12 @@ def parse_nfo_file(nfo_path):
         content = f.read()
         f.close()
 
-        # Decode content if it's a string (not unicode)
-        if isinstance(content, str):
+        # Decode content if it's bytes (Python 2/3 compatible)
+        if isinstance(content, bytes):
             content = content.decode("utf-8")
 
         # Parse XML from string content
-        root = ET.fromstring(content.encode("utf-8"))
+        root = ET.fromstring(content.encode("utf-8") if isinstance(content, str) else content)
 
         # Initialize metadata with defaults
         metadata = {
@@ -469,12 +469,12 @@ def get_tvshow_metadata(episode_nfo_path):
         content = f.read()
         f.close()
 
-        # Decode content if it's a string (not unicode)
-        if isinstance(content, str):
+        # Decode content if it's bytes (Python 2/3 compatible)
+        if isinstance(content, bytes):
             content = content.decode("utf-8")
 
         # Parse XML from string content
-        root = ET.fromstring(content.encode("utf-8"))
+        root = ET.fromstring(content.encode("utf-8") if isinstance(content, str) else content)
 
         # Extract genre
         genre_elem = root.find(".//genre")

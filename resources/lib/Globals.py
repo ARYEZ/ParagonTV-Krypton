@@ -53,7 +53,11 @@ ADDON = xbmcaddon.Addon(id="script.paragontv")
 ADDON_ID = ADDON.getAddonInfo("id")
 ADDON_NAME = ADDON.getAddonInfo("name")
 LANGUAGE = ADDON.getLocalizedString
-CWD = ADDON.getAddonInfo("path").decode("utf-8")
+
+# Python 2/3 compatible path handling
+_addon_path = ADDON.getAddonInfo("path")
+CWD = _addon_path.decode("utf-8") if isinstance(_addon_path, bytes) else _addon_path
+
 VERSION = ADDON.getAddonInfo("version")
 
 TIMEOUT = 15 * 1000
@@ -69,7 +73,9 @@ MODE_RANDOM = 8
 MODE_REALTIME = 16
 MODE_STARTMODES = MODE_RANDOM | MODE_REALTIME | MODE_RESUME
 
-SETTINGS_LOC = ADDON.getAddonInfo("profile").decode("utf-8")
+# Python 2/3 compatible path handling
+_profile_path = ADDON.getAddonInfo("profile")
+SETTINGS_LOC = _profile_path.decode("utf-8") if isinstance(_profile_path, bytes) else _profile_path
 CHANNEL_SHARING = False
 LOCK_LOC = xbmc.translatePath(os.path.join(SETTINGS_LOC, "cache" + "/"))
 
