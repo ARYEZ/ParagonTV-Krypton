@@ -2417,9 +2417,15 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         # Save detailed position info for multiple return options
         if self.Player.isPlaying():
-            self.preemptedPosition = self.Player.getTime()
-            self.preemptedPlaylistPos = xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
-            self.preemptedTotalTime = self.Player.getTotalTime()
+            try:
+                self.preemptedPosition = self.Player.getTime()
+                self.preemptedPlaylistPos = xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
+                self.preemptedTotalTime = self.Player.getTotalTime()
+            except RuntimeError:
+                # Playback stopped between isPlaying check and getTime call
+                self.preemptedPosition = 0
+                self.preemptedPlaylistPos = 0
+                self.preemptedTotalTime = 0
 
             # Also save channel state
             self.preemptedChannelTime = self.channels[
@@ -2988,13 +2994,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 if self.channels[self.currentChannel - 1].mode & MODE_ALWAYSPAUSE > 0:
                     self.channels[self.currentChannel - 1].setPaused(True)
 
-                self.channels[self.currentChannel - 1].setShowTime(
-                    self.Player.getTime()
-                )
-                self.channels[self.currentChannel - 1].setShowPosition(
-                    xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
-                )
-                self.channels[self.currentChannel - 1].setAccessTime(time.time())
+                try:
+                    self.channels[self.currentChannel - 1].setShowTime(
+                        self.Player.getTime()
+                    )
+                    self.channels[self.currentChannel - 1].setShowPosition(
+                        xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
+                    )
+                    self.channels[self.currentChannel - 1].setAccessTime(time.time())
+                except RuntimeError:
+                    # Playback stopped between isPlaying check and getTime call
+                    pass
 
         self.currentChannel = channel
 
@@ -7327,12 +7337,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                         self.notificationShowedNotif = True
 
                 # Check if near end of show
-                timedif = (
-                    self.channels[self.currentChannel - 1].getItemDuration(
-                        self.notificationLastShow
+                try:
+                    timedif = (
+                        self.channels[self.currentChannel - 1].getItemDuration(
+                            self.notificationLastShow
+                        )
+                        - self.Player.getTime()
                     )
-                    - self.Player.getTime()
-                )
+                except RuntimeError:
+                    # Playback stopped between isPlaying check and getTime call
+                    self.startNotificationTimer()
+                    return
 
                 if (
                     self.notificationShowedNotif == False
@@ -7369,8 +7384,12 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.playerTimer = threading.Timer(2.0, self.playerTimerAction)
 
         if self.Player.isPlaying():
-            self.lastPlayTime = int(self.Player.getTime())
-            self.lastPlaylistPosition = xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
+            try:
+                self.lastPlayTime = int(self.Player.getTime())
+                self.lastPlaylistPosition = xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
+            except RuntimeError:
+                # Playback stopped between isPlaying check and getTime call
+                pass
             self.notPlayingCount = 0
 
             # Monitor playback speed to prevent fast forward (live TV mode)
