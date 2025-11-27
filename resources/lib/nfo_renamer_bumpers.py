@@ -46,13 +46,16 @@ try:
 except ImportError:
     IN_KODI = False
 
-# Configure logging - console only
+# Configure logging - console only with DEBUG level for troubleshooting
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
+
+# Import time for debugging timing
+import time
 
 # Video file extensions to process
 VIDEO_EXTENSIONS = [".mkv", ".mp4", ".avi", ".m4v", ".ts", ".mov"]
@@ -240,9 +243,16 @@ def parse_nfo_file(nfo_path):
     """
     try:
         # Read the file content using xbmcvfs
+        logger.debug("DEBUG: Opening NFO file: {}".format(nfo_path))
+        start_time = time.time()
         f = xbmcvfs.File(nfo_path, "r")
+        logger.debug("DEBUG: File opened in {:.2f}s, now reading...".format(time.time() - start_time))
+        start_time = time.time()
         content = f.read()
+        logger.debug("DEBUG: File read in {:.2f}s ({} bytes), now closing...".format(time.time() - start_time, len(content) if content else 0))
+        start_time = time.time()
         f.close()
+        logger.debug("DEBUG: File closed in {:.2f}s".format(time.time() - start_time))
 
         # Handle Unicode content
         if not isinstance(content, unicode):
@@ -367,7 +377,11 @@ def get_tvshow_metadata(episode_nfo_path):
     tvshow_nfo_path = os.path.join(parent_dir, "tvshow.nfo")
 
     # If we're already in a season subfolder, go up one level
-    if not xbmcvfs.exists(tvshow_nfo_path):
+    logger.debug("DEBUG: Checking if tvshow.nfo exists at: {}".format(tvshow_nfo_path))
+    start_time = time.time()
+    exists_check = xbmcvfs.exists(tvshow_nfo_path)
+    logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check))
+    if not exists_check:
         # Check if current folder name matches season pattern
         current_folder = os.path.basename(parent_dir)
         if re.match(r"[Ss]eason\s*\d+", current_folder, re.IGNORECASE):
@@ -376,7 +390,11 @@ def get_tvshow_metadata(episode_nfo_path):
             tvshow_nfo_path = os.path.join(show_dir, "tvshow.nfo")
 
     # Check if tvshow.nfo exists
-    if not xbmcvfs.exists(tvshow_nfo_path):
+    logger.debug("DEBUG: Final check for tvshow.nfo at: {}".format(tvshow_nfo_path))
+    start_time = time.time()
+    exists_check2 = xbmcvfs.exists(tvshow_nfo_path)
+    logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check2))
+    if not exists_check2:
         logger.warning("tvshow.nfo not found for {}".format(episode_nfo_path))
         return {"genre": None, "showtitle": None}
 
@@ -386,9 +404,16 @@ def get_tvshow_metadata(episode_nfo_path):
     # Parse tvshow.nfo
     try:
         # Read the file content using xbmcvfs
+        logger.debug("DEBUG: Reading tvshow.nfo: {}".format(tvshow_nfo_path))
+        start_time = time.time()
         f = xbmcvfs.File(tvshow_nfo_path, "r")
+        logger.debug("DEBUG: tvshow.nfo opened in {:.2f}s".format(time.time() - start_time))
+        start_time = time.time()
         content = f.read()
+        logger.debug("DEBUG: tvshow.nfo read in {:.2f}s ({} bytes)".format(time.time() - start_time, len(content) if content else 0))
+        start_time = time.time()
         f.close()
+        logger.debug("DEBUG: tvshow.nfo closed in {:.2f}s".format(time.time() - start_time))
 
         # Handle Unicode content
         if not isinstance(content, unicode):
@@ -524,10 +549,15 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
 
     # List directory contents using xbmcvfs
     try:
+        logger.debug("DEBUG: Listing directory: {}".format(directory))
+        start_time = time.time()
         dirs, files = xbmcvfs.listdir(directory)
+        elapsed = time.time() - start_time
         all_items = dirs + files
-        logger.info("Directory contents: {} files/folders found".format(len(all_items)))
-        print("Directory contents: {} files/folders found".format(len(all_items)))
+        logger.info("Directory contents: {} files/folders found in {:.2f}s".format(len(all_items), elapsed))
+        print("Directory contents: {} files/folders found in {:.2f}s".format(len(all_items), elapsed))
+        if elapsed > 5.0:
+            logger.warning("DEBUG: SLOW directory listing took {:.2f}s for {}".format(elapsed, directory))
     except Exception as e:
         logger.error("Failed to list directory contents: {}".format(e))
         print("ERROR: Failed to list directory contents: {}".format(e))
@@ -551,20 +581,29 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
     if depth == 0 and progress_callback and progress_state is None:
         progress_state = {"total_nfos": 0, "current_nfo": 0}
         # Count total NFO files recursively
-        def count_nfos(dir_path):
+        logger.debug("DEBUG: Starting NFO counting phase...")
+        count_start = time.time()
+        def count_nfos(dir_path, depth_level=0):
             count = 0
             try:
+                logger.debug("DEBUG: Counting NFOs in: {} (depth {})".format(dir_path, depth_level))
+                start_time = time.time()
                 subdirs, subfiles = xbmcvfs.listdir(dir_path)
+                elapsed = time.time() - start_time
+                if elapsed > 2.0:
+                    logger.warning("DEBUG: SLOW listdir in count_nfos took {:.2f}s for {}".format(elapsed, dir_path))
                 for f in subfiles:
                     if f.lower().endswith(".nfo") and f.lower() != "tvshow.nfo":
                         count += 1
                 if recursive:
                     for d in subdirs:
-                        count += count_nfos(os.path.join(dir_path, d))
-            except:
-                pass
+                        count += count_nfos(os.path.join(dir_path, d), depth_level + 1)
+            except Exception as e:
+                logger.debug("DEBUG: Error counting NFOs in {}: {}".format(dir_path, e))
             return count
         progress_state["total_nfos"] = count_nfos(directory)
+        logger.info("DEBUG: NFO counting complete. Found {} NFOs in {:.2f}s".format(
+            progress_state["total_nfos"], time.time() - count_start))
 
     # Process directories first if recursive
     if recursive:
@@ -590,12 +629,18 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
                 percent = int((progress_state["current_nfo"] * 100) / progress_state["total_nfos"]) if progress_state["total_nfos"] > 0 else 0
                 # Get shortened filename for display
                 display_name = filename if len(filename) <= 40 else filename[:37] + "..."
-                progress_callback(percent, "Processing: {} ({}/{})".format(
-                    display_name, progress_state["current_nfo"], progress_state["total_nfos"]
-                ))
+                logger.debug("DEBUG: Progress {}% - Processing NFO #{}: {}".format(
+                    percent, progress_state["current_nfo"], filename))
+                try:
+                    progress_callback(percent, "Processing: {} ({}/{})".format(
+                        display_name, progress_state["current_nfo"], progress_state["total_nfos"]
+                    ))
+                except Exception as e:
+                    logger.error("DEBUG: Progress callback failed: {}".format(e))
 
             # Get base name without extension
             base_name = os.path.splitext(filename)[0]
+            logger.debug("DEBUG: Looking for video file matching: {}".format(base_name))
 
             # Look for associated video file with matching base name
             video_file = None
@@ -604,10 +649,18 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
             for ext in VIDEO_EXTENSIONS:
                 potential_video = base_name + ext
                 potential_path = os.path.join(directory, potential_video)
+                logger.debug("DEBUG: Checking for video: {}".format(potential_path))
+                start_time = time.time()
                 if xbmcvfs.exists(potential_path):
+                    elapsed = time.time() - start_time
+                    logger.debug("DEBUG: xbmcvfs.exists() found video in {:.2f}s".format(elapsed))
                     video_file = potential_video
                     video_ext = ext
                     break
+                else:
+                    elapsed = time.time() - start_time
+                    if elapsed > 1.0:
+                        logger.warning("DEBUG: SLOW xbmcvfs.exists() took {:.2f}s for {}".format(elapsed, potential_path))
 
             if not video_file:
                 logger.warning(
