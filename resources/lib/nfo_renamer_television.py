@@ -664,21 +664,22 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
     print("Starting rename_files with directory: {}".format(directory))
     logger.info("Starting rename_files with directory: {}".format(directory))
 
-    # First scan for poster.jpg files and create folder.jpg copies
-    print("\nScanning for poster.jpg files to copy as folder.jpg...")
-    poster_stats = scan_for_posters(directory, dry_run, recursive)
-    print(
-        "Poster scan complete: {} directories scanned, {} posters found, {} folders created".format(
-            poster_stats["directories_scanned"],
-            poster_stats["posters_found"],
-            poster_stats["folders_created"],
-        )
-    )
-    if poster_stats["errors"] > 0:
+    # Only scan for posters at the root level (depth 0) to avoid exponential behavior
+    if depth == 0:
+        print("\nScanning for poster.jpg files to copy as folder.jpg...")
+        poster_stats = scan_for_posters(directory, dry_run, recursive)
         print(
-            "  Errors encountered during poster scan: {}".format(poster_stats["errors"])
+            "Poster scan complete: {} directories scanned, {} posters found, {} folders created".format(
+                poster_stats["directories_scanned"],
+                poster_stats["posters_found"],
+                poster_stats["folders_created"],
+            )
         )
-    print("")  # Blank line for readability
+        if poster_stats["errors"] > 0:
+            print(
+                "  Errors encountered during poster scan: {}".format(poster_stats["errors"])
+            )
+        print("")  # Blank line for readability
 
     # Check if directory exists using xbmcvfs
     if not xbmcvfs.exists(directory):
@@ -998,8 +999,10 @@ def main():
         progress = xbmcgui.DialogProgress()
         progress.create("NFO Renamer - TV Shows", "Scanning files...")
 
-        # Create progress callback that updates the dialog
+        # Create progress callback that updates the dialog and checks for cancellation
         def progress_callback(percent, message):
+            if progress.iscanceled():
+                raise Exception("Operation cancelled by user")
             progress.update(percent, message)
 
         try:
