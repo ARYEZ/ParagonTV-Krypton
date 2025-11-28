@@ -17,7 +17,7 @@ ADDON = xbmcaddon.Addon(ADDON_ID)
 # Addons to push during satellite alignment
 ADDONS_TO_PUSH = [
     {'name': 'script.paragontv', 'path': '/storage/.kodi/addons/script.paragontv/'},
-    {'name': 'script.paragon', 'path': '/storage/.kodi/addons/script.paragon/'},
+    {'name': 'skin.paragon', 'path': '/storage/.kodi/addons/skin.paragon/'},
 ]
 
 def log(msg, level=xbmc.LOGDEBUG):
