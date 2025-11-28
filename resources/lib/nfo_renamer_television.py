@@ -16,26 +16,16 @@ IMPROVED:
 - Now skips files that are already in the correct format
 - Sanitizes filenames to remove invalid Windows characters
 - Handles colons and other special characters in filenames
-- Properly handles Unicode characters in filenames and content
+- Uses standard Python file operations for better NFS performance
 """
 
 import argparse
-import io  # For proper UTF-8 encoding handling
 import logging
 import os
 import re
 import shutil
 import sys
 import xml.etree.ElementTree as ET
-
-import xbmcvfs  # Add this import
-
-# Python 2/3 compatibility for Unicode handling
-if sys.version_info[0] == 2:
-    # Python 2: Set default encoding to UTF-8
-    if sys.getdefaultencoding() != 'utf-8':
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
 
 # Try to import Kodi modules, but provide fallbacks for CLI usage
 try:
@@ -46,19 +36,17 @@ try:
 except ImportError:
     IN_KODI = False
 
-# Configure logging - console only with DEBUG level for troubleshooting
+# Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
-# Import time for debugging timing
-import time
-
 # Video file extensions to process
 VIDEO_EXTENSIONS = [".mkv", ".mp4", ".avi", ".m4v", ".ts", ".mov"]
+
 # Resolution mapping
 RESOLUTION_MAP = {
     "2160p": "2160",
@@ -84,7 +72,7 @@ AUDIO_CODEC_MAP = {
     "mp3": "MP3",
     "flac": "FLAC",
     "pcm": "PCM",
-    "dca": "DTS",  # DCA is often used for DTS
+    "dca": "DTS",
     "opus": "OPUS",
 }
 
@@ -107,30 +95,17 @@ INVALID_FILENAME_CHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*"]
 
 # Cache for tvshow.nfo metadata to avoid re-parsing the same file multiple times
 tvshow_metadata_cache = {}
-# Cache for tvshow.nfo file locations to avoid repeated xbmcvfs.exists() calls
-tvshow_nfo_path_cache = {}
 
 # Pattern to detect if a file is already in the extended format
-# Format: SSxEE - Episode Title - Show Title - Genre - Resolution - Audio Channels - Audio Codec - Holiday.ext
 EXTENDED_FORMAT_PATTERN = re.compile(
     r"^\d+x\d+ - .+ - .+ - .+ - \d+ - \d+ - [A-Za-z0-9-]+ - [A-Za-z]+"
 )
 
 
-# Function to sanitize filenames for Windows compatibility
 def sanitize_filename(filename):
     """
     Remove or replace characters that are invalid in Windows filenames
-    Properly handles Unicode characters
     """
-    # Ensure we're working with Unicode
-    if not isinstance(filename, unicode):
-        try:
-            filename = filename.decode("utf-8")
-        except UnicodeDecodeError:
-            # If UTF-8 decoding fails, try with error replacement
-            filename = filename.decode("utf-8", "replace")
-
     # Replace colons with a safe alternative
     sanitized = filename.replace(":", ".")
 
@@ -144,30 +119,16 @@ def sanitize_filename(filename):
 
     # Check if the filename is valid after sanitization
     if sanitized != filename:
-        logger.info(
-            "Sanitized filename: '{}' -> '{}'".format(
-                filename.encode("utf-8", "replace"),
-                sanitized.encode("utf-8", "replace"),
-            )
-        )
+        logger.info("Sanitized filename: '{}' -> '{}'".format(filename, sanitized))
 
     return sanitized
 
 
-# Function to check if a file is already in the extended format
 def is_already_extended_format(filename):
     """
     Check if the filename is already in the extended format
     Returns True if it matches the pattern, False otherwise
     """
-    # Ensure we're working with Unicode
-    if not isinstance(filename, unicode):
-        try:
-            filename = filename.decode("utf-8")
-        except UnicodeDecodeError:
-            # If UTF-8 decoding fails, try with error replacement
-            filename = filename.decode("utf-8", "replace")
-
     # Strip extension
     base_name = os.path.splitext(filename)[0]
 
@@ -202,7 +163,6 @@ def is_already_extended_format(filename):
     if parts[7] not in ["Christmas", "Thanksgiving", "Halloween", "None"]:
         return False
 
-    # If we got here, it's likely already in the extended format
     return True
 
 
@@ -214,14 +174,6 @@ def detect_holiday(plot_text):
     if not plot_text:
         return "None"
 
-    # Ensure we're working with Unicode
-    if not isinstance(plot_text, unicode):
-        try:
-            plot_text = plot_text.decode("utf-8")
-        except UnicodeDecodeError:
-            # If UTF-8 decoding fails, try with error replacement
-            plot_text = plot_text.decode("utf-8", "replace")
-
     # Convert to lowercase for case-insensitive matching
     plot_lower = plot_text.lower()
 
@@ -229,12 +181,9 @@ def detect_holiday(plot_text):
     for holiday, keywords in HOLIDAY_KEYWORDS.items():
         for keyword in keywords:
             if keyword in plot_lower:
-                logger.info(
-                    "Detected {} episode based on keyword '{}'".format(holiday, keyword)
-                )
+                logger.info("Detected {} episode based on keyword '{}'".format(holiday, keyword))
                 return holiday
 
-    # No holiday keywords found
     return "None"
 
 
@@ -244,29 +193,8 @@ def parse_nfo_file(nfo_path):
     Returns a dictionary with season, episode, title, show name, genre, etc.
     """
     try:
-        # Read the file content using xbmcvfs
-        logger.debug("DEBUG: Opening NFO file: {}".format(nfo_path))
-        start_time = time.time()
-        f = xbmcvfs.File(nfo_path, "r")
-        logger.debug("DEBUG: File opened in {:.2f}s, now reading...".format(time.time() - start_time))
-        start_time = time.time()
-        content = f.read()
-        logger.debug("DEBUG: File read in {:.2f}s ({} bytes), now closing...".format(time.time() - start_time, len(content) if content else 0))
-        start_time = time.time()
-        f.close()
-        logger.debug("DEBUG: File closed in {:.2f}s".format(time.time() - start_time))
-
-        # Handle Unicode content
-        if not isinstance(content, unicode):
-            try:
-                # First try UTF-8
-                content = content.decode("utf-8")
-            except UnicodeDecodeError:
-                # If that fails, use replace mode
-                content = content.decode("utf-8", "replace")
-
-        # Parse XML from string content
-        root = ET.fromstring(content.encode("utf-8"))
+        tree = ET.parse(nfo_path)
+        root = tree.getroot()
 
         # Initialize metadata with defaults
         metadata = {
@@ -276,9 +204,9 @@ def parse_nfo_file(nfo_path):
             "showtitle": None,
             "genre": None,
             "resolution": None,
-            "audio_channels": "2",  # Default to '2' for audio channels
-            "audio_codec": "AAC",  # Default to 'AAC' for audio codec
-            "holiday": "None",  # Default to 'None' for holiday
+            "audio_channels": None,
+            "audio_codec": None,
+            "holiday": "None",
         }
 
         # Extract season and episode
@@ -309,27 +237,20 @@ def parse_nfo_file(nfo_path):
         plot_elem = root.find(".//plot")
         if plot_elem is not None and plot_elem.text:
             plot_text = plot_elem.text.strip()
-            # Detect holiday based on plot text
             metadata["holiday"] = detect_holiday(plot_text)
 
         # Try to determine resolution from various sources
-        # First check if there's a videoinfo/resolution element
-        resolution_elem = root.find(".//videoinfo/resolution") or root.find(
-            ".//resolution"
-        )
+        resolution_elem = root.find(".//videoinfo/resolution") or root.find(".//resolution")
         if resolution_elem is not None and resolution_elem.text:
             res_text = resolution_elem.text.strip()
-            # Map resolution text to our format
             for key, value in RESOLUTION_MAP.items():
                 if key in res_text:
                     metadata["resolution"] = value
                     break
 
         # Extract audio information
-        # First try the standard location
         audio_elem = root.findall(".//streamdetails/audio")
         if audio_elem:
-            # Use the first audio stream for channels and codec
             channels_elem = audio_elem[0].find("./channels")
             if channels_elem is not None and channels_elem.text:
                 metadata["audio_channels"] = channels_elem.text.strip()
@@ -337,7 +258,6 @@ def parse_nfo_file(nfo_path):
             codec_elem = audio_elem[0].find("./codec")
             if codec_elem is not None and codec_elem.text:
                 codec = codec_elem.text.strip().lower()
-                # Map to standardized codec name if possible
                 metadata["audio_codec"] = AUDIO_CODEC_MAP.get(codec, codec.upper())
 
         # Alternative locations for older NFO formats
@@ -370,111 +290,56 @@ def get_tvshow_metadata(episode_nfo_path):
     # Get parent directory
     parent_dir = os.path.dirname(episode_nfo_path)
 
-    # Check metadata cache first (by parent_dir)
+    # Check cache first
     if parent_dir in tvshow_metadata_cache:
         logger.debug("Using cached tvshow metadata for {}".format(parent_dir))
         return tvshow_metadata_cache[parent_dir]
 
-    # Determine the show directory (parent of season folder if in a season folder)
-    current_folder = os.path.basename(parent_dir)
-    if re.match(r"[Ss]eason\s*\d+", current_folder, re.IGNORECASE):
-        show_dir = os.path.dirname(parent_dir)
-    else:
-        show_dir = parent_dir
+    # Path to tvshow.nfo
+    tvshow_nfo_path = os.path.join(parent_dir, "tvshow.nfo")
 
-    # Check path cache to see if we already know where tvshow.nfo is for this show
-    if show_dir in tvshow_nfo_path_cache:
-        tvshow_nfo_path = tvshow_nfo_path_cache[show_dir]
-        logger.debug("Using cached tvshow.nfo path: {}".format(tvshow_nfo_path))
-        if tvshow_nfo_path is None:
-            # We previously determined tvshow.nfo doesn't exist
-            return {"genre": None, "showtitle": None}
-    else:
-        # Need to find tvshow.nfo - check show directory first (most common)
-        tvshow_nfo_path = os.path.join(show_dir, "tvshow.nfo")
-        logger.debug("DEBUG: Checking if tvshow.nfo exists at: {}".format(tvshow_nfo_path))
-        start_time = time.time()
-        exists_check = xbmcvfs.exists(tvshow_nfo_path)
-        logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check))
+    # If we're already in a season subfolder, go up one level
+    if not os.path.exists(tvshow_nfo_path):
+        current_folder = os.path.basename(parent_dir)
+        if re.match(r"[Ss]eason\s*\d+", current_folder, re.IGNORECASE):
+            show_dir = os.path.dirname(parent_dir)
+            tvshow_nfo_path = os.path.join(show_dir, "tvshow.nfo")
 
-        if not exists_check:
-            # Also check parent_dir if different from show_dir
-            if parent_dir != show_dir:
-                tvshow_nfo_path = os.path.join(parent_dir, "tvshow.nfo")
-                logger.debug("DEBUG: Checking parent dir for tvshow.nfo: {}".format(tvshow_nfo_path))
-                start_time = time.time()
-                exists_check = xbmcvfs.exists(tvshow_nfo_path)
-                logger.debug("DEBUG: xbmcvfs.exists() took {:.2f}s, result: {}".format(time.time() - start_time, exists_check))
-
-            if not exists_check:
-                # tvshow.nfo not found - cache this result to avoid future lookups
-                tvshow_nfo_path_cache[show_dir] = None
-                logger.warning("tvshow.nfo not found for {}".format(episode_nfo_path))
-                return {"genre": None, "showtitle": None}
-
-        # Cache the found path for future lookups
-        tvshow_nfo_path_cache[show_dir] = tvshow_nfo_path
-        logger.debug("Cached tvshow.nfo path for {}: {}".format(show_dir, tvshow_nfo_path))
+    # Check if tvshow.nfo exists
+    if not os.path.exists(tvshow_nfo_path):
+        logger.warning("tvshow.nfo not found for {}".format(episode_nfo_path))
+        return {"genre": None, "showtitle": None}
 
     # Initialize metadata with defaults
     tvshow_metadata = {"genre": None, "showtitle": None}
 
     # Parse tvshow.nfo
     try:
-        # Read the file content using xbmcvfs
-        logger.debug("DEBUG: Reading tvshow.nfo: {}".format(tvshow_nfo_path))
-        start_time = time.time()
-        f = xbmcvfs.File(tvshow_nfo_path, "r")
-        logger.debug("DEBUG: tvshow.nfo opened in {:.2f}s".format(time.time() - start_time))
-        start_time = time.time()
-        content = f.read()
-        logger.debug("DEBUG: tvshow.nfo read in {:.2f}s ({} bytes)".format(time.time() - start_time, len(content) if content else 0))
-        start_time = time.time()
-        f.close()
-        logger.debug("DEBUG: tvshow.nfo closed in {:.2f}s".format(time.time() - start_time))
-
-        # Handle Unicode content
-        if not isinstance(content, unicode):
-            try:
-                # First try UTF-8
-                content = content.decode("utf-8")
-            except UnicodeDecodeError:
-                # If that fails, use replace mode
-                content = content.decode("utf-8", "replace")
-
-        # Parse XML from string content
-        root = ET.fromstring(content.encode("utf-8"))
+        tree = ET.parse(tvshow_nfo_path)
+        root = tree.getroot()
 
         # Extract genre
         genre_elem = root.find(".//genre")
         if genre_elem is not None and genre_elem.text:
             tvshow_metadata["genre"] = genre_elem.text.strip()
-            logger.info(
-                "Found genre '{}' in tvshow.nfo for {}".format(
-                    tvshow_metadata["genre"], parent_dir
-                )
-            )
+            logger.info("Found genre '{}' in tvshow.nfo for {}".format(
+                tvshow_metadata["genre"], parent_dir
+            ))
 
         # Extract show title - check multiple possible tags
-        # First check originaltitle (as in the American Dad! example)
         originaltitle_elem = root.find(".//originaltitle")
         if originaltitle_elem is not None and originaltitle_elem.text:
             tvshow_metadata["showtitle"] = originaltitle_elem.text.strip()
-            logger.info(
-                "Found show title '{}' from originaltitle tag in tvshow.nfo".format(
-                    tvshow_metadata["showtitle"]
-                )
-            )
+            logger.info("Found show title '{}' from originaltitle tag in tvshow.nfo".format(
+                tvshow_metadata["showtitle"]
+            ))
         else:
-            # If not found, try title tag
             title_elem = root.find(".//title")
             if title_elem is not None and title_elem.text:
                 tvshow_metadata["showtitle"] = title_elem.text.strip()
-                logger.info(
-                    "Found show title '{}' from title tag in tvshow.nfo".format(
-                        tvshow_metadata["showtitle"]
-                    )
-                )
+                logger.info("Found show title '{}' from title tag in tvshow.nfo".format(
+                    tvshow_metadata["showtitle"]
+                ))
 
         # Cache the result
         tvshow_metadata_cache[parent_dir] = tvshow_metadata
@@ -491,18 +356,10 @@ def get_tvshow_metadata(episode_nfo_path):
 
 def get_resolution_from_filename(filename):
     """Extract resolution from filename if present"""
-    # Ensure we're working with Unicode
-    if not isinstance(filename, unicode):
-        try:
-            filename = filename.decode("utf-8")
-        except UnicodeDecodeError:
-            # If UTF-8 decoding fails, try with error replacement
-            filename = filename.decode("utf-8", "replace")
-
     for key in RESOLUTION_MAP:
         if key in filename:
             return RESOLUTION_MAP[key]
-    return "1080"  # Default to 1080p if not found
+    return "1080"
 
 
 def create_extended_filename(metadata, original_ext):
@@ -510,76 +367,32 @@ def create_extended_filename(metadata, original_ext):
     Create new filename based on metadata and original extension
     Sanitizes the filename to ensure Windows compatibility
     """
-    # Use detected metadata, setting defaults if items are missing
     season = metadata.get("season", 1)
     episode = metadata.get("episode", 1)
     title = metadata.get("title", "Unknown Title")
     showtitle = metadata.get("showtitle", "Unknown Show")
     genre = metadata.get("genre", "Unknown")
     resolution = metadata.get("resolution", "1080")
-
-    # Explicitly handle None values for audio fields
-    audio_channels = "2"  # Default to stereo
-    if metadata.get("audio_channels") not in (None, "None"):
-        audio_channels = metadata.get("audio_channels")
-
-    audio_codec = "AAC"  # Default to AAC
-    if metadata.get("audio_codec") not in (None, "None"):
-        audio_codec = metadata.get("audio_codec")
-
+    audio_channels = metadata.get("audio_channels", "2")
+    audio_codec = metadata.get("audio_codec", "AAC")
     holiday = metadata.get("holiday", "None")
 
     # Format the new filename
     filename = "{:02d}x{:02d} - {} - {} - {} - {} - {} - {} - {}{}".format(
-        season,
-        episode,
-        title,
-        showtitle,
-        genre,
-        resolution,
-        audio_channels,
-        audio_codec,
-        holiday,
-        original_ext,
+        season, episode, title, showtitle, genre, resolution,
+        audio_channels, audio_codec, holiday, original_ext
     )
 
-    # Sanitize the filename for Windows compatibility
     return sanitize_filename(filename)
 
 
-def rename_files(directory, dry_run=False, recursive=False, progress_callback=None, depth=0, progress_state=None):
+def rename_files(directory, dry_run=False, recursive=False, progress_callback=None):
     """
     Process directory and rename files according to extended format
-
-    Args:
-        directory: The directory to process
-        dry_run: If True, don't actually rename files, just show what would happen
-        recursive: If True, process subdirectories recursively
     """
-    print("Starting rename_files with directory: {}".format(directory))
-    logger.info("Starting rename_files with directory: {}".format(directory))
-
-    # Check if directory exists using xbmcvfs
-    if not xbmcvfs.exists(directory):
+    if not os.path.isdir(directory):
         logger.error("Directory not found: {}".format(directory))
-        print("ERROR: Directory not found: {}".format(directory))
-        return
-
-    # List directory contents using xbmcvfs
-    try:
-        logger.debug("DEBUG: Listing directory: {}".format(directory))
-        start_time = time.time()
-        dirs, files = xbmcvfs.listdir(directory)
-        elapsed = time.time() - start_time
-        all_items = dirs + files
-        logger.info("Directory contents: {} files/folders found in {:.2f}s".format(len(all_items), elapsed))
-        print("Directory contents: {} files/folders found in {:.2f}s".format(len(all_items), elapsed))
-        if elapsed > 5.0:
-            logger.warning("DEBUG: SLOW directory listing took {:.2f}s for {}".format(elapsed, directory))
-    except Exception as e:
-        logger.error("Failed to list directory contents: {}".format(e))
-        print("ERROR: Failed to list directory contents: {}".format(e))
-        return
+        return None
 
     # Track statistics
     stats = {
@@ -595,241 +408,187 @@ def rename_files(directory, dry_run=False, recursive=False, progress_callback=No
         "halloween_episodes": 0,
     }
 
-    # Initialize progress state at root level (depth 0)
-    if depth == 0 and progress_callback and progress_state is None:
-        progress_state = {"total_nfos": 0, "current_nfo": 0}
-        # Count total NFO files recursively
-        logger.debug("DEBUG: Starting NFO counting phase...")
-        count_start = time.time()
-        def count_nfos(dir_path, depth_level=0):
-            count = 0
-            try:
-                logger.debug("DEBUG: Counting NFOs in: {} (depth {})".format(dir_path, depth_level))
-                start_time = time.time()
-                subdirs, subfiles = xbmcvfs.listdir(dir_path)
-                elapsed = time.time() - start_time
-                if elapsed > 2.0:
-                    logger.warning("DEBUG: SLOW listdir in count_nfos took {:.2f}s for {}".format(elapsed, dir_path))
-                for f in subfiles:
-                    if f.lower().endswith(".nfo") and f.lower() != "tvshow.nfo":
-                        count += 1
-                if recursive:
-                    for d in subdirs:
-                        count += count_nfos(os.path.join(dir_path, d), depth_level + 1)
-            except Exception as e:
-                logger.debug("DEBUG: Error counting NFOs in {}: {}".format(dir_path, e))
-            return count
-        progress_state["total_nfos"] = count_nfos(directory)
-        logger.info("DEBUG: NFO counting complete. Found {} NFOs in {:.2f}s".format(
-            progress_state["total_nfos"], time.time() - count_start))
+    # Count total NFO files for progress
+    total_nfos = 0
+    current_nfo = 0
 
-    # Process directories first if recursive
-    if recursive:
-        for dirname in dirs:
-            dir_path = os.path.join(directory, dirname)
-            sub_stats = rename_files(dir_path, dry_run, recursive, progress_callback, depth + 1, progress_state)
-            if sub_stats:
-                for key in stats:
-                    if key in sub_stats:
-                        stats[key] += sub_stats[key]
+    if progress_callback:
+        for root_dir, dirs, files in os.walk(directory):
+            for f in files:
+                if f.lower().endswith(".nfo") and f.lower() != "tvshow.nfo":
+                    total_nfos += 1
+            if not recursive:
+                break
 
-    # Build a lookup dictionary of files in this directory to avoid repeated NFS calls
-    # This is a CRITICAL optimization - instead of calling xbmcvfs.exists() for each
-    # video extension (6 calls per NFO), we use the already-fetched file list
-    file_lookup = {}
-    for f in files:
-        base = os.path.splitext(f)[0].lower()
-        ext = os.path.splitext(f)[1].lower()
-        if base not in file_lookup:
-            file_lookup[base] = {}
-        file_lookup[base][ext] = f  # Store original filename with case preserved
-    logger.debug("DEBUG: Built file lookup with {} unique base names".format(len(file_lookup)))
+    # Process files
+    for root_dir, dirs, files in os.walk(directory):
+        for filename in files:
+            file_path = os.path.join(root_dir, filename)
 
-    # Process files in the current directory
-    for filename in files:
-        file_path = os.path.join(directory, filename)
+            # Check if this is an NFO file for an episode (not tvshow.nfo)
+            if filename.lower().endswith(".nfo") and filename.lower() != "tvshow.nfo":
+                stats["processed"] += 1
+                current_nfo += 1
 
-        # Check if this is an NFO file for an episode (not tvshow.nfo)
-        if filename.lower().endswith(".nfo") and filename.lower() != "tvshow.nfo":
-            stats["processed"] += 1
+                # Update progress
+                if progress_callback and total_nfos > 0:
+                    percent = int((current_nfo * 100) / total_nfos)
+                    display_name = filename if len(filename) <= 40 else filename[:37] + "..."
+                    try:
+                        progress_callback(percent, "Processing: {} ({}/{})".format(
+                            display_name, current_nfo, total_nfos
+                        ))
+                    except Exception:
+                        pass
 
-            # Update progress if callback provided (use shared progress_state)
-            if progress_callback and progress_state:
-                progress_state["current_nfo"] += 1
-                percent = int((progress_state["current_nfo"] * 100) / progress_state["total_nfos"]) if progress_state["total_nfos"] > 0 else 0
-                # Get shortened filename for display
-                display_name = filename if len(filename) <= 40 else filename[:37] + "..."
-                logger.debug("DEBUG: Progress {}% - Processing NFO #{}: {}".format(
-                    percent, progress_state["current_nfo"], filename))
-                try:
-                    progress_callback(percent, "Processing: {} ({}/{})".format(
-                        display_name, progress_state["current_nfo"], progress_state["total_nfos"]
-                    ))
-                except Exception as e:
-                    logger.error("DEBUG: Progress callback failed: {}".format(e))
+                # Get base name without extension
+                base_name = os.path.splitext(filename)[0]
 
-            # Get base name without extension
-            base_name = os.path.splitext(filename)[0]
-            base_name_lower = base_name.lower()
-            logger.debug("DEBUG: Looking for video file matching: {}".format(base_name))
+                # Look for associated video file with matching base name
+                video_file = None
+                video_ext = None
 
-            # Look for associated video file using the pre-built lookup (NO NFS calls!)
-            video_file = None
-            video_ext = None
-
-            if base_name_lower in file_lookup:
                 for ext in VIDEO_EXTENSIONS:
-                    ext_lower = ext.lower()
-                    if ext_lower in file_lookup[base_name_lower]:
-                        video_file = file_lookup[base_name_lower][ext_lower]
+                    potential_video = base_name + ext
+                    potential_path = os.path.join(root_dir, potential_video)
+                    if os.path.exists(potential_path):
+                        video_file = potential_video
                         video_ext = ext
-                        logger.debug("DEBUG: Found video file in lookup: {}".format(video_file))
                         break
 
-            if not video_file:
-                logger.warning(
-                    "No matching video file found for NFO: {}".format(filename)
-                )
-                stats["skipped"] += 1
-                continue
+                if not video_file:
+                    logger.warning("No matching video file found for NFO: {}".format(filename))
+                    stats["skipped"] += 1
+                    continue
 
-            # Check if video file is already in extended format
-            if is_already_extended_format(video_file):
-                logger.info("File already in extended format: {}".format(video_file))
-                stats["already_extended"] += 1
-                stats["skipped"] += 1
-                continue
+                # Check if video file is already in extended format
+                if is_already_extended_format(video_file):
+                    logger.info("File already in extended format: {}".format(video_file))
+                    stats["already_extended"] += 1
+                    stats["skipped"] += 1
+                    continue
 
-            # Parse NFO file
-            full_nfo_path = os.path.join(directory, filename)
-            metadata = parse_nfo_file(full_nfo_path)
-            if not metadata:
-                logger.error("Failed to parse NFO: {}".format(filename))
-                stats["errors"] += 1
-                continue
+                # Parse NFO file
+                full_nfo_path = os.path.join(root_dir, filename)
+                metadata = parse_nfo_file(full_nfo_path)
+                if not metadata:
+                    logger.error("Failed to parse NFO: {}".format(filename))
+                    stats["errors"] += 1
+                    continue
 
-            # If we're missing critical metadata, try to extract from filename
-            if metadata["season"] is None or metadata["episode"] is None:
-                # Try to extract season and episode from filename
-                season_ep_match = re.search(r"[sS](\d+)[eE](\d+)", base_name)
-                if season_ep_match:
-                    metadata["season"] = int(season_ep_match.group(1))
-                    metadata["episode"] = int(season_ep_match.group(2))
-                else:
-                    # Try NxNN format
-                    season_ep_match = re.search(r"(\d+)x(\d+)", base_name)
+                # If we're missing critical metadata, try to extract from filename
+                if metadata["season"] is None or metadata["episode"] is None:
+                    season_ep_match = re.search(r"[sS](\d+)[eE](\d+)", base_name)
                     if season_ep_match:
                         metadata["season"] = int(season_ep_match.group(1))
                         metadata["episode"] = int(season_ep_match.group(2))
+                    else:
+                        season_ep_match = re.search(r"(\d+)x(\d+)", base_name)
+                        if season_ep_match:
+                            metadata["season"] = int(season_ep_match.group(1))
+                            metadata["episode"] = int(season_ep_match.group(2))
 
-            # Get missing metadata from tvshow.nfo
-            need_tvshow_metadata = False
-            if not metadata["genre"] or not metadata["showtitle"]:
-                need_tvshow_metadata = True
+                # Get missing metadata from tvshow.nfo
+                if not metadata["genre"] or not metadata["showtitle"]:
+                    tvshow_metadata = get_tvshow_metadata(full_nfo_path)
 
-            if need_tvshow_metadata:
-                tvshow_metadata = get_tvshow_metadata(full_nfo_path)
+                    if not metadata["genre"] and tvshow_metadata["genre"]:
+                        metadata["genre"] = tvshow_metadata["genre"]
+                        stats["genre_from_tvshow"] += 1
+                        logger.info("Using genre from tvshow.nfo: {}".format(tvshow_metadata["genre"]))
 
-                # If genre is missing, get it from tvshow.nfo
-                if not metadata["genre"] and tvshow_metadata["genre"]:
-                    metadata["genre"] = tvshow_metadata["genre"]
-                    stats["genre_from_tvshow"] += 1
-                    logger.info(
-                        "Using genre from tvshow.nfo: {}".format(
-                            tvshow_metadata["genre"]
-                        )
+                    if not metadata["showtitle"] and tvshow_metadata["showtitle"]:
+                        metadata["showtitle"] = tvshow_metadata["showtitle"]
+                        stats["showtitle_from_tvshow"] += 1
+                        logger.info("Using show title from tvshow.nfo: {}".format(tvshow_metadata["showtitle"]))
+
+                # Update holiday statistics
+                if metadata["holiday"] == "Christmas":
+                    stats["christmas_episodes"] += 1
+                elif metadata["holiday"] == "Thanksgiving":
+                    stats["thanksgiving_episodes"] += 1
+                elif metadata["holiday"] == "Halloween":
+                    stats["halloween_episodes"] += 1
+
+                # If resolution not in NFO, try to get from filename
+                if not metadata["resolution"]:
+                    metadata["resolution"] = get_resolution_from_filename(base_name)
+
+                # Try to extract audio information from filename if not in NFO
+                if not metadata["audio_channels"]:
+                    channels_match = re.search(
+                        r"(\d+\.\d+)ch|(\d+)ch|(\d+\.\d+)|(\d+)channels", base_name.lower()
                     )
+                    if channels_match:
+                        for group in channels_match.groups():
+                            if group:
+                                metadata["audio_channels"] = group
+                                break
 
-                # If show title is missing, get it from tvshow.nfo
-                if not metadata["showtitle"] and tvshow_metadata["showtitle"]:
-                    metadata["showtitle"] = tvshow_metadata["showtitle"]
-                    stats["showtitle_from_tvshow"] += 1
-                    logger.info(
-                        "Using show title from tvshow.nfo: {}".format(
-                            tvshow_metadata["showtitle"]
-                        )
-                    )
-
-            # Update holiday statistics
-            if metadata["holiday"] == "Christmas":
-                stats["christmas_episodes"] += 1
-            elif metadata["holiday"] == "Thanksgiving":
-                stats["thanksgiving_episodes"] += 1
-            elif metadata["holiday"] == "Halloween":
-                stats["halloween_episodes"] += 1
-
-            # If resolution not in NFO, try to get from filename
-            if not metadata["resolution"]:
-                metadata["resolution"] = get_resolution_from_filename(base_name)
-
-            # Try to extract audio information from filename if not in NFO
-            if not metadata["audio_channels"] or metadata["audio_channels"] == "None":
-                # Look for patterns like "5.1" or "7.1" for channels
-                channels_match = re.search(
-                    r"(\d+\.\d+)ch|(\d+)ch|(\d+\.\d+)|(\d+)channels", base_name.lower()
-                )
-                if channels_match:
-                    # Use the first non-None group
-                    for group in channels_match.groups():
-                        if group:
-                            metadata["audio_channels"] = group
+                if not metadata["audio_codec"]:
+                    for codec, standardized in AUDIO_CODEC_MAP.items():
+                        if codec.lower() in base_name.lower():
+                            metadata["audio_codec"] = standardized
                             break
 
-            if not metadata["audio_codec"] or metadata["audio_codec"] == "None":
-                # Look for audio codec indicators
-                for codec, standardized in AUDIO_CODEC_MAP.items():
-                    if codec.lower() in base_name.lower():
-                        metadata["audio_codec"] = standardized
-                        break
+                # Create new filenames
+                new_base_name = create_extended_filename(metadata, "")
+                new_video_name = new_base_name + video_ext
+                new_nfo_name = new_base_name + ".nfo"
 
-            # Create new filenames
-            new_base_name = create_extended_filename(metadata, "")
-            new_video_name = new_base_name + video_ext
-            new_nfo_name = new_base_name + ".nfo"
+                # Check if rename is actually needed
+                if new_video_name == video_file and new_nfo_name == filename:
+                    logger.info("Files already have correct naming: {}".format(filename))
+                    stats["skipped"] += 1
+                    continue
 
-            # Check if rename is actually needed (names might already match)
-            if new_video_name == video_file and new_nfo_name == filename:
-                logger.info("Files already have correct naming: {}".format(filename))
-                stats["skipped"] += 1
-                continue
-
-            # Log the rename operation
-            logger.info(
-                "Renaming:\n  {} -> {}\n  {} -> {}".format(
+                # Log the rename operation
+                logger.info("Renaming:\n  {} -> {}\n  {} -> {}".format(
                     filename, new_nfo_name, video_file, new_video_name
-                )
-            )
+                ))
 
-            # When renaming files, use xbmcvfs
-            if not dry_run:
-                try:
-                    # Rename video file
-                    video_src = os.path.join(directory, video_file)
-                    video_dst = os.path.join(directory, new_video_name)
-                    xbmcvfs.rename(video_src, video_dst)
+                if not dry_run:
+                    try:
+                        # Rename video file
+                        video_src = os.path.join(root_dir, video_file)
+                        video_dst = os.path.join(root_dir, new_video_name)
+                        shutil.move(video_src, video_dst)
 
-                    # Rename NFO file
-                    nfo_src = os.path.join(directory, filename)
-                    nfo_dst = os.path.join(directory, new_nfo_name)
-                    xbmcvfs.rename(nfo_src, nfo_dst)
+                        # Rename NFO file
+                        nfo_src = os.path.join(root_dir, filename)
+                        nfo_dst = os.path.join(root_dir, new_nfo_name)
+                        shutil.move(nfo_src, nfo_dst)
 
-                    stats["renamed"] += 1
-                except Exception as e:
-                    logger.error("Error renaming files: {}".format(e))
-                    stats["errors"] += 1
+                        stats["renamed"] += 1
+                    except Exception as e:
+                        logger.error("Error renaming files: {}".format(e))
+                        stats["errors"] += 1
+
+        # If not recursive, don't process subdirectories
+        if not recursive:
+            break
+
+    # Log summary
+    logger.info("Directory {} - Processed: {}, Renamed: {}, Errors: {}, Skipped: {}, "
+                "Already Extended: {}, Genre from tvshow.nfo: {}, Show title from tvshow.nfo: {}, "
+                "Holiday episodes - Christmas: {}, Thanksgiving: {}, Halloween: {}".format(
+                    directory, stats["processed"], stats["renamed"], stats["errors"],
+                    stats["skipped"], stats["already_extended"], stats["genre_from_tvshow"],
+                    stats["showtitle_from_tvshow"], stats["christmas_episodes"],
+                    stats["thanksgiving_episodes"], stats["halloween_episodes"]
+                ))
 
     return stats
 
 
 def run_renamer(directory, dry_run=False, recursive=False, progress_callback=None):
     """Run the renamer with specified parameters"""
-    # Clear caches at the start of each run to ensure fresh data
-    global tvshow_metadata_cache, tvshow_nfo_path_cache
+    # Clear caches at the start of each run
+    global tvshow_metadata_cache
     tvshow_metadata_cache = {}
-    tvshow_nfo_path_cache = {}
     logger.info("Cleared metadata caches for fresh run")
 
-    print("nfo renamer television")
+    print("NFO Renamer - Television")
     print("Processing directory: {}".format(directory))
     print("Recursive mode: {}".format("Yes" if recursive else "No"))
     print("Dry run mode: {}".format("Yes" if dry_run else "No"))
@@ -845,14 +604,10 @@ def run_renamer(directory, dry_run=False, recursive=False, progress_callback=Non
             print("Files processed: {}".format(stats["processed"]))
             print("Files renamed: {}".format(stats["renamed"]))
             print("Files skipped: {}".format(stats["skipped"]))
-            print(
-                "Files already in extended format: {}".format(stats["already_extended"])
-            )
+            print("Files already in extended format: {}".format(stats["already_extended"]))
             print("Errors encountered: {}".format(stats["errors"]))
             print("Genre from tvshow.nfo: {}".format(stats["genre_from_tvshow"]))
-            print(
-                "Show title from tvshow.nfo: {}".format(stats["showtitle_from_tvshow"])
-            )
+            print("Show title from tvshow.nfo: {}".format(stats["showtitle_from_tvshow"]))
             print("\nHoliday episodes found:")
             print("  Christmas: {}".format(stats["christmas_episodes"]))
             print("  Thanksgiving: {}".format(stats["thanksgiving_episodes"]))
@@ -869,14 +624,13 @@ def main():
     """Main function to parse arguments and initiate renaming"""
     # Check if running in Kodi
     if IN_KODI:
-        # Running from Kodi settings - use configured directory from settings
         dialog = xbmcgui.Dialog()
         addon = xbmcaddon.Addon(id="script.paragontv")
 
         # Get the configured TV Shows directory from settings
         directory = addon.getSetting("NFOTelevisionPath")
 
-        # Translate Kodi special:// paths and handle Unicode properly
+        # Translate Kodi special:// paths
         if directory:
             directory = xbmc.translatePath(directory)
 
@@ -889,24 +643,21 @@ def main():
             )
             return 1
 
-        # Always process recursively (standard behavior)
+        # Always process recursively
         recursive = True
-
-        # Always run in live mode (no dry-run)
         dry_run = False
 
         # Show progress dialog
         progress = xbmcgui.DialogProgress()
         progress.create("NFO Renamer - TV Shows", "Scanning files...")
 
-        # Create progress callback that updates the dialog
         def progress_callback(percent, message):
             progress.update(percent, message)
 
         try:
             result = run_renamer(directory, dry_run, recursive, progress_callback)
             progress.update(100, "Complete!")
-            xbmc.sleep(500)  # Brief pause to show completion
+            xbmc.sleep(500)
             progress.close()
 
             if result == 0:
@@ -927,7 +678,7 @@ def main():
             dialog.ok("Error", "Failed to process files:", str(e))
             return 1
     else:
-        # Running from command line - use argparse
+        # Running from command line
         parser = argparse.ArgumentParser(
             description="Rename video files to extended format based on NFO metadata"
         )
@@ -937,15 +688,13 @@ def main():
         )
 
         parser.add_argument(
-            "--recursive",
-            "-r",
+            "--recursive", "-r",
             action="store_true",
             help="Process subdirectories recursively",
         )
 
         parser.add_argument(
-            "--dry-run",
-            "-d",
+            "--dry-run", "-d",
             action="store_true",
             help="Show what would be renamed without making changes",
         )
