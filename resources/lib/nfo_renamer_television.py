@@ -27,6 +27,13 @@ import shutil
 import sys
 import xml.etree.ElementTree as ET
 
+# Python 2/3 compatibility for Unicode handling
+if sys.version_info[0] == 2:
+    # Python 2: Set default encoding to UTF-8 to handle non-ASCII filenames
+    if sys.getdefaultencoding() != 'utf-8':
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
+
 # Try to import Kodi modules, but provide fallbacks for CLI usage
 try:
     import xbmc
@@ -103,10 +110,38 @@ EXTENDED_FORMAT_PATTERN = re.compile(
 )
 
 
+def ensure_unicode(text):
+    """
+    Ensure text is a Unicode string (Python 2/3 compatible)
+    """
+    if text is None:
+        return u""
+    if sys.version_info[0] == 2:
+        if isinstance(text, unicode):
+            return text
+        try:
+            return text.decode("utf-8")
+        except (UnicodeDecodeError, AttributeError):
+            try:
+                return text.decode("utf-8", "replace")
+            except AttributeError:
+                return unicode(text)
+    else:
+        # Python 3
+        if isinstance(text, str):
+            return text
+        if isinstance(text, bytes):
+            return text.decode("utf-8", "replace")
+        return str(text)
+
+
 def sanitize_filename(filename):
     """
     Remove or replace characters that are invalid in Windows filenames
     """
+    # Ensure we're working with Unicode
+    filename = ensure_unicode(filename)
+
     # Replace colons with a safe alternative
     sanitized = filename.replace(":", ".")
 
@@ -130,6 +165,9 @@ def is_already_extended_format(filename):
     Check if the filename is already in the extended format
     Returns True if it matches the pattern, False otherwise
     """
+    # Ensure we're working with Unicode
+    filename = ensure_unicode(filename)
+
     # Strip extension
     base_name = os.path.splitext(filename)[0]
 
@@ -174,6 +212,9 @@ def detect_holiday(plot_text):
     """
     if not plot_text:
         return "None"
+
+    # Ensure we're working with Unicode
+    plot_text = ensure_unicode(plot_text)
 
     # Convert to lowercase for case-insensitive matching
     plot_lower = plot_text.lower()
@@ -416,16 +457,17 @@ def create_extended_filename(metadata, original_ext):
     """
     season = metadata.get("season", 1)
     episode = metadata.get("episode", 1)
-    title = metadata.get("title", "Unknown Title")
-    showtitle = metadata.get("showtitle", "Unknown Show")
-    genre = metadata.get("genre", "Unknown")
-    resolution = metadata.get("resolution", "1080")
-    audio_channels = metadata.get("audio_channels", "2")
-    audio_codec = metadata.get("audio_codec", "AAC")
-    holiday = metadata.get("holiday", "None")
+    title = ensure_unicode(metadata.get("title", "Unknown Title"))
+    showtitle = ensure_unicode(metadata.get("showtitle", "Unknown Show"))
+    genre = ensure_unicode(metadata.get("genre", "Unknown"))
+    resolution = ensure_unicode(metadata.get("resolution", "1080"))
+    audio_channels = ensure_unicode(metadata.get("audio_channels", "2"))
+    audio_codec = ensure_unicode(metadata.get("audio_codec", "AAC"))
+    holiday = ensure_unicode(metadata.get("holiday", "None"))
+    original_ext = ensure_unicode(original_ext)
 
     # Format the new filename
-    filename = "{:02d}x{:02d} - {} - {} - {} - {} - {} - {} - {}{}".format(
+    filename = u"{:02d}x{:02d} - {} - {} - {} - {} - {} - {} - {}{}".format(
         season, episode, title, showtitle, genre, resolution,
         audio_channels, audio_codec, holiday, original_ext
     )
@@ -436,13 +478,18 @@ def create_extended_filename(metadata, original_ext):
 def listdir(directory):
     """List directory contents - uses xbmcvfs when in Kodi for NFS support"""
     if IN_KODI:
-        return xbmcvfs.listdir(directory)
+        dirs, files = xbmcvfs.listdir(directory)
+        # Ensure all filenames are Unicode
+        dirs = [ensure_unicode(d) for d in dirs]
+        files = [ensure_unicode(f) for f in files]
+        return dirs, files
     else:
         # Return (dirs, files) tuple like xbmcvfs.listdir
         dirs = []
         files = []
         try:
             for item in os.listdir(directory):
+                item = ensure_unicode(item)
                 item_path = os.path.join(directory, item)
                 if os.path.isdir(item_path):
                     dirs.append(item)
